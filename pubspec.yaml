@@ -44,6 +44,8 @@ dependencies:
   flutter_local_notifications: ^0.7.1
   flutter_google_places: ^0.2.3
   country_code_picker: ^1.1.7
+  flutter_facebook_login: ^2.0.1
+
   
 dev_dependencies:
   flutter_test:

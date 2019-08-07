@@ -5,6 +5,7 @@
 #import "GeneratedPluginRegistrant.h"
 #import <firebase_auth/FirebaseAuthPlugin.h>
 #import <firebase_core/FirebaseCorePlugin.h>
+#import <flutter_facebook_login/FacebookLoginPlugin.h>
 #import <flutter_launch/FlutterLaunchPlugin.h>
 #import <flutter_local_notifications/FlutterLocalNotificationsPlugin.h>
 #import <google_maps_flutter/GoogleMapsPlugin.h>
@@ -20,6 +21,7 @@
 + (void)registerWithRegistry:(NSObject<FlutterPluginRegistry>*)registry {
   [FLTFirebaseAuthPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseAuthPlugin"]];
   [FLTFirebaseCorePlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseCorePlugin"]];
+  [FacebookLoginPlugin registerWithRegistrar:[registry registrarForPlugin:@"FacebookLoginPlugin"]];
   [FlutterLaunchPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterLaunchPlugin"]];
   [FlutterLocalNotificationsPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterLocalNotificationsPlugin"]];
   [FLTGoogleMapsPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTGoogleMapsPlugin"]];
