@@ -13,11 +13,13 @@ import 'package:illapa/pages/estadisticas/estadisticaFree/estFreeClientes.dart';
 import 'package:illapa/pages/estadisticas/estadisticaGestor/estadisticaGestor.dart';
 import 'package:illapa/pages/estadisticas/estadisticas.dart';
 import 'package:illapa/pages/estadisticas/estadisticasClientes.dart';
+import 'package:illapa/pages/estadisticas/estadisticasSectorista/estadisticasSectores.dart';
 import 'package:illapa/pages/estadisticas/estadisticasSocios.dart';
 import 'package:illapa/pages/gestiones/gestion.dart';
 import 'package:illapa/pages/gestiones/gestionClientes.dart';
 import 'package:illapa/pages/gestiones/gestionEmpresa/gestionEmpresa.dart';
 import 'package:illapa/pages/gestiones/gestionFree/gfreeClientes.dart';
+import 'package:illapa/pages/gestiones/gestionSectorista/gestionSectores.dart';
 import 'package:illapa/pages/gestiones/gestionSocios.dart';
 import 'package:illapa/pages/login.dart';
 import 'package:illapa/pages/tramos/tramosEmpresas.dart';
@@ -105,7 +107,7 @@ class Sidebar extends StatelessWidget {
             value: idusuario
           );
         }else if(tipousuario == 3){
-          return new GfreeClientesPage(
+          return new GestionSectoresPage(
             value: idusuario
           );
         }else if(tipousuario == 4){
@@ -188,7 +190,7 @@ class Sidebar extends StatelessWidget {
             value: idusuario
           );
         }else if(tipousuario == 3){
-          return new EstFreeClientesPage(
+          return new EstadisticaSectoresPage(
             value: idusuario
           );
         }else if(tipousuario == 4){

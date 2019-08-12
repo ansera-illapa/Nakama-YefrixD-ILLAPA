@@ -7,6 +7,7 @@ import 'package:illapa/pages/gestiones/gestion.dart';
 import 'package:illapa/pages/gestiones/gestionClientes.dart';
 import 'package:illapa/pages/gestiones/gestionEmpresa/gestionEmpresa.dart';
 import 'package:illapa/pages/gestiones/gestionFree/gfreeClientes.dart';
+import 'package:illapa/pages/gestiones/gestionSectorista/gestionSectores.dart';
 import 'package:illapa/pages/gestiones/gestionSocios.dart';
 import 'package:illapa/pages/login.dart';
 import 'package:illapa/pages/register.dart';
@@ -86,8 +87,13 @@ class _TodoAppState extends State<TodoApp>{
                 });
                
             break;
-          case 3: Navigator.of(context).pushReplacementNamed('/gestion');
+          case 3: setState(() {
+                  _rootPage = GestionSectoresPage(
+                    value: idUsuario
+                  );
+                });
             break;
+            
           case 4: setState(() {
                   _rootPage = GestionEmpresaPage(
                     value: idUsuario

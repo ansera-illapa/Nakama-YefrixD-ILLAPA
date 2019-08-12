@@ -12,6 +12,7 @@ import 'package:illapa/pages/gestiones/gestion.dart';
 import 'package:illapa/pages/gestiones/gestionClientes.dart';
 import 'package:illapa/pages/gestiones/gestionEmpresa/gestionEmpresa.dart';
 import 'package:illapa/pages/gestiones/gestionFree/gfreeClientes.dart';
+import 'package:illapa/pages/gestiones/gestionSectorista/gestionSectores.dart';
 import 'package:illapa/pages/gestiones/gestionSocios.dart';
 import 'package:illapa/pages/recuperar.dart';
 import 'package:illapa/widgets.dart';
@@ -314,7 +315,14 @@ class _LoginPageState extends State<LoginPage> {
                 );
               break;
             case 3: 
-                  null;
+                  Navigator.push(
+                  context, 
+                  MaterialPageRoute(
+                    builder: (BuildContext context ) => GestionSectoresPage(
+                      value: idUsuario
+                    )
+                  )
+                );
               break;
             case 4: Navigator.push(
                   context, 
