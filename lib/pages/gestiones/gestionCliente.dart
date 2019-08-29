@@ -21,11 +21,13 @@ class GestionClientePage extends StatefulWidget {
   final int value;
   final String imagenCliente;
   final String nombreCliente;
+  final int numeroDocumentosVencidos;
   final String sumaImportesVencidos;
-  
+
   GestionClientePage({Key key,this.value,
                               this.imagenCliente, 
                               this.nombreCliente,
+                              this.numeroDocumentosVencidos,
                               this.sumaImportesVencidos}) : super(key: key);
 
   @override
@@ -582,13 +584,13 @@ class _GestionClientePageState extends State<GestionClientePage> {
 
                                             Navigator.of(context).pop();
                                             switch (tipo) {
-                                              case 1: url = '';
+                                              case 1: url = ''; 
                                                 break;
-                                              case 2: url = 'sms:+${dataTelefonos[cont]['numero']}?body=Deuda vencida de ${widget.sumaImportesVencidos}!';
+                                              case 2: url = 'sms:+${dataTelefonos[cont]['numero']}?body=Estimado '+nombreCliente+': A la fecha tiene '+'${widget.numeroDocumentosVencidos}'+' documento(s) vencidos por ${moneyType.format(double.parse(widget.sumaImportesVencidos))}! .Agradeceremos regularizar su situación';
                                                 break;
                                               case 3: url = 'tel://${dataTelefonos[cont]['numero']}';
                                                 break;
-                                              case 4: url = 'whatsapp://send?phone=51 ${dataTelefonos[cont]['numero']}&text=Deuda vencida de ${widget.sumaImportesVencidos}!';
+                                              case 4: url = 'whatsapp://send?phone=51 ${dataTelefonos[cont]['numero']}&text=Estimado '+nombreCliente+': A la fecha tiene '+'${widget.numeroDocumentosVencidos}'+' documento(s) vencidos por ${moneyType.format(double.parse(widget.sumaImportesVencidos))}! .Agradeceremos regularizar su situación';
                                                 break;
 
                                               default:
@@ -921,14 +923,8 @@ class _GestionClientePageState extends State<GestionClientePage> {
           trailing: new Text("t.cantidad", style: TextStyle(fontFamily: 'illapaBold', fontSize: 12.0)),
           title: new Text("t.title", style: TextStyle(fontFamily: 'illapaBold', fontSize: 15.0)),
         )
-      );
-      
-    
+      ); 
   }
-  
-  
- 
-
 }
 
 

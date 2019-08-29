@@ -407,7 +407,7 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
                                     ),
                                     
                                     Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       // textDirection: TextDirection.ltr,
                                       children: <Widget>[
                                         Expanded(
@@ -422,7 +422,7 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
                                                   ), textAlign: TextAlign.center,
                                                 ),
                                                 Container(
-                                                  height: 48.0,
+                                                  height: 30.0,
                                                   color: Colors.white,
                                                   child: DropdownButton(
                                                     isExpanded: true,

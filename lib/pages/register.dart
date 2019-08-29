@@ -45,6 +45,8 @@ class _RegisterPageState extends State<RegisterPage> {
      correoExistente = false;
     });
 
+    
+
     _scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text('Registrando usuario'),
     ));
@@ -60,7 +62,14 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     form.save();
-
+    print(_password.length);
+    if(_password.length < 5){
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text('La contraseña debe tener por lo menos 6 caracteres'),
+      ));
+      return;
+    }
+    
     try{
       FirebaseUser user = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: _email, password: _password);

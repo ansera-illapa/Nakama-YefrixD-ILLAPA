@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:illapa/pages/gestiones/gestionClientes.dart';
+import 'package:illapa/pages/gestiones/gestionEmpresa/gestionFiltroMayor.dart';
 
 import 'package:illapa/widgets.dart';
 
@@ -325,7 +326,16 @@ class _GestionSociosPageState extends State<GestionSociosPage> {
                               onPressed: () => Navigator.push(
                                                   context, 
                                                   MaterialPageRoute(
-                                                    builder: (BuildContext context ) => GestionClientesPage()
+                                                    builder: (BuildContext context ) => GestionFMEmpPage(
+                                                      value: widget.value,
+                                                      nombre: nombreEmpresa,
+                                                      imagen: imagenEmpresa,
+                                                      numeroDocumentos: numeroDocumentos,
+                                                      sumaImportesDocumentos: sumaImportesDocumentos,
+                                                      numeroDocumentosVencidos: numeroDocumentosVencidos,
+                                                      sumaImportesDocumentosVencidos: sumaImportesDocumentosVencidos,
+
+                                                    )
                                                   )
                                                 ),
                             )

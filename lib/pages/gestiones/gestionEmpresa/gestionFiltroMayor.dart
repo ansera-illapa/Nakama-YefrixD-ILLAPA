@@ -1,122 +1,134 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:illapa/behaviors/hiddenScrollBehavior.dart';
-import 'package:illapa/pages/gestiones/gestionClienteAccion.dart';
+import 'package:illapa/pages/gestiones/gestionCliente.dart';
+import 'package:illapa/pages/gestiones/gestionSocios.dart';
 import 'package:illapa/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 
 import 'package:illapa/extras/globals/globals.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:flutter_launch/flutter_launch.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-class GestionFiltroMayorPage extends StatefulWidget {
+class GestionFMEmpPage extends StatefulWidget {
   final int value;
-  final String imagenGestor;
-  final String nombreGestor;
+  final String nombre;
+  final String imagen;
   final int numeroDocumentos;
   final String sumaImportesDocumentos;
   final int numeroDocumentosVencidos;
   final String sumaImportesDocumentosVencidos;
-  
-  
-  GestionFiltroMayorPage({Key key, this.value,
-                                  this.imagenGestor, 
-                                  this.nombreGestor,
-                                  this.numeroDocumentos, 
-                                  this.sumaImportesDocumentos, 
-                                  this.numeroDocumentosVencidos, 
-                                  this.sumaImportesDocumentosVencidos}) : super(key: key);
 
+  GestionFMEmpPage({Key key, 
+                              this.value,
+                              this.nombre,
+                              this.imagen,
+                              this.numeroDocumentos,
+                              this.sumaImportesDocumentos,
+                              this.numeroDocumentosVencidos,
+                              this.sumaImportesDocumentosVencidos}) : super(key: key);
   @override
-  _GestionFiltroMayorPageState createState() => _GestionFiltroMayorPageState();
+  _GestionFMEmpPageState createState() => _GestionFMEmpPageState();
 }
 
-class _GestionFiltroMayorPageState extends State<GestionFiltroMayorPage> {
-  var formato = new DateFormat('yyyy-MM-dd');
-  DateTime fechaActual = new DateTime.now();
+class _GestionFMEmpPageState extends State<GestionFMEmpPage> {
 
-  String nombreGestor = '';
-  String imagenGestor = '';
 
-  int tipoIdentificacion;
-  String tipoIden;
-  int numeroIdentificacion;
-  int idCliente;
+  String textoBusqueda = '' ;
+  bool _buscar = false;
+  bool sinListaNegra = false;
+
+  var data;
+  int cantEmpresas = 0;
+  bool _isLoading = false;
+  bool siEmpresas;
   
-  int cantDocumentos = 0;
-  int cantPagos = 0;
-  
-  var listDocumentos;
-  var listPagos;
-  _getDocumentos() async {
+  int numeroDocumentos = 0;
+  String sumaImporteDocumentos = '0.00';
+  int numeroDocumentosVencidos = 0;
+  String sumaImportesDocumentosVencidos = '0.00';
+
+
+  String nombreSocio = '';
+  String imagenSocio = '';
+  String sumaImportesDocumentos = '0.00';
+
+  int cantClientes = 0;
+  bool codes;
+
+  _getData() async {
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/api.txt');
     String apiToken = await file.readAsString();
     // print(apiToken);
     final url =
-        "$urlGestion/documentosTodos/${widget.value}?api_token="+apiToken;
+        "$urlGlobal/api/filtroMayor/empresas/${widget.value}?api_token="+apiToken;
     print(url);
 
     final response = await http.get(url);
+
     if (response.statusCode == 200) {
       final map = json.decode(response.body);
       final code = map["code"];
-      final listDocumentos = map["result"];
-      final listPagos = map["pagos"];
+      final listClientes = map["result"];
       final load = map["load"];
-      // print(clienteSeleccionado['nombre']);
+      // print(socioSeleccionado['nombre']);
       print(code);
-
       setState(() {
-        // _isLoading = load;
-        this.idCliente= widget.value;
-        print("idcliente: $idCliente");
-        
-        if(code == true){
-          this.listDocumentos = listDocumentos;
-          cantDocumentos = this.listDocumentos.length;
-
-          this.listPagos = listPagos;
-          cantPagos = this.listPagos.length;
+        _isLoading = load;
+        this.data = listClientes;
+        this.codes = code;
+        if(codes){
+          cantClientes = this.data.length;
+        }else{
+          cantClientes = 0;
         }
-        
         
       });
     }
   }
-    @override
-    void initState() {
+  
+  Widget _loading(){
+      barrierDismissible: true;
+      return Container(
+                padding: EdgeInsets.only(top: 20.0),
+                child: Center(
+                  child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
+                        ),
+                ),
+              );
+    
+  }
 
-      if(widget.nombreGestor != null){
-        nombreGestor = widget.nombreGestor;
-        imagenGestor = widget.imagenGestor;
-      }
+  var moneyType = new NumberFormat("#,##0.00", "en_US");
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    
+    super.initState();
+    _getData();
+    _getVariables();
+    
+  }
 
-      // TODO: implement initState
-      super.initState();
-      _getDocumentos();
-      _getVariables();
-      
-    }
   int tipoUsuario;
   int idUsuario;
   String imagenUsuario;
   String nombreUsuario;
-  _getVariables() async {
+   _getVariables() async {
+
       SharedPreferences prefs = await SharedPreferences.getInstance();
       
       setState(() {
         nombreUsuario = prefs.getString('nombre');
-      }); 
-
+      });
 
       final directory = await getApplicationDocumentsDirectory();
       final tipoUsuarioFile = File('${directory.path}/tipo.txt');
@@ -135,29 +147,13 @@ class _GestionFiltroMayorPageState extends State<GestionFiltroMayorPage> {
 
   }
 
-
   @override
   Widget build(BuildContext context) {
+    
     return new Scaffold(
       appBar: new AppBar(
         centerTitle: true,
         title: new Text('Gestión'),
-        actions: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: IconButton(
-              icon: Icon(
-                FontAwesomeIcons.arrowCircleLeft,
-                color: Colors.grey
-                
-              ),
-              onPressed: (){
-                Navigator.of(context).pop();
-              },
-            )
-          ),
-          
-        ],
         backgroundColor: Color(0xFF070D59),
       ),
       backgroundColor: Color(0xFF070D59),
@@ -176,7 +172,7 @@ class _GestionFiltroMayorPageState extends State<GestionFiltroMayorPage> {
         padding: EdgeInsets.all(10.0),
         child: ListView(
           children: <Widget>[
-
+            
             Container(
               color: Color(0xff1f3c88),
               // height: 80.0,
@@ -186,7 +182,7 @@ class _GestionFiltroMayorPageState extends State<GestionFiltroMayorPage> {
                     leading: new CircleAvatar(
                       foregroundColor: Theme.of(context).primaryColor,
                       backgroundColor: Colors.grey,
-                      backgroundImage: new NetworkImage(imagenGestor),
+                      backgroundImage: new NetworkImage(widget.imagen),
                     ),
                     title: new Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -196,160 +192,95 @@ class _GestionFiltroMayorPageState extends State<GestionFiltroMayorPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                               "$nombreGestor",
-                                style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, fontSize: 15.0 ),
+                                widget.nombre,
+                                style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, ),
                               ),
                               Text(
-                                '${widget.numeroDocumentos} registros por ${widget.sumaImportesDocumentos}',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                '${widget.numeroDocumentos} registros por ${moneyType.format(double.parse(widget.sumaImportesDocumentos))}', 
+                                style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
-                                '${widget.numeroDocumentosVencidos} vencidos por ${widget.sumaImportesDocumentosVencidos}',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                '${widget.numeroDocumentosVencidos} vencidos por ${moneyType.format(double.parse(widget.sumaImportesDocumentosVencidos))}',
+                                style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                               ),
-                              
                             ],
                           ),
                         ),
-                        
+                        // new IconButton(
+                        //       icon: Icon(FontAwesomeIcons.chartLine, color: Colors.white,),
+                        //       onPressed: (){
+                        //         // _getDataSinListaNegra();
+
+                        //       },
+                        //     )
                       ],
                     ),
                   ),
                 ],
               ),
             ),
-            
-            // if(!_isLoading)
-            //   _loading(),
-            /*Padding(
-              padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
-              child: 
-                    Container(
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                                child: IconButton(
-                                  icon: Icon(FontAwesomeIcons.mapMarkedAlt, color: Colors.white,  size: 35.0,),
-                                  onPressed: () async{
-                                    
-                                    await launch("https://www.google.com/maps/search/?api=1&query=-16.360700,-71.543544");
-                                   
-                                                  // Navigator.push(
-                                                  //     context, 
-                                                  //     MaterialPageRoute(
-                                                  //       builder: (BuildContext context ) => GestionClienteAccionPage(
-                                                  //         value: idCliente,
-                                                  //         icon: 1,
-                                                  //         nombre: nombreGestor,
-                                                  //         tipoIdentificacion: tipoIden,
-                                                  //         numeroIdentificacion: numeroIdentificacion,
-                                                  //       )
-                                                  //     )
-                                                  //   );
-
-                                  }
-                                    
-                                ),
-                                
-                              ),
-                              Expanded(
-                                child: IconButton(
-                                  icon: Icon(FontAwesomeIcons.sms, color: Colors.white,  size: 35.0,),
-                                  onPressed: () async{
-
-                                      // Navigator.push(
-                                      //   context, 
-                                      //   MaterialPageRoute(
-                                      //     builder: (BuildContext context ) => GestionClienteAccionPage(
-                                      //       value: idCliente,
-                                      //       icon: 2,
-                                      //       nombre: nombreGestor,
-                                      //       tipoIdentificacion: tipoIden,
-                                      //       numeroIdentificacion: numeroIdentificacion,
-                                      //     )
-                                      //   )
-                                      // );
-                                    seleccionarDatoAccion(context, 2);
-                                            // await launch("sms:+987719398?body=Pagame%20!");
-                                            
-                                  }
-                                  
-                                  
-                                                     
-                                ),
-
-                                
-                              ),
-                              Expanded(
-                                child: IconButton(
-                                  icon: Icon(Icons.phone, color: Colors.white,  size: 35.0,),
-                                  onPressed: ()async {
-                                    // Navigator.push(
-                                    //                   context, 
-                                    //                   MaterialPageRoute(
-                                    //                     builder: (BuildContext context ) => GestionClienteAccionPage(
-                                    //                       value: idCliente,
-                                    //                       icon: 3,
-                                    //                       nombre: nombreGestor,
-                                    //                       tipoIdentificacion: tipoIden,
-                                    //                       numeroIdentificacion: numeroIdentificacion,
-                                    //                     )
-                                    //                   )
-                                    //                 );
-                                    seleccionarDatoAccion(context, 3);
-                                    
-
-                                        // await launch("tel://987719398");
-                                        
-                                  }
-                                  
-                                  
-                                                
-                                ),
-                                
-                              ),
-                              Expanded(
-                                child: IconButton(
-                                  icon: Icon(FontAwesomeIcons.whatsapp, color: Colors.white,  size: 35.0,),
-                                  onPressed: () {
-                                             
-                                              seleccionarDatoAccion(context, 4);
-                                                    
-                                      // await FlutterLaunch.launchWathsApp(phone: "+51 987140650", message: "Pagame");
-                                      
-                                  }
-                                    
-                                                  
-                                ),
-                                
-                              ),
-                        ],
-                      ),
+            if(_buscar)
+              Padding(
+                padding: EdgeInsets.all(5.0),
+                child: Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.all(5.0),
+                  child: TextField(
+                    
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      hintText: 'Buscar'
                     ),
-            ),
-            */
+                    onChanged: (text){
+                      
+                      setState(() {
+                          textoBusqueda = text;
+                          print(textoBusqueda);
+                      });
+                    },
+                  ),
+                ),
+              ),
+            if(!_isLoading)
+              _loading(),
             Container(
               color: Color(0xfff7b633),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Container(
                     // padding: EdgeInsets.only(top: 5.0),
                     width: 5.0,
-                    
+                    // height: MediaQuery.of(context).size.height/100,
+                    // height: double.,
                     color: Color(0xfff7b633),
-                    
-                  
                   ),
                   Expanded(
                     child: Container(
-                      // color: Colors.black,
                       color: Color(0xff070D59),
                       child: Column(
                         children: <Widget>[
-                          
-                          for(var cont =0; cont < cantDocumentos; cont++ )
-                            _buildDocumentos("${listDocumentos[cont]['tipoDocumentoIdentidad']}"+" "+"${listDocumentos[cont]['numero']}", listDocumentos[cont]['fechavencimiento'], 5, listDocumentos[cont]['importe'], listDocumentos[cont]['saldo'], listDocumentos[cont]['id']),
+                          if(sinListaNegra == false)
+                            for(var cont =0; cont < cantClientes; cont++ )
+                              if(data[cont]['numeroDocumentosVencidos'] > 0)
+                              if(data[cont]['personaNombre'].indexOf(textoBusqueda.toUpperCase()) != -1 || data[cont]['personaNombre'].indexOf(textoBusqueda.toLowerCase()) != -1)
+                                _buildListGestionClientesFMAdm(data[cont]['personaImagen'], 
+                                                          data[cont]['personaNombre'], 
+                                                          data[cont]['numeroDocumentos'], 
+                                                          data[cont]['sumaImportesDocumentos'], 
+                                                          data[cont]['numeroDocumentosVencidos'], 
+                                                          data[cont]['sumaImportesDocumentosVencidos'], 
+                                                          data[cont]['clienteId']),
+                            if(sinListaNegra == true)
+                            for(var cont =0; cont < cantClientes; cont++ )
+                                  if(data[cont]['personaNombre'].indexOf(textoBusqueda.toUpperCase()) != -1 || data[cont]['personaNombre'].indexOf(textoBusqueda.toLowerCase()) != -1)
+                                    _buildListGestionClientesFMAdm(data[cont]['personaImagen'], 
+                                                              data[cont]['personaNombre'], 
+                                                              data[cont]['numeroDocumentos'], 
+                                                              data[cont]['sumaImportesDocumentos'], 
+                                                              data[cont]['numeroDocumentosVencidos'], 
+                                                              data[cont]['sumaImportesDocumentosVencidos'], 
+                                                              data[cont]['clienteId']),
                         ],
                       ),
                       
@@ -361,109 +292,58 @@ class _GestionFiltroMayorPageState extends State<GestionFiltroMayorPage> {
           ],
         ),
       ),
-
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-
-        },
-        tooltip: '',
-        child: Icon(FontAwesomeIcons.ellipsisH),
-      ),
+      bottomNavigationBar: BottomAppBar(
+          color: Color(0xff1f3c88),
+          shape: CircularNotchedRectangle(),
+          notchMargin: 4.0,
+          child: new Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              
+              _buscar
+              ?IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.timesCircle, 
+                  
+                  color: Colors.white,
+                  ), 
+                onPressed: () {
+                  setState(() {
+                    _buscar = false;
+                  });
+                },)
+              :IconButton(
+                icon: Icon(
+                  Icons.search, 
+                  color: Colors.white,
+                  ), 
+                onPressed: () {
+                  setState(() {
+                    _buscar = true;
+                  });
+                },),
+              
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.ellipsisH, 
+                  color: Colors.white,
+                  ), 
+                  onPressed: () {
+                    setState(() {
+                      if(sinListaNegra == false){
+                        sinListaNegra = true;
+                      }else{
+                        sinListaNegra = false;
+                      }
+                     
+                    });
+                    },
+                ),
+            ],
+          ),
+        ),
     );
-    
-  }
-  
-
-
-
-
-
-  var dataTelefonos;
-  int cantTelefonos = 0;
-  
-
-  Future<bool> seleccionarDatoAccion(context, int tipo,  ) {
-
-    String url;
-    _tipoAccion(){
-      switch (tipo) {
-        case 1: url = '';
-          break;
-        case 2: url = 'sms:+987719398?body=Pagame%20!';
-          break;
-        case 3: url = 'tel://987719398';
-          break;
-        case 4: url = 'whatsapp://send?phone=';
-          break;
-
-        default:
-      }
-    }
-
-    return showDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context) {
-
-            return Dialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
-                child: Container(
-                  height: 400.0,
-                  color: Color(0xFF070D59),
-                  child: Center(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: <Widget>[
-                          for(var cont= 0; cont< cantTelefonos; cont++)
-                            Row(
-                              children: <Widget>[
-                                Expanded(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
-                                      child: RaisedButton(
-                                        child: Text("${dataTelefonos[cont]['numero']}"),
-                                        onPressed: () async{
-                                            //miomio
-                                            switch (tipo) {
-                                              case 1: url = '';
-                                                break;
-                                              case 2: url = 'sms:+${dataTelefonos[cont]['numero']}?body=Pagame%20!';
-                                                break;
-                                              case 3: url = 'tel://${dataTelefonos[cont]['numero']}';
-                                                break;
-                                              case 4: url = 'whatsapp://send?phone=51 ${dataTelefonos[cont]['numero']}?body=Oee%20';
-                                                break;
-
-                                              default:
-                                            }
-                                             Navigator.push(
-                                                    context, 
-                                                    MaterialPageRoute(
-                                                      builder: (BuildContext context ) => GestionClienteAccionPage(
-                                                        value: idCliente,
-                                                        icon: tipo,
-                                                        nombre: nombreGestor,
-                                                        tipoIdentificacion: tipoIden,
-                                                        numeroIdentificacion: numeroIdentificacion,
-                                                      )
-                                                    )
-                                                  );
-                                            await launch("$url");
-                                        },
-                                      ),
-                                    )
-                                  )
-                              ],
-                            ),
-                        ],
-                      ),
-                    ),
-                  )
-                ),
-                
-              );
-          });
   }
 
 
@@ -472,165 +352,124 @@ class _GestionFiltroMayorPageState extends State<GestionFiltroMayorPage> {
 
 
 
-
-
-
-  int vencida = 0;
-
-  Widget _buildDocumentos(String titulo, String fecha, int vencimiento, String cantidad, String saldo, int idDocumento ) {
-    bool importeVencido = false;  
-    List fechas = fecha.split("-");
-    var ano = int.parse(fechas[0]);
-    var mes = int.parse(fechas[1]);
-    var dia = int.parse(fechas[2]);
-    
-    int anoFechaActual = fechaActual.year;
-    int mesFechaActual = fechaActual.month;
-    int diaFechaActual = fechaActual.day;
-    // print(" fecha: $fechaActual");
-
-    if(anoFechaActual == ano){   
-      if(mesFechaActual == mes){
-        if(diaFechaActual <= dia){
-          
-        }else{
-          importeVencido = true;    
-        }
-      }else{
-        if(mesFechaActual < mes){  
-
-        }else{
-          importeVencido = true;
-        }
-      }
-
-    }else{
-      if(anoFechaActual < ano){  
-
-       }else{
-         importeVencido = true;
-       }
-
-    }
-
-    // SACAR DIAS VENCIDOS : 
-    var fechaVencida = new DateTime.utc(ano,mes, dia+1); //OJOJOJO
-    
-    Duration diferencia = fechaActual.difference(fechaVencida);
-    vencida = diferencia.inDays;
-      
+  
+  Widget _buildListGestionClientesFMAdm(String imagen, 
+                                    String nombre, 
+                                    int numeroDocumentos, 
+                                    String sumaImportesDocumentos, 
+                                    int numeroDocumentosVencidos, 
+                                    String sumaImportesDocumentosVencidos, 
+                                    int idCliente){
     return 
-    Padding(
-      padding: EdgeInsets.only(bottom: 1.0),
-    
-    child: Container(
-      
-      color: Colors.white,
-      child: 
-            ExpansionTile(
-              key: new PageStorageKey<int>(3),
-              title: Container(
-                // padding: EdgeInsets.only(bottom: 1.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      // color: Colors.orange,
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  new Text("$titulo", style: TextStyle(fontFamily: 'illapaBold', fontSize: 15.0)),
-                                  new Text("Vencimiento: "+fecha, style: TextStyle(fontFamily: 'illapaMedium', fontSize: 12.0)),
-                                  new Text("Vencida: "+ "$vencida días", style: TextStyle(fontFamily: 'illapaMedium', fontSize: 12.0)),
-                                  new Text("Saldo: "+ "$saldo", style: TextStyle(fontFamily: 'illapaMedium', fontSize: 12.0)),
-
-                                ],
-                              ),
-                          ),
-                          Expanded(
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                // textDirection: TextDirection.rtl,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 20.0),
-                                    
-                                    child: 
-                                    importeVencido == true
-                                    ?new Text("$cantidad", textAlign: TextAlign.right, style: TextStyle(fontSize: 14.0, color: Colors.red,),)
-                                    :new Text("$cantidad", textAlign: TextAlign.right, style: TextStyle(fontSize: 14.0, ))
-                                  ),
-                                ],
-                              ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              children: <Widget>[
-                for(var x=0; x < cantPagos; x++)
-                  if(listPagos[x]['documentosId'] == idDocumento )
-                    if(listPagos[x]['pagosDocumentoId'] != null )
-                      
-                      Container(
-                        // color: Color(0xFF1F3C88),
-                        color: Color(0xFF5893D4),
-                        child: ListTile(
-                          // dense: true,
-                          // enabled: true,
-                          // isThreeLine: false,
-                          // onLongPress: () => print("long press"),
-                          // onTap: () => print("tap"),
-                          subtitle: new Text("Fecha: "+"${listPagos[x]['pagosFechaEmision']}", style: TextStyle(fontFamily: 'illapaMedium', fontSize: 12.0)),
-                          // leading: new Text("Leading"),
-                          // selected: false,
-                          trailing: new Text("${listPagos[x]['pagosImporte']}", style: TextStyle(fontFamily: 'illapaBold', fontSize: 12.0)),
-                          title: new Text("${listPagos[x]['tipoPago']}"+" "+"${listPagos[x]['pagosNumero']}", style: TextStyle(fontFamily: 'illapaBold', fontSize: 15.0)),
+      GestureDetector(
+        onTap: (){
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(
+                        builder: (BuildContext context ) => GestionClientePage(
+                          value: idCliente,
+                          nombreCliente:nombre,
+                          imagenCliente: urlImagenes+imagen,
+                          sumaImportesVencidos: "$sumaImportesDocumentosVencidos",
                         )
                       )
-              ],
-              // children: t.children.map(_buildpago).toList()
-            )
-    ));
-  }
-
-  
-
-  Widget _buildpago() {
-    print("children");
-      return new Container(
-        // color: Color(0xFF1F3C88),
-        color: Color(0xFF5893D4),
-        child: ListTile(
-          // dense: true,
-          // enabled: true,
-          // isThreeLine: false,
-          // onLongPress: () => print("long press"),
-          // onTap: () => print("tap"),
-          subtitle: new Text("t.fecha", style: TextStyle(fontFamily: 'illapaMedium', fontSize: 12.0)),
-          // leading: new Text("Leading"),
-          // selected: false,
-          trailing: new Text("t.cantidad", style: TextStyle(fontFamily: 'illapaBold', fontSize: 12.0)),
-          title: new Text("t.title", style: TextStyle(fontFamily: 'illapaBold', fontSize: 15.0)),
-        )
+                    );
+                  },
+        child: Padding(
+            padding: EdgeInsets.only(bottom: 1.0),
+            child: Container(
+                    color: Color(0xff5893d4),
+                    child: Column(
+                      children: <Widget>[
+                        ListTile(
+                          leading: new CircleAvatar(
+                            foregroundColor: Theme.of(context).primaryColor,
+                            backgroundColor: Colors.grey,
+                            backgroundImage: new NetworkImage(urlImagenes+imagen),
+                          ),
+                          title: new Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              new Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      nombre,
+                                      style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white,fontSize: 15.0  ),
+                                    ),
+                                    Text(
+                                      '$numeroDocumentos registros por $sumaImportesDocumentos',
+                                      style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                    ),
+                                    Text(
+                                      '$numeroDocumentosVencidos vencidos por $sumaImportesDocumentosVencidos',
+                                      style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              new IconButton(
+                                    icon: Icon(FontAwesomeIcons.angleRight, color: Colors.white,),
+                                    onPressed: () => Navigator.push(
+                                                        context, 
+                                                        MaterialPageRoute(
+                                                          builder: (BuildContext context ) => GestionClientePage(
+                                                            value: idCliente,
+                                                            nombreCliente:nombre,
+                                                            imagenCliente: urlImagenes+imagen,
+                                                            sumaImportesVencidos: "$sumaImportesDocumentosVencidos",
+                                                          )
+                                                        )
+                                                      ),
+                                  )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+          )
       );
-      
-    
   }
-  
-  
- 
 
+ /* _getDataSinListaNegra() async {
+    // print(apiToken);
+    final url =
+        "$urlGlobal/api/empresasTodas/filtroMayorAdmSinListaNegra?api_token="+apiToken;
+    print(url);
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final map = json.decode(response.body);
+      final code = map["code"];
+      final socioSeleccionado = map["socio"];
+      final socioVencido = map["socioVencido"];
+      final listClientes = map["result"];
+      final load = map["load"];
+      // print(socioSeleccionado['nombre']);
+      print(code);
+      setState(() {
+        _isLoading = load;
+        this.nombreSocio = socioSeleccionado['personaNombre'];
+        this.imagenSocio = socioSeleccionado['personaImagen'];
+        this.numeroDocumentos = socioSeleccionado['numeroDocumentos'];
+        this.sumaImportesDocumentos = socioSeleccionado['sumaImportesDocumentos'];
+
+        this.numeroDocumentosVencidos = socioVencido['numeroDocumentosVencidos'];
+        this.sumaImportesDocumentosVencidos = socioVencido['sumaImportesDocumentosVencidos'];
+        
+        this.data = listClientes;
+        this.codes = code;
+        if(codes){
+          cantClientes = this.data.length;
+        }else{
+          cantClientes = 0;
+        }
+        
+      });
+    }
+  }*/
 }
-
-
-
-
-
-
 

@@ -2,13 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/pages/gestiones/gestionSectorista/gestionFiltroMayor.dart';
 import 'package:illapa/pages/gestiones/gestionSectorista/gestionSectorClientes.dart';
 
 import 'package:illapa/pages/tramos/tramosMostrar.dart';
 
 import 'package:illapa/widgets.dart';
-
-
 
 import 'package:illapa/extras/globals/globals.dart';
 import 'package:http/http.dart' as http;
@@ -272,15 +271,23 @@ Widget _buildListSectores(int id, String descripcion ){
                             ],
                           ),
                         ),
-                        // new IconButton(
-                        //       icon: Icon(Icons.ac_unit, color: Colors.white,),
-                        //       onPressed: () => Navigator.push(
-                        //                           context, 
-                        //                           MaterialPageRoute(
-                        //                             builder: (BuildContext context ) => TramosMostrarPage()
-                        //                           )
-                        //                         ),
-                        //     )
+                        new IconButton(
+                              icon: Icon(Icons.ac_unit, color: Colors.white,),
+                              onPressed: () => Navigator.push(
+                                                  context, 
+                                                  MaterialPageRoute(
+                                                    builder: (BuildContext context ) => GestionFMSecPage(
+                                                      value: widget.value,
+                                                      nombre: nombreSectorista,
+                                                      imagen: imagenSectorista,
+                                                      numeroDocumentos: numeroDocumentos,
+                                                      numeroDocumentosVencidos: numeroDocumentosVencidos,
+                                                      sumaImportesDocumentos: sumaImporteDocumentos,
+                                                      sumaImportesDocumentosVencidos: sumaImportesDocumentosVencidos,
+                                                    )
+                                                  )
+                                                ),
+                            )
                       ],
                     ),
                   ),

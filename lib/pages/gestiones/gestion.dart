@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:illapa/pages/gestiones/gestionFMAdministrador.dart';
 import 'package:illapa/pages/gestiones/gestionSocios.dart';
 import 'package:illapa/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -120,7 +121,7 @@ Widget _buildListGestionEmpresas(String imagen,
   int numeroDocumentosVencidos = 0;
   String sumaImportesDocumentosVencidos = '0.00';
 
-
+  String apiToken;
   _getData() async {
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/api.txt');
@@ -142,6 +143,7 @@ Widget _buildListGestionEmpresas(String imagen,
 
 
       setState(() {
+        this.apiToken = apiToken;
         this.numeroDocumentos = numeroDocumentos;
         this.sumaImporteDocumentos = sumaImporteDocumentos;
         this.numeroDocumentosVencidos = numeroDocumentosVencidos;
@@ -217,6 +219,7 @@ Widget _buildListGestionEmpresas(String imagen,
   }
 
 
+
   @override
   Widget build(BuildContext context) {
     
@@ -278,8 +281,21 @@ Widget _buildListGestionEmpresas(String imagen,
                           ),
                         ),
                         new IconButton(
-                              icon: Icon(FontAwesomeIcons.chartLine, color: Colors.white,),
-                              onPressed: (){},
+                              icon: Icon(FontAwesomeIcons.users, color: Colors.white,),
+                              onPressed: (){
+                                Navigator.push(
+                                          context, 
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context ) => GestionFMAdministradorPage(
+                                              value: idUsuario,
+                                              tipoUsuario: tipoUsuario,
+                                              nombreUsuario: nombreUsuario,
+                                              imagenUsuario: imagenUsuario,
+                                              apiToken: apiToken,
+                                            )
+                                          )
+                                        );
+                              },
                             )
                       ],
                     ),

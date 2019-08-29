@@ -563,7 +563,14 @@ class _LoginPageState extends State<LoginPage> {
               );
             break;
           case 3: 
-                null;
+                Navigator.push(
+                  context, 
+                  MaterialPageRoute(
+                    builder: (BuildContext context ) => GestionSectoresPage(
+                      value: idUsuario
+                    )
+                  )
+                );
             break;
           case 4: Navigator.push(
                 context, 
@@ -622,6 +629,22 @@ class _LoginPageState extends State<LoginPage> {
 
 
 
+
+  
+  GoogleSignIn _googleSignIn = new GoogleSignIn(scopes: ['email']);
+
+  // LOGIN WITH GOOGLE
+   _loginGoogle() async{
+     try{
+       await _googleSignIn.signIn();
+       setState(() {
+          print('login setstate');
+          print(_googleSignIn.currentUser.displayName);
+       });
+     }catch(err){
+       print(err);
+     }
+   }
 
 
   @override
@@ -752,10 +775,10 @@ class _LoginPageState extends State<LoginPage> {
                         Expanded(
                           child: GoogleSignInButton(
                                     text: '',
-                                    onPressed: (){
-                                      
-                                    },
-                                ),
+                                    onPressed: () => _loginGoogle()
+                                      .then((FirebaseUser user) => print(user))
+                                      .catchError((e) => print(e)),
+                                        ),
                         ),
                         
                         Padding(

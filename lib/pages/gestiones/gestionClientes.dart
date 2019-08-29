@@ -60,6 +60,7 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
                           value: idCliente,
                           nombreCliente:nombre,
                           imagenCliente: urlImagenes+imagen,
+                          numeroDocumentosVencidos: numeroDocumentosVencidos,
                           sumaImportesVencidos: "$sumaImportesDocumentosVencidos",
                         )
                       )
@@ -108,6 +109,7 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
                                                             value: idCliente,
                                                             nombreCliente:nombre,
                                                             imagenCliente: urlImagenes+imagen,
+                                                            numeroDocumentosVencidos: numeroDocumentosVencidos,
                                                             sumaImportesVencidos: "$sumaImportesDocumentosVencidos",
                                                           )
                                                         )
@@ -640,20 +642,22 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
                           if(cantSectoresSeleccionados == 0)
                             for(var cont =0; cont < cantClientes; cont++ )
                               if(data[cont]['personaNombre'].indexOf(textoBusqueda.toUpperCase()) != -1 || data[cont]['personaNombre'].indexOf(textoBusqueda.toLowerCase()) != -1)
-                                _buildListGestionEmpresas(data[cont]['personaImagen'], 
-                                                          data[cont]['personaNombre'], 
-                                                          data[cont]['numeroDocumentos'], 
-                                                          data[cont]['sumaImportesDocumentos'], 
-                                                          data[cont]['numeroDocumentosVencidos'], 
-                                                          data[cont]['sumaImportesDocumentosVencidos'], 
-                                                          data[cont]['clienteId']),
+                                if(data[cont]['numeroDocumentosVencidos'] > 0)
+                                  _buildListGestionEmpresas(data[cont]['personaImagen'], 
+                                                            data[cont]['personaNombre'], 
+                                                            data[cont]['numeroDocumentos'], 
+                                                            data[cont]['sumaImportesDocumentos'], 
+                                                            data[cont]['numeroDocumentosVencidos'], 
+                                                            data[cont]['sumaImportesDocumentosVencidos'], 
+                                                            data[cont]['clienteId']),
                           
                           if(cantSectoresSeleccionados > 0) //MIOMIO
                             for(var cont =0; cont < cantClientes; cont++ )
                               for(var contAr =0; contAr < cantSectoresSeleccionados; contAr++ )
                                 if(nombresSectoresSeleccionados[contAr] == data[cont]['sectorId'])
                                   if(data[cont]['personaNombre'].indexOf(textoBusqueda.toUpperCase()) != -1 || data[cont]['personaNombre'].indexOf(textoBusqueda.toLowerCase()) != -1)
-                                    _buildListGestionEmpresas(data[cont]['personaImagen'], 
+                                    if(data[cont]['numeroDocumentosVencidos'] > 0)
+                                      _buildListGestionEmpresas(data[cont]['personaImagen'], 
                                                               data[cont]['personaNombre'], 
                                                               data[cont]['numeroDocumentos'], 
                                                               data[cont]['sumaImportesDocumentos'], 

@@ -543,11 +543,13 @@ class _GestionClienteAccionPageState extends State<GestionClienteAccionPage> {
                     confirmacionAgregar(context);
                     
                   }
-                : null,
+                : () async{
+                    alerta(context);
+                  },
 
 
               tooltip: '',
-              child: Icon(FontAwesomeIcons.plus),
+              child: Icon(FontAwesomeIcons.save),
             ),
     );
   
@@ -727,39 +729,70 @@ class _GestionClienteAccionPageState extends State<GestionClienteAccionPage> {
                                       (){ 
 
                                         _agregarAcccion();
-                                        
+                                        Navigator.of(context).pop();
                                         // _cargandoDatosCliente();
 
                                       }
                                   ),
                                 ),
-                                // Padding(
-                                //   padding: EdgeInsets.all(5.0),
-                                // ),
-                                // Expanded(
-                                //   child: 
-                                //     RaisedButton(
-                                //       color: Colors.white,
-                                //       padding: EdgeInsets.all(10.0),
-                                //       child: Text('Cancelar'),
-                                //       onPressed: (){
-                                //         Navigator.of(context).pop();
-                                //       },
-                                //     )
-                                // )
                               ],
                             ),
                           )
-                            
-                          
                         ],
                       ),
                   ),
-                
               );
           });
   }
 
+
+  Future<bool> alerta(context) {
+    return showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) {
+            
+            return Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)),
+                child: Container(
+                  height: 200.0,
+                  color: Color(0xFF070D59),
+                  padding: EdgeInsets.all(10.0),
+                  
+                    child: Column(
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.all(15.0),
+                            child: Text('El campo de "Resultado de la Acción" es obligatorio', style: TextStyle(color: Colors.white, fontFamily: 'illapaBold', fontSize: 20.0, ), textAlign: TextAlign.center,),
+                          ),
+                          
+                          Padding(
+                            padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                            child: Row(
+                              children: <Widget>[
+                                
+                                Expanded(
+                                  child: RaisedButton(
+                                    color: Color(0xfff7b633),
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Text('Aceptar', style: TextStyle(color: Colors.white),),
+                                    onPressed:  
+                                      (){ 
+                                        Navigator.of(context).pop();
+                                      }
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                  ),
+              );
+          });
+  }
 
  
 
@@ -1005,23 +1038,27 @@ class _GestionClienteAccionPageState extends State<GestionClienteAccionPage> {
   void _showTimePicker() {
     DatePicker.showDatePicker(
       context,
+      
       minDateTime: DateTime.parse('2010-05-12 00:00:00'),
       maxDateTime: DateTime.parse('2021-11-25 23:59:59'),
       initialDateTime: fechaActual,
       dateFormat: 'HH:mm',
       pickerMode: DateTimePickerMode.time, // show TimePicker
       pickerTheme: DateTimePickerTheme(
-        title: Container(
-          decoration: BoxDecoration(color: Color(0xFFEFEFEF)),
-          width: double.infinity,
-          height: 56.0,
-          alignment: Alignment.center,
-          child: Text(
-            'Asignar Hora',
-            style: TextStyle(color: Colors.black, fontSize: 24.0),
-          ),
-        ),
-        titleHeight: 56.0,
+        // title: Container(
+        //   decoration: BoxDecoration(color: Color(0xFFEFEFEF)),
+        //   width: double.infinity,
+        //   height: 56.0,
+        //   alignment: Alignment.center,
+        //   child: Text(
+        //     'Asignar Hora',
+        //     style: TextStyle(color: Colors.black, fontSize: 24.0),
+        //   ),
+        // ),
+        showTitle: true,
+        confirm: Text('Aceptar', style: TextStyle(color: Colors.red)),
+        cancel: Text('Cancelar', style: TextStyle(color: Colors.cyan)),
+        // titleHeight: 56.0,
       ),
       onCancel: () {
         debugPrint('onCancel');

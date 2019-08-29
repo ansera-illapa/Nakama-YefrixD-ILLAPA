@@ -47,7 +47,8 @@ class _GfreeClientesPageState extends State<GfreeClientesPage> {
                           value: idCliente,
                           imagenCliente: urlImagenes+imagen,
                           nombreCliente: nombreCliente,
-                          
+                          numeroDocumentosVencidos: vencCant,
+                          sumaImportesVencidos: "$vencPor",
                         )
                       )
                     );
@@ -95,6 +96,8 @@ class _GfreeClientesPageState extends State<GfreeClientesPage> {
                                                             value: idCliente,
                                                             imagenCliente: urlImagenes+imagen,
                                                             nombreCliente: nombreCliente,
+                                                            numeroDocumentosVencidos: vencCant,
+                                                            sumaImportesVencidos: "$vencPor",
                                                           )
                                                         )
                                                       ),

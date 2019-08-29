@@ -22,6 +22,7 @@ import 'package:illapa/pages/gestiones/gestionFree/gfreeClientes.dart';
 import 'package:illapa/pages/gestiones/gestionSectorista/gestionSectores.dart';
 import 'package:illapa/pages/gestiones/gestionSocios.dart';
 import 'package:illapa/pages/login.dart';
+import 'package:illapa/pages/noAcceso.dart';
 import 'package:illapa/pages/tramos/tramosEmpresas.dart';
 import 'package:illapa/pages/tramos/tramosMostrar.dart';
 import 'package:illapa/pages/tramos/tramosSocios.dart';
@@ -234,9 +235,19 @@ class Sidebar extends StatelessWidget {
                   value: idusuario      
                 )));
         }else if(tipousuario == 3){
-          return null;
+          return Navigator.push(
+            context,
+            new MaterialPageRoute(
+                builder: (BuildContext context) => NoAccesoPage(
+                )));
+
+          
         }else if(tipousuario == 4){
-          return null;
+          return Navigator.push(
+            context,
+            new MaterialPageRoute(
+                builder: (BuildContext context) => NoAccesoPage(
+                )));
          
          
         }else if(tipousuario == 5){
@@ -279,14 +290,26 @@ class Sidebar extends StatelessWidget {
           
           // return new UsuariosEmpresasPage();
         }else if(tipousuario == 3){
-          return null;
+          return Navigator.push(
+            context,
+            new MaterialPageRoute(
+                builder: (BuildContext context) => NoAccesoPage(
+                )));
           
         }else if(tipousuario == 4){
-          return null;
+          return Navigator.push(
+            context,
+            new MaterialPageRoute(
+                builder: (BuildContext context) => NoAccesoPage(
+                )));
           
          
         }else if(tipousuario == 5){
-          return null;
+          return Navigator.push(
+            context,
+            new MaterialPageRoute(
+                builder: (BuildContext context) => NoAccesoPage(
+                )));
 
          
         }else if(tipousuario == 99){
@@ -322,14 +345,26 @@ class Sidebar extends StatelessWidget {
                     )));
           
         }else if(tipousuario == 3){
-          return null;
+          return Navigator.push(
+            context,
+            new MaterialPageRoute(
+                builder: (BuildContext context) => NoAccesoPage(
+                )));
           
         }else if(tipousuario == 4){
-          return null;
+          return Navigator.push(
+            context,
+            new MaterialPageRoute(
+                builder: (BuildContext context) => NoAccesoPage(
+                )));
           
          
         }else if(tipousuario == 5){
-          return null;
+          return Navigator.push(
+            context,
+            new MaterialPageRoute(
+                builder: (BuildContext context) => NoAccesoPage(
+                )));
         }
         else if(tipousuario == 99){
             return Navigator.push(
@@ -480,9 +515,9 @@ class Sidebar extends StatelessWidget {
                   },
                 ),
               ),
-              // Padding(
-              //   padding: EdgeInsets.only(top: 1.0),
-              // ),
+              Padding(
+                padding: EdgeInsets.only(top: 1.0),
+              ),
               // Ink(
               //   color: Color(0xFF5893D4),
               //   child: 
@@ -493,7 +528,7 @@ class Sidebar extends StatelessWidget {
               //       Navigator.push(
               //           context,
               //           new MaterialPageRoute(
-              //               builder: (BuildContext context) => new ConfiguracionPage()));
+              //               builder: (BuildContext context) => new NoAccesoPage()));
               //     },
               //   ),
               // ),

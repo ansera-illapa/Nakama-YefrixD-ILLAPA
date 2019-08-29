@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:illapa/pages/datos/datosClientes.dart';
 import 'package:illapa/pages/usuarios/usuarioAgregarSector.dart';
+import 'package:illapa/pages/usuarios/usuarioSectores.dart';
 import 'package:illapa/pages/usuarios/usuariosUsuarios.dart';
 import 'package:illapa/widgets.dart';
 
@@ -36,93 +37,109 @@ class UsuariosSociosPage extends StatefulWidget {
 class _UsuariosSociosPageState extends State<UsuariosSociosPage> {
   bool _buscar = false;
   String textoBusqueda = '';
-Widget _buidEstListEmpresas(String imagen, 
-                            String nombre, 
-                            String tipoDocumentoIdentidad, 
-                            String numeroDocumentoIdentidad, 
-                            String correo, 
-                            String usuario, 
-                            int idSocio ){
-  
-    return 
-    GestureDetector(
-      onTap: (){Navigator.push(
-                context, 
-                MaterialPageRoute(
-                  builder: (BuildContext context ) => UsuariosUsuariosPage(
-                    value: idSocio,
-                    nombre: nombre,
-                    imagen: imagen,
-                    tipoDocumentoIdentidad: tipoDocumentoIdentidad,
-                    numeroDocumentoIdentidad: numeroDocumentoIdentidad,
-                    userEmail: correo,
-                  )
-                )
-              );},
-      
-      child: Padding(
-        padding: EdgeInsets.only(bottom: 1.0),
-        child: Container(
-                color: Color(0xff5893d4),
-                child: Column(
-                  children: <Widget>[
-                    ListTile(
-                      leading: new CircleAvatar(
-                        foregroundColor: Theme.of(context).primaryColor,
-                        backgroundColor: Colors.grey,
-                        backgroundImage: new NetworkImage(imagen),
-                      ),
-                      title: new Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          new Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  nombre,
-                                  style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, fontSize: 15.0 ),
-                                ),
-                                Text(
-                                  '$tipoDocumentoIdentidad $numeroDocumentoIdentidad',
-                                  style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
-                                ),
-                                Text(
-                                  '$correo',
-                                  style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
-                                ),
-                                Text(
-                                  '$usuario',
-                                  style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
-                                ),
-                              ],
-                            ),
+  Widget _buidEstListEmpresas(String imagen, 
+                              String nombre, 
+                              String tipoDocumentoIdentidad, 
+                              String numeroDocumentoIdentidad, 
+                              String correo, 
+                              String usuario, 
+                              int idSocio ){
+    
+      return 
+        Padding(
+          padding: EdgeInsets.only(bottom: 1.0),
+          child: Container(
+                  color: Color(0xff5893d4),
+                  child: Column(
+                    children: <Widget>[
+                      ListTile(
+                        leading: GestureDetector(
+                          onTap: (){Navigator.push(
+                                    context, 
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context ) => UsuariosSectoresPage(
+                                        value: idSocio,
+                                        nombre: nombre,
+                                        imagen: imagen,
+                                        tipoIdentificacion: tipoDocumentoIdentidad,
+                                        identificacion: numeroDocumentoIdentidad,
+                                        correo: correo,
+                                      )
+                                    )
+                                  );},
+                          child: new CircleAvatar(
+                            foregroundColor: Theme.of(context).primaryColor,
+                            backgroundColor: Colors.grey,
+                            backgroundImage: new NetworkImage(imagen),
                           ),
-                          new IconButton(
-                                icon: Icon(FontAwesomeIcons.angleRight, color: Colors.white,),
-                                onPressed: () => Navigator.push(
-                                                    context, 
-                                                    MaterialPageRoute(
-                                                      builder: (BuildContext context ) => UsuariosUsuariosPage(
-                                                        value: idSocio,
-                                                        nombre: nombre,
-                                                        imagen: imagen,
-                                                        tipoDocumentoIdentidad: tipoDocumentoIdentidad,
-                                                        numeroDocumentoIdentidad: numeroDocumentoIdentidad,
-                                                        userEmail: correo,
-                                                      )
-                                                    )
-                                                  ),
+                        ),
+                        title: new Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            new Expanded(
+                              child: GestureDetector(
+                                onTap: (){
+                                  Navigator.push(
+                                    context, 
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context ) => UsuariosUsuariosPage(
+                                        value: idSocio,
+                                        nombre: nombre,
+                                        imagen: imagen,
+                                        tipoDocumentoIdentidad: tipoDocumentoIdentidad,
+                                        numeroDocumentoIdentidad: numeroDocumentoIdentidad,
+                                        userEmail: correo,
+                                      )
+                                    )
+                                  );
+                                },
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      nombre,
+                                      style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, fontSize: 15.0 ),
+                                    ),
+                                    Text(
+                                      '$tipoDocumentoIdentidad $numeroDocumentoIdentidad',
+                                      style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                    ),
+                                    Text(
+                                      '$correo',
+                                      style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                    ),
+                                    Text(
+                                      '$usuario',
+                                      style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                    ),
+                                  ],
+                                ),
                               )
-                        ],
+                            ),
+                            new IconButton(
+                                  icon: Icon(FontAwesomeIcons.angleRight, color: Colors.white,),
+                                  onPressed: () => Navigator.push(
+                                                      context, 
+                                                      MaterialPageRoute(
+                                                        builder: (BuildContext context ) => UsuariosUsuariosPage(
+                                                          value: idSocio,
+                                                          nombre: nombre,
+                                                          imagen: imagen,
+                                                          tipoDocumentoIdentidad: tipoDocumentoIdentidad,
+                                                          numeroDocumentoIdentidad: numeroDocumentoIdentidad,
+                                                          userEmail: correo,
+                                                        )
+                                                      )
+                                                    ),
+                                )
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-        )
-    );
-  }
+          );
+    }
 
   var data;
   String nombreEmpresa = '';
@@ -589,7 +606,7 @@ Widget _buidEstListEmpresas(String imagen,
                         child: Column(
                           children: <Widget>[
                             Text(
-                              'Busca a tu proximo empleador',
+                              'Busca a tu socio',
                               style: TextStyle(
                                 fontFamily: 'illapaBold',
                                 fontSize: 15.0,
