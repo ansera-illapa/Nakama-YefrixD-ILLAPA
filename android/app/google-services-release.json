@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "908963027443",
+    "firebase_url": "https://illapacobranza.firebaseio.com",
+    "project_id": "illapacobranza",
+    "storage_bucket": "illapacobranza.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:908963027443:android:c93b7303b78ba9c4",
+        "android_client_info": {
+          "package_name": "illapa.cobranza"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "908963027443-52to6b96rmh60lfirrv8t291v5bbslnu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "illapa.cobranza",
+            "certificate_hash": "6fa1f272fa6433078610c8d958b44d484757a13c"
+          }
+        },
+        {
+          "client_id": "908963027443-i71er5id13961bni7pvbcf3h9bvu5dvt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0DBb1GvJQoIFJpMqDcgwivK26cvwUinU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "908963027443-i71er5id13961bni7pvbcf3h9bvu5dvt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

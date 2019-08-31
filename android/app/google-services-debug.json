@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "604460259230",
+    "firebase_url": "https://illapa-bb.firebaseio.com",
+    "project_id": "illapa-bb",
+    "storage_bucket": "illapa-bb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:604460259230:android:4311f216f54f46a5",
+        "android_client_info": {
+          "package_name": "illapa.cobranzas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "604460259230-4fik0qim4jmdqthf8qcr132j1llbarbf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "illapa.cobranzas",
+            "certificate_hash": "6fa1f272fa6433078610c8d958b44d484757a13c"
+          }
+        },
+        {
+          "client_id": "604460259230-1pnpip647ejt35oa3m7s4mosill9eu3m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "illapa.cobranzas",
+            "certificate_hash": "406a14048d7ff54b430aff815aab55cd8425ce9f"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWoiSsw7-Pdhra-bAq-g-npCoM-ZwNf38"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
