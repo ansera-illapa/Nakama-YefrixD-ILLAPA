@@ -2,26 +2,26 @@
 library my_prj.globals;
 
 
-String urlGlobal =  'http://192.168.1.8';
-String urlGestion =  'http://192.168.1.8/api/gestion';
-String urlGestionSectoristas =  'http://192.168.1.8/api/sectorista/gestion';
-String urlGestionFree =  'http://192.168.1.8/api/gestionFree';
+String urlGlobal =  'http://35.222.139.100';
+String urlGestion =  'http://35.222.139.100/api/gestion';
+String urlGestionSectoristas =  'http://35.222.139.100/api/sectorista/gestion';
+String urlGestionFree =  'http://35.222.139.100/api/gestionFree';
 
-String urlVencimiento =  'http://192.168.1.8/api/vencimiento';
+String urlVencimiento =  'http://35.222.139.100/api/vencimiento';
 
-String urlEstadistica =  'http://192.168.1.8/api/estadistica';
-String urlEstadisticasGestor =  'http://192.168.1.8/api/estadistica/gestor';
-String urlEstadisticasSectoristas =  'http://192.168.1.8/api/estadistica/sectorista';
-String urlEstFree =  'http://192.168.1.8/api/estadisticasFree';
+String urlEstadistica =  'http://35.222.139.100/api/estadistica';
+String urlEstadisticasGestor =  'http://35.222.139.100/api/estadistica/gestor';
+String urlEstadisticasSectoristas =  'http://35.222.139.100/api/estadistica/sectorista';
+String urlEstFree =  'http://35.222.139.100/api/estadisticasFree';
 
 
-String urlDato =  'http://192.168.1.8/api/dato';
-String urlDatFree =  'http://192.168.1.8/api/datoFree';
+String urlDato =  'http://35.222.139.100/api/dato';
+String urlDatFree =  'http://35.222.139.100/api/datoFree';
 
-String urlUsuario =  'http://192.168.1.8/api/usuario';
+String urlUsuario =  'http://35.222.139.100/api/usuario';
 
-String urlTramo =  'http://192.168.1.8/api/tramo';
-String urlTramoFree =  'http://192.168.1.8/api/tramoFree';
+String urlTramo =  'http://35.222.139.100/api/tramo';
+String urlTramoFree =  'http://35.222.139.100/api/tramoFree';
       
 // String urlSubirImagen = 'http://35.222.139.100/api/datoFree';
 // String urlImagenes = 'http://35.222.139.100/';

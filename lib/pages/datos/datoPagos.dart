@@ -28,16 +28,21 @@ class DatoPagosPage extends StatefulWidget {
   final String imagen;
   final String identificacion;
 
-  final String nombreDocumento;
+  final String idTipoDocumento;
+  final String tipoDocumento;
+  final String numeroDocumento;
+  final String fechaEmision;
   final String fechaVencimiento;
   final int vencida;
   final String saldo;
   final String importe;
+  final String idTipoMoneda;
   final String moneda;
   final String tipomoneda;
   final String vencidaPagadaVigente;
   final int nuevaVencida;
   final String saldoTotal;
+  
 
   DatoPagosPage({Key key, 
                   this.idAnterior,
@@ -47,10 +52,14 @@ class DatoPagosPage extends StatefulWidget {
                   this.nombre, 
                   this.imagen, 
                   this.identificacion,
-                  this.nombreDocumento,
+                  this.idTipoDocumento,
+                  this.tipoDocumento,
+                  this.numeroDocumento,
+                  this.fechaEmision,
                   this.fechaVencimiento,
                   this.vencida,
                   this.saldo,
+                  this.idTipoMoneda,
                   this.moneda,
                   this.tipomoneda,
                   this.vencidaPagadaVigente,
@@ -63,21 +72,18 @@ class DatoPagosPage extends StatefulWidget {
 }
 
 class _DatoPagosPageState extends State<DatoPagosPage> {
-  DateTime _dateVencimiento;
+  DateTime _dateVencimientoEditarDoc;
   DateTime _dateEmision;
+  DateTime _dateEmisionEditar;
   DateTime now = new DateTime.now();
   
+  bool editarPago = false;
   bool faltanLlenarCampos = false;
+
+  bool editandoDoc = false;
+  bool editandoPago = false;
+  
   _agregarPago() async{
-    print(widget.value);
-    print(tipoPagoSeleccionado);
-    print(nombreFactura.text);
-    
-    print(_dateEmision);
-    print(_dateVencimiento);
-    print(tipoMonedaSelect);
-    print(importeFactura.text);
-    
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/api.txt');
     String apiToken = await file.readAsString();
@@ -90,7 +96,7 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
                     "tipoPago": tipoPagoSeleccionadoDrop,
                     "numeroPago": "${nombreFactura.text}" ,
                     "emisionPago": "$_dateEmision",
-                    "vencimientoPago": "$_dateVencimiento",
+                    "vencimientoPago": "$_dateVencimientoEditarDoc",
                     "monedaPago": tipoMonedaSelect ,
                     "importePago" : "${importeFactura.text}",
                     "saldoDocumento" : "$saldoDocumento"
@@ -112,7 +118,7 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
           nombreFactura.text = "";
           
           _dateEmision = DateTime.now();
-          _dateVencimiento = DateTime.now();
+          _dateVencimientoEditarDoc = DateTime.now();
         });
         
       }else{
@@ -121,6 +127,376 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
     } 
   
   }
+
+  // EDITAR PAGO
+  bool faltanLlenarCamposEditar = false;
+  String idPagoEditar;
+  _editarPago() async{
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/api.txt');
+    String apiToken = await file.readAsString();
+    final url =
+        "$urlDato/editarPago";
+    print(url);
+    print(apiToken);
+    final response = await http.post(url, body: {
+                    "api_token": apiToken,
+                    "documentoId": "${widget.value}",
+                    "pagoId": "$idPagoEditar",
+                    "tipoPago": tipoPagoSeleccionadoDrop,
+                    "numeroPago": "${numeroPagoEditar.text}" ,
+                    "emisionPago": "$_dateEmisionEditar",
+                    "importePago" : "${importePagoEditar.text}",
+                    "saldoDocumento" : "$saldoDocumento"
+                    
+                  });
+
+    if (response.statusCode == 200) {
+      final map = json.decode(response.body);  
+      final estado = map["load"];
+
+      if(estado){
+        Navigator.of(context).pop();
+        _getPagos();
+        setState(() {
+          estadoAgregar = false;
+        });
+        
+      }else{
+        Navigator.of(context).pop();
+      }
+    } 
+  }
+
+
+
+  // EDITAR DOCUMENTO
+
+  bool faltanLlenarCamposEditarDoc = false;
+  _editarDocumento() async{
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/api.txt');
+    String apiToken = await file.readAsString();
+    final url =
+        "$urlDato/editarDocumento";
+    print(url);
+    print(apiToken);
+    
+    final response = await http.post(url, body: {
+                    "api_token"     : apiToken,
+                    "documentoId"   : "${widget.value}",
+                    "tipoDoc"       : "$documentoSeleccionado",
+                    "numeroDoc"     : "${numeroFacturaEditDoc.text}" ,
+                    "tipoMonedaDoc" : "$monedaSeleccionada",
+                    "importeDoc"    : "${importeFacturaEditDoc.text}",
+                    "emisionDoc"    : "$_dateEmisionEditar",
+                    "vencDoc"       : "$_dateVencimientoEditarDoc"
+                    
+                  });
+
+    if (response.statusCode == 200) {
+      final map = json.decode(response.body);  
+      final estado = map["load"];
+
+      if(estado){
+        Navigator.of(context).pop();
+        Navigator.push(
+          context,
+          new MaterialPageRoute(
+              builder: (BuildContext context) =>DatoDocumentoPage(
+                idAnterior: widget.idAnterior,
+                tipoUsuario: widget.tipoUsuario,
+
+                value: widget.valuePageDocumento,
+                nombre: widget.nombre,
+                imagen: widget.imagen,
+                identificacion: widget.identificacion,
+            )));
+        
+      }else{
+        Navigator.of(context).pop();
+      }
+    } 
+  
+  }
+
+  TextEditingController numeroFacturaEditDoc = TextEditingController();
+  TextEditingController importeFacturaEditDoc = TextEditingController();
+  Future<bool> modalEditDocumento(context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          
+          return Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0)),
+              child: Container(
+                height: 400.0,
+                color: Color(0xFF070D59),
+                padding: EdgeInsets.all(10.0),
+                
+                  child: ListView(
+                    children: <Widget>[
+                        Column(
+                          // mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.all(15.0),
+                                child: Text('Editar el documento', 
+                                  style: TextStyle(color: Colors.white, fontFamily: 'illapaBold', fontSize: 20.0, ), textAlign: TextAlign.center,),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(10.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    Text('Tipo de documento', 
+                                                style: 
+                                                  TextStyle(
+                                                    color: Colors.white, 
+                                                    fontFamily: 'illapaBold', 
+                                                    fontSize: 16.0, 
+                                                  ), textAlign: TextAlign.center,),
+                                    
+                                    Container(
+                                      height: 30.0,
+                                      color: Colors.white,
+                                      child: DropdownButton(
+                                        isExpanded: true,
+                                        value: documentoSeleccionado,
+                                        items: listTiposDocumento,
+                                        onChanged: seleccionarTipoDocumento,
+
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.all(2.0),
+                                    ),
+                                    Text('Numero del documento', 
+                                                style: 
+                                                  TextStyle(
+                                                    color: Colors.white, 
+                                                    fontFamily: 'illapaBold', 
+                                                    fontSize: 16.0, 
+                                                  ), textAlign: TextAlign.center,),
+                                    Container(              
+                                      height: 45,
+                                      child: TextField(
+                                              controller: numeroFacturaEditDoc,
+                                              keyboardType: TextInputType.number,
+                                              decoration: InputDecoration(
+                                                fillColor: Colors.white,
+                                                filled: true,
+                                              ),
+                                            ),
+                                    ),
+                                    
+                                    Padding(
+                                      padding: EdgeInsets.all(2.0),
+                                    ),
+                                    
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      // textDirection: TextDirection.ltr,
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Column(
+                                            children: <Widget>[
+                                              Text('Moneda', 
+                                                style: 
+                                                  TextStyle(
+                                                    color: Colors.white, 
+                                                    fontFamily: 'illapaBold', 
+                                                    fontSize: 16.0, 
+                                                  ), textAlign: TextAlign.center,
+                                                ),
+                                                Container(
+                                                  height: 30.0,
+                                                  color: Colors.white,
+                                                  child: DropdownButton(
+                                                    isExpanded: true,
+                                                    value: monedaSeleccionada,
+                                                    items: listTipos,
+                                                    onChanged: seleccionarTipoMonedaEditDoc,
+                                                  ),
+                                                ),
+                                            ],
+                                          )
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.all(2.0),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            children: <Widget>[
+                                              Text('Importe', 
+                                                style: 
+                                                  TextStyle(
+                                                    color: Colors.white, 
+                                                    fontFamily: 'illapaBold', 
+                                                    fontSize: 16.0, 
+                                                  ), textAlign: TextAlign.center,),
+                                              Container(              
+                                                  height: 48,
+                                                  child: TextField(
+                                                          maxLength:  8,
+                                                          controller: importeFacturaEditDoc,
+                                                          keyboardType: TextInputType.number,
+                                                          decoration: InputDecoration(
+                                                            fillColor: Colors.white,
+                                                            filled: true,
+                                                          ),
+                                                        ),
+                                                ),
+                                            ],
+                                          )
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Column(
+                                            children: <Widget>[
+                                              Text('Emisión', 
+                                                style: 
+                                                  TextStyle(
+                                                    color: Colors.white, 
+                                                    fontFamily: 'illapaBold', 
+                                                    fontSize: 16.0, 
+                                                  ), textAlign: TextAlign.center,),
+                                              
+                                              GestureDetector(
+                                                  onTap:_selectFechaEmisionEditar,
+                                                  child: Container(
+                                                    color: Colors.white,
+                                                    height: 30.0,
+                                                    child: Row(
+                                                      children: <Widget>[
+                                                        Padding(
+                                                          padding: EdgeInsets.only(left: 10.0),
+                                                          
+                                                          child: Text('${_dateEmisionEditar.year}-${_dateEmisionEditar.month.toString().padLeft(2, '0')}-${_dateEmisionEditar.day.toString().padLeft(2, '0')}')
+                                                        )
+                                                      ],
+                                                    ),
+                                                  
+                                                  )
+                                                ),
+                                            ],
+                                          )
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.all(2.0),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            children: <Widget>[
+                                              
+                                              Text('Vencimiento', 
+                                                style: 
+                                                  TextStyle(
+                                                    color: Colors.white, 
+                                                    fontFamily: 'illapaBold', 
+                                                    fontSize: 16.0, 
+                                                  ), textAlign: TextAlign.center,),
+                                              GestureDetector(
+                                                  onTap:_selectFechaVencimientoEditarDoc,
+                                                  child: Container(
+                                                    color: Colors.white,
+                                                    height: 30.0,
+                                                    child: Row(
+                                                      children: <Widget>[
+                                                        Padding(
+                                                          padding: EdgeInsets.only(left: 10.0),
+                                                          child: Text('${_dateVencimientoEditarDoc.year}-${_dateVencimientoEditarDoc.month.toString().padLeft(2, '0')}-${_dateVencimientoEditarDoc.day.toString().padLeft(2, '0')}')
+                                                        )
+                                                      ],
+                                                    ),
+                                                  )
+                                                ),
+                                            ],
+                                          )
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                )
+                              ),
+                              if(faltanLlenarCamposEditarDoc)
+                                Text('Faltan llenar campos', style: TextStyle(color: Colors.red, fontFamily: 'illapaBold', fontSize: 15.0, ), textAlign: TextAlign.center,),
+                              Padding(
+                                padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    
+                                    Expanded(
+                                      child: RaisedButton(
+                                        color: Color(0xfff7b633),
+                                        padding: EdgeInsets.all(10.0),
+                                        child: Text('Editar', style: TextStyle(color: Colors.white, fontFamily: 'illapaBold', fontSize: 15.0, ),),
+                                        onPressed: (){
+                                          
+                                          if(numeroFacturaEditDoc.text.length > 0 && importeFacturaEditDoc.text.length >0  ){
+
+                                            _editarDocumento();
+                                            Navigator.of(context).pop();
+                                            _cargandoAgregarDocumento("Editando Documento");
+                                            setState(() {
+                                             faltanLlenarCamposEditarDoc = false; 
+                                            });
+                                          }else{
+                                            setState(() {
+                                              faltanLlenarCamposEditarDoc = true;
+                                              Navigator.of(context).pop();
+                                              modalEditDocumento(context);
+                                            });
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                    ],
+                  ),
+                ),
+            );
+        });
+  }
+
+  List<DropdownMenuItem<String>> listTipos = new List();
+  List<DropdownMenuItem<String>> listTiposDocumento = new List();
+  
+  String monedaSeleccionada = '1';
+  String documentoSeleccionado = '1';
+  void seleccionarTipoMonedaEditDoc(String tipoMonedaSeleccionada) { 
+    Navigator.of(context).pop();
+    print(tipoMonedaSeleccionada);
+    setState(() {
+      monedaSeleccionada = tipoMonedaSeleccionada;
+    });
+    modalEditDocumento(context);
+  }
+
+  void seleccionarTipoDocumento(String tipoDocumentoSeleccionado){
+    Navigator.of(context).pop();
+    print(tipoDocumentoSeleccionado);
+    setState(() {
+      documentoSeleccionado = tipoDocumentoSeleccionado;
+    });
+    modalEditDocumento(context);
+  }  
+  
+  
+
+
+
+
+
 
 
   String vencidaPagadaVigente = '';
@@ -135,7 +511,7 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
       imagenCliente = widget.imagen;
       identificacion = widget.identificacion;
 
-      nombreDocumento = widget.nombreDocumento;
+      nombreDocumento = widget.tipoDocumento +" "+ widget.numeroDocumento;
       vencimientoDocumento = widget.fechaVencimiento;
       vencida = widget.vencida;
       saldoDocumento = widget.saldo;
@@ -153,7 +529,7 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
 
     super.initState();
     _getPagos();
-    _dateVencimiento = DateTime.now();
+    _dateVencimientoEditarDoc = DateTime.now();
     _dateEmision = DateTime.now();
     _getVariables();
     print("fechaacuta $now");
@@ -231,8 +607,7 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
     );
   }
 
-
-  void _selectFechaVencimiento() {
+  void _selectFechaEmisionEditar() {
     DatePicker.showDatePicker(
       context,
       pickerTheme: DateTimePickerTheme(
@@ -242,7 +617,14 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
           onPressed: (){
             Navigator.of(context).pop();
             Navigator.of(context).pop();
-            modalAddPago(context);
+            if(editandoDoc){
+
+              modalEditDocumento(context);
+            }else if(editandoPago){
+
+              modalEditPago(context);
+            }
+            
           },
           
           child: Text('Aceptar'),
@@ -250,8 +632,8 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
         cancel: Text('Cancelar', style: TextStyle(color: Colors.cyan)),
       ),
       minDateTime: DateTime.parse('2010-05-12'),
-      maxDateTime: DateTime.parse('2021-11-25'),
-      initialDateTime: DateTime.parse('2019-05-17'),
+      maxDateTime: DateTime.parse('2025-11-25'),
+      initialDateTime: _dateEmisionEditar,
       dateFormat: 'yyyy-MMMM-dd',
       locale: DateTimePickerLocale.es,
       onCancel: () {
@@ -259,12 +641,51 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
       },
       onChange: (dateTime, List<int> index) {
         setState(() {
-          _dateVencimiento = dateTime;
+          _dateEmisionEditar = dateTime;
         });
       },
       onConfirm: (dateTime, List<int> index) {
         setState(() {
-          _dateVencimiento = dateTime;
+          _dateEmisionEditar = dateTime;
+        });
+      },
+    );
+  }
+
+
+  void _selectFechaVencimientoEditarDoc() {
+    DatePicker.showDatePicker(
+      context,
+      pickerTheme: DateTimePickerTheme(
+        showTitle: true,
+        confirm: FlatButton(
+          
+          onPressed: (){
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+            modalEditDocumento(context);
+          },
+          
+          child: Text('Aceptar'),
+        ),
+        cancel: Text('Cancelar', style: TextStyle(color: Colors.cyan)),
+      ),
+      minDateTime: DateTime.parse('2010-05-12'),
+      maxDateTime: DateTime.parse('2025-11-25'),
+      initialDateTime: _dateVencimientoEditarDoc,
+      dateFormat: 'yyyy-MMMM-dd',
+      locale: DateTimePickerLocale.es,
+      onCancel: () {
+        debugPrint('onCancel');
+      },
+      onChange: (dateTime, List<int> index) {
+        setState(() {
+          _dateVencimientoEditarDoc = dateTime;
+        });
+      },
+      onConfirm: (dateTime, List<int> index) {
+        setState(() {
+          _dateVencimientoEditarDoc = dateTime;
         });
       },
     );
@@ -273,18 +694,8 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
  
   var moneyType = new NumberFormat("#,##0.00", "en_US");
 
-  Widget _buildListPagos(String titulo, String fechaVenc,  String precio){
-    String tipoMoneda;
+  Widget _buildListPagos(int idPago,int idTipoPago, String tipoPago, String numeroPago, String fechaVenc,  String precio){
     
-    if(widget.moneda == "PEN"){
-      tipoMoneda = "S/";
-    }else if(widget.moneda == "USD"){
-      
-      tipoMoneda = '\$';
-    }else if(widget.moneda == "EUR"){
-      
-      tipoMoneda = "€";
-    }
   
   return Padding(
           padding: EdgeInsets.only(bottom: 1.0),
@@ -302,13 +713,16 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
-                                    titulo,
+                                    tipoPago+ ' '+numeroPago,
                                     style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white,fontSize: 15.0 ),
                                   ),
                                   Text(
                                     'Emitida $fechaVenc',
                                     style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                   ),
+                                  if(editarPago == true)
+                                  Text('${widget.moneda} ${moneyType.format(double.parse(precio))}',
+                                  style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),),
                                   
                                 ],
                               ),
@@ -316,8 +730,36 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
                             Container(
                               child: Row(
                                 children: <Widget>[
-                                  Text('$tipoMoneda ${moneyType.format(double.parse(precio))}'),
-                                  
+                                  editarPago == true
+                                  ?Row(
+                                    children: <Widget>[
+                                      IconButton(
+                                        icon: Icon(FontAwesomeIcons.pencilAlt, color: Colors.white,),
+                                        onPressed: () {
+                                          modalEditPago(context);
+                                          setState(() {
+                                            editandoDoc = false;
+                                            editandoPago = true;
+                                            idPagoEditar = "$idPago";
+                                          tipoPagoSeleccionadoDrop = "$idTipoPago";
+                                          numeroPagoEditar.text = "$numeroPago";
+                                          importePagoEditar.text = "$precio";
+                                          _dateEmisionEditar = DateTime.parse(fechaVenc);
+                                          });
+                                        }
+                                      ),
+                                      IconButton(
+                                        icon: Icon(FontAwesomeIcons.trashAlt, color: Colors.redAccent,),
+                                        onPressed: () {
+                                          setState(() {
+                                            idPagoEditar = "$idPago";
+                                            modalEliminarPago(context, idPagoEditar);
+                                          });
+                                        }
+                                      )
+                                    ],
+                                  )
+                                  :Text('${widget.moneda} ${moneyType.format(double.parse(precio))}'),
                                 ],
                               )
                             )
@@ -330,6 +772,95 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
           );
                   
   }
+
+
+  Future<bool> modalEliminarPago(context, String idPago) {
+    return showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          
+          return Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0)),
+              child: Container(
+                height: 170.0,
+                color: Color(0xFF070D59),
+                padding: EdgeInsets.all(10.0),
+                
+                  child: Column(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.all(15.0),
+                          child: Text('¿Estás seguro de eliminar este Pago?', 
+                            style: TextStyle(color: Colors.white, fontFamily: 'illapaBold', fontSize: 20.0, ), 
+                            textAlign: TextAlign.center,),
+                        ),
+                        
+                        Padding(
+                          padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                          child: Row(
+                            children: <Widget>[
+                              
+                              Expanded(
+                                child: RaisedButton(
+                                  color: Color(0xfff7b633),
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Text('Eliminar', style: TextStyle(color: Colors.white, fontFamily: 'illapaBold', fontSize: 15.0, ), textAlign: TextAlign.center,),
+                                  onPressed: (){
+                                    _eliminarPago(idPago);
+                                    setState(() {
+                                     _isLoading=false; 
+                                    });
+                                    Navigator.of(context).pop();
+                                    _cargandoAgregarDocumento('Elimando Pago');
+                                    
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                ),
+            );
+        });
+  }
+
+  _eliminarPago(String idPago) async{
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/api.txt');
+    String apiToken = await file.readAsString();
+    final url =
+        "$urlDato/eliminarPago";
+    print(url);
+    print(apiToken);
+    
+    final response = await http.post(url, body: {
+                    "api_token": apiToken,
+                    "documentoId": "${widget.value}",
+                    "pagoId": "$idPagoEditar",
+                  });
+
+    if (response.statusCode == 200) {
+      final map = json.decode(response.body);  
+      final estado = map["load"];
+
+      if(estado){
+        Navigator.of(context).pop();
+        _getPagos();
+        setState(() {
+        });
+        
+      }else{
+        Navigator.of(context).pop();
+      }
+    } 
+  
+  }
+
 
 
   var data;
@@ -374,8 +905,10 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
       final listPagos = map["result"];
 
       final load = map["load"];
-      // print(clienteSeleccionado['nombre']);
-      print(code);
+      
+      final tipos = map["tipos"];
+      final tiposDocumentos = map["tiposDocumentos"];
+      
       setState(() {
         _isLoading = load;
         this.nombreCliente = clienteSeleccionado['personaNombre'];
@@ -391,7 +924,28 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
             ));
           }
         }
+
+        if(estadoAgregar == true){
+          for(int cont = 0; cont < tipos.length ; cont++){
+            listTipos.add(new DropdownMenuItem(
+                value: tipos[cont]['id'].toString(),
+                child: new Text(" "+tipos[cont]['nombre'])
+            ));
+          }
+        } 
         
+        if(estadoAgregar == true){
+          for(int cont = 0; cont < tiposDocumentos.length ; cont++){
+            listTiposDocumento.add(new DropdownMenuItem(
+                value: tiposDocumentos[cont]['id'].toString(),
+                child: new Text(" "+tiposDocumentos[cont]['nombre'])
+            ));
+          }
+        }
+
+
+
+
         
         this.identificador = clienteSeleccionado['personaNumeroIdentificacion'];
         identificacion ="${this.tipoidentificador}" +" " +"${this.identificador}";
@@ -582,6 +1136,7 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
   TextEditingController importeFactura = TextEditingController();
   List<DropdownMenuItem<String>> listTiposPagosMostar = new List();
   String tipoPagoSeleccionadoDrop = '1';
+
   void seleccionarIdentidad(String tipoPagoValue) {
     Navigator.of(context).pop();
     print(tipoPagoValue);
@@ -636,22 +1191,6 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
 
                                       ),
                                     ),
-                                    // GestureDetector(
-                                    //   onTap: _selectTipoPago,
-                                    //   child: Container(
-                                    //     color: Colors.white,
-                                    //     height: 40.0,
-                                    //     child: Row(
-                                    //       children: <Widget>[
-                                    //         Padding(
-                                    //           padding: EdgeInsets.only(left: 10.0),
-                                    //           child: Text('$tipoPagoSeleccionadoVista')
-                                    //         )
-                                    //       ],
-                                    //     ),
-                                      
-                                    //   )
-                                    // ),
                                     Padding(
                                       padding: EdgeInsets.all(2.0),
                                     ),
@@ -810,7 +1349,7 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
 
                                             _agregarPago();
                                             Navigator.of(context).pop();
-                                            _cargandoAgregarDocumento();
+                                            _cargandoAgregarDocumento('Creando Pago');
                                             setState(() {
                                              faltanLlenarCampos = false; 
                                             });
@@ -841,13 +1380,291 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
             );
         });
   }
-  Future<void> _cargandoAgregarDocumento() async {
+
+
+
+
+
+
+
+  void selectTipoPagoEditar(String tipoPagoValue) {
+    Navigator.of(context).pop();
+    setState(() {
+      tipoPagoSeleccionadoDrop = tipoPagoValue;
+    });
+    modalEditPago(context);
+  }
+
+  TextEditingController numeroPagoEditar = TextEditingController();
+  TextEditingController importePagoEditar = TextEditingController();
+  
+  Future<bool> modalEditPago(context, ) {
+    return showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          
+          return Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0)),
+              child: Container(
+                height: 400.0,
+                color: Color(0xFF070D59),
+                padding: EdgeInsets.all(10.0),
+                
+                  child: ListView(
+                    children: <Widget>[
+                        Column(
+                          // mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.all(15.0),
+                                child: Text('Editar un pago', 
+                                            style: TextStyle(
+                                              color: Colors.white, 
+                                              fontFamily: 'illapaBold', 
+                                              fontSize: 20.0, ), textAlign: TextAlign.center,),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(10.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    Text('Tipo de pago', 
+                                                style: 
+                                                  TextStyle(
+                                                    color: Colors.white, 
+                                                    fontFamily: 'illapaBold', 
+                                                    fontSize: 16.0, 
+                                                  ), textAlign: TextAlign.center,),
+                                    Container(
+                                      color: Colors.white,
+                                      child: DropdownButton(
+                                        
+                                        isExpanded: true,
+                                        value: tipoPagoSeleccionadoDrop,
+                                        items: listTiposPagosMostar,
+                                        onChanged: selectTipoPagoEditar,
+
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.all(2.0),
+                                    ),
+                                    Text('Numero del pago', 
+                                                style: 
+                                                  TextStyle(
+                                                    color: Colors.white, 
+                                                    fontFamily: 'illapaBold', 
+                                                    fontSize: 16.0, 
+                                                  ), textAlign: TextAlign.center,),
+                                    Container(              
+                                      height: 45,
+                                      child: TextField(
+                                              controller: numeroPagoEditar,
+                                              keyboardType: TextInputType.number,
+                                              decoration: InputDecoration(
+                                                  
+                                                fillColor: Colors.white,
+                                                filled: true,
+                                                
+                                              ),
+                                            ),
+                                    ),
+                                    
+                                    Padding(
+                                      padding: EdgeInsets.all(2.0),
+                                    ),
+                                    
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      // textDirection: TextDirection.ltr,
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Column(
+                                            children: <Widget>[
+                                              Text('Moneda', 
+                                                style: 
+                                                  TextStyle(
+                                                    color: Colors.white, 
+                                                    fontFamily: 'illapaBold', 
+                                                    fontSize: 16.0, 
+                                                  ), textAlign: TextAlign.center,),
+                                              GestureDetector(
+                                                // onTap: _selectMoneda,
+                                                child: Container(
+                                                  color: Colors.white,
+                                                  height: 30.0,
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      Padding(
+                                                        padding: EdgeInsets.only(left: 10.0),
+                                                        child: Text('$tipoMonedaSelect')
+                                                      )
+                                                    ],
+                                                  ),
+                                                
+                                                )
+                                              ),
+                                              
+                                              
+                                            ],
+                                          )
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.all(2.0),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            children: <Widget>[
+                                              
+                                              Text('Importe', 
+                                                style: 
+                                                  TextStyle(
+                                                    color: Colors.white, 
+                                                    fontFamily: 'illapaBold', 
+                                                    fontSize: 16.0, 
+                                                  ), textAlign: TextAlign.center,),
+                                              Container(              
+                                                  height: 33,
+                                                  child: TextField(
+                                                          controller: importePagoEditar,
+                                                          keyboardType: TextInputType.number,
+                                                          decoration: InputDecoration(
+                                                              
+                                                            fillColor: Colors.white,
+                                                            filled: true,
+                                                            // hintText: "25000.00",
+                                                            // labelText: "25000.00",
+                                                          ),
+                                                        ),
+                                                ),
+                                              
+                                            ],
+                                          )
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      // textDirection: TextDirection.ltr,
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Column(
+                                            children: <Widget>[
+                                              Text('Emisión', 
+                                                style: 
+                                                  TextStyle(
+                                                    color: Colors.white, 
+                                                    fontFamily: 'illapaBold', 
+                                                    fontSize: 16.0, 
+                                                  ), textAlign: TextAlign.center,),
+                                              
+                                              GestureDetector(
+                                                  onTap:_selectFechaEmisionEditar,
+                                                  child: Container(
+                                                    color: Colors.white,
+                                                    height: 30.0,
+                                                    child: Row(
+                                                      children: <Widget>[
+                                                        Padding(
+                                                          padding: EdgeInsets.only(left: 10.0),
+                                                          
+                                                          child: Text(
+                                                            '${_dateEmisionEditar.year}-${_dateEmisionEditar.month.toString().padLeft(2, '0')}-${_dateEmisionEditar.day.toString().padLeft(2, '0')}')
+                                                        )
+                                                      ],
+                                                    ),
+                                                  
+                                                  )
+                                                ),
+                                            ],
+                                          )
+                                        ),
+                                        
+                                      ],
+                                    ),
+
+                                    
+                                  ],
+                                )
+                              ),
+                              if(faltanLlenarCamposEditar)
+                                Text('Faltan llenar campos', 
+                                  style: TextStyle(color: Colors.red, fontFamily: 'illapaBold', fontSize: 15.0, ), 
+                                  textAlign: TextAlign.center,),
+                              Padding(
+                                padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: RaisedButton(
+                                        color: Color(0xfff7b633),
+                                        padding: EdgeInsets.all(10.0),
+                                        child: Text('Editar', style: TextStyle(color: Colors.white)),
+                                        onPressed: (){
+                                          if(numeroPagoEditar.text.length > 0 && importePagoEditar.text.length >0  ){
+                                            _editarPago();
+                                            Navigator.of(context).pop();
+                                            _cargandoAgregarDocumento('Editando Pago');
+                                            setState(() {
+                                             faltanLlenarCamposEditar = false; 
+                                            });
+                                          }else{
+                                            setState(() {
+                                              faltanLlenarCamposEditar = true;
+                                              Navigator.of(context).pop();
+                                              modalEditPago(context);
+                                            });
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          )
+                    ],
+                  ),
+                ),
+              
+            );
+        });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  Future<void> _cargandoAgregarDocumento(String texto) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Creando pago'),
+          title: Text(texto),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
@@ -944,14 +1761,30 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
                             '$identificacion',
                             style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                           ),
-
+                          Text(
+                            'CLIENTE',
+                            style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                          ),
                         ],
                       ),
                     ),
-                    // new IconButton(
-                    //       icon: Icon(FontAwesomeIcons.angleRight, color: Colors.white,),
-                    //       onPressed: () {}
-                    //     )
+                    editarPago == false
+                    ?IconButton(
+                          icon: Icon(FontAwesomeIcons.pencilAlt, color: Colors.white,),
+                          onPressed: () {
+                            setState(() {
+                             editarPago = true; 
+                            });
+                          }
+                        )
+                    :IconButton(
+                          icon: Icon(FontAwesomeIcons.edit, color: Colors.white,),
+                          onPressed: () {
+                            setState(() {
+                             editarPago = false; 
+                            });
+                          }
+                        )
                   ],
                 ),
               ),
@@ -987,24 +1820,65 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
                                       style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                     ),
                                     Text(
-                                      // 'saldoTotal ${widget.tipomoneda} $saldoDocumento',
-                                      
-                                      // "$saldoTotal",
                                       "${partesSaldo[0]} ${partesSaldo[1]} ${partesSaldo[2]}",
                                       style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                     ),
+                                    if(editarPago == true)
+                                      Container(
+                                        child: Row(
+                                          children: <Widget>[
+                                            vencida < 0
+                                            ?Text('${widget.tipomoneda} ${moneyType.format(double.parse(importeDocumento))}', style: TextStyle(color: Colors.black, fontFamily: 'illapaBold'))
+                                            :Text('${widget.tipomoneda} ${moneyType.format(double.parse(importeDocumento))}', style: TextStyle(color: Colors.red, fontFamily: 'illapaBold')),
+                                          ],
+                                        )
+                                      ),
                                   ],
                                 ),
                               ),
-                              Container(
-                                child: Row(
-                                  children: <Widget>[
-                                    vencida < 0
-                                    ?Text('${widget.tipomoneda} ${moneyType.format(double.parse(importeDocumento))}', style: TextStyle(color: Colors.black, fontFamily: 'illapaBold'))
-                                    :Text('${widget.tipomoneda} ${moneyType.format(double.parse(importeDocumento))}', style: TextStyle(color: Colors.red, fontFamily: 'illapaBold')),
-                                  ],
-                                )
-                              )
+                              editarPago == true
+                                  ?Row(
+                                    children: <Widget>[
+                                      IconButton(
+                                        icon: Icon(FontAwesomeIcons.pencilAlt, color: Colors.white,),
+                                        onPressed: () {
+                                          
+                                          setState(() {
+                                            editandoDoc = true;
+                                            editandoPago = false;
+                                            documentoSeleccionado = widget.idTipoDocumento;
+                                            numeroFacturaEditDoc.text = widget.numeroDocumento;
+                                            monedaSeleccionada = widget.idTipoMoneda;
+                                            importeFacturaEditDoc.text = widget.importe;
+                                            _dateEmisionEditar = DateTime.parse(widget.fechaEmision);
+                                            _dateVencimientoEditarDoc = DateTime.parse(widget.fechaVencimiento);
+
+                                            //miomio
+
+                                          });
+                                          modalEditDocumento(context);
+                                        }
+                                      ),
+                                      IconButton(
+                                        icon: Icon(FontAwesomeIcons.trashAlt, color: Colors.redAccent,),
+                                        onPressed: () {
+                                          setState(() {
+                                            modalEliminarDocumento(context);
+                                          });
+                                        }
+                                      )
+                                    ],
+                                  )
+                                  :Container(
+                                      child: Row(
+                                        children: <Widget>[
+                                          vencida < 0
+                                          ?Text('${widget.tipomoneda} ${moneyType.format(double.parse(importeDocumento))}', style: TextStyle(color: Colors.black, fontFamily: 'illapaBold'))
+                                          :Text('${widget.tipomoneda} ${moneyType.format(double.parse(importeDocumento))}', style: TextStyle(color: Colors.red, fontFamily: 'illapaBold')),
+                                        ],
+                                      )
+                                    ),
+                              
                             ],
                           ),
                         ),
@@ -1032,7 +1906,12 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
 
 
                           for(var cont =0; cont<cantPagos; cont++ )
-                          _buildListPagos("${data[cont]['tipo']}"+" "+"${data[cont]['numero']}",data[cont]['fechavencimiento'],  data[cont]['importe']),
+                          _buildListPagos(  data[cont]['idPago'],
+                                            data[cont]['idTipoPago'],
+                                            "${data[cont]['tipo']}",
+                                            "${data[cont]['numero']}",
+                                            data[cont]['fechavencimiento'],  
+                                            data[cont]['importe']),
                           
                           
                         ],
@@ -1050,10 +1929,8 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
         onPressed: (){
           setState(() {
             importeFactura.text = "$saldoDocumento";
-            
+            tipoPagoSeleccionadoDrop = "1";
           });
-          
-
           modalAddPago(context);
         },
         tooltip: 'Agregar un pago',
@@ -1062,6 +1939,102 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
       ),
     );
   }
+
+  Future<bool> modalEliminarDocumento(context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          
+          return Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0)),
+              child: Container(
+                height: 170.0,
+                color: Color(0xFF070D59),
+                padding: EdgeInsets.all(10.0),
+                
+                  child: Column(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.all(15.0),
+                          child: Text('¿Estás seguro de eliminar este Documento?', 
+                            style: TextStyle(color: Colors.white, fontFamily: 'illapaBold', fontSize: 20.0, ), 
+                            textAlign: TextAlign.center,),
+                        ),
+                        
+                        Padding(
+                          padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                          child: Row(
+                            children: <Widget>[
+                              
+                              Expanded(
+                                child: RaisedButton(
+                                  color: Color(0xfff7b633),
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Text('Eliminar', 
+                                    style: TextStyle(color: Colors.white, fontFamily: 'illapaBold', fontSize: 15.0, ), 
+                                    textAlign: TextAlign.center,),
+                                  onPressed: (){
+                                    _eliminarDocumento();
+                                    
+                                    Navigator.of(context).pop();
+                                    _cargandoAgregarDocumento('Elimando Documento');
+                                    
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                ),
+            );
+        });
+  }
+
+  _eliminarDocumento() async{
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/api.txt');
+    String apiToken = await file.readAsString();
+    final url =
+        "$urlDato/eliminarDocumento";
+    print(url);
+    print(apiToken);
+    
+    final response = await http.post(url, body: {
+                    "api_token": apiToken,
+                    "documentoId": "${widget.value}",
+                  });
+    print(response.body);
+    if (response.statusCode == 200) {
+      final map = json.decode(response.body);  
+      final estado = map["load"];
+
+      if(estado){
+        Navigator.push(
+                    context,
+                    new MaterialPageRoute(
+                        builder: (BuildContext context) =>DatoDocumentoPage(
+                          idAnterior: widget.idAnterior,
+                          tipoUsuario: widget.tipoUsuario,
+
+                          value: widget.valuePageDocumento,
+                          nombre: widget.nombre,
+                          imagen: widget.imagen,
+                          identificacion: widget.identificacion,
+                      )));
+      }else{
+        Navigator.of(context).pop();
+      }
+    } 
+  
+  }
+
+
+
 }
 
 

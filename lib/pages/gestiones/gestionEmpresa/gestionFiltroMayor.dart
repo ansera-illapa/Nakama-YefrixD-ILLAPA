@@ -154,6 +154,21 @@ class _GestionFMEmpPageState extends State<GestionFMEmpPage> {
       appBar: new AppBar(
         centerTitle: true,
         title: new Text('Gestión'),
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: IconButton(
+              icon: Icon(
+                FontAwesomeIcons.arrowCircleLeft,
+                color: Colors.grey
+                
+              ),
+              onPressed: (){
+                Navigator.of(context).pop();
+              },
+            )
+          ),
+        ],
         backgroundColor: Color(0xFF070D59),
       ),
       backgroundColor: Color(0xFF070D59),

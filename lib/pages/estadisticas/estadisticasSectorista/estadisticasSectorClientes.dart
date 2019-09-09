@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:illapa/pages/estadisticas/estadisticaEsp.dart';
 import 'package:illapa/pages/estadisticas/estadisticaFree/estFreeFiltroMayor.dart';
+import 'package:illapa/pages/estadisticas/estadisticasSectorista/estadisticasFMClientes.dart';
 import 'package:illapa/widgets.dart';
 
 import 'package:illapa/extras/globals/globals.dart';
@@ -126,7 +127,8 @@ class _EstadisticasSectorClientesPageState extends State<EstadisticasSectorClien
   }
 
   var data;
-  String nombreSocio = '';
+  String nombreSectorista = '';
+  String imagenSectorista = '';
   String tipoidentificador = "";
   var identificador;
   String email = '';
@@ -184,8 +186,8 @@ class _EstadisticasSectorClientesPageState extends State<EstadisticasSectorClien
   void initState() {
     if(widget.nombre != null){
       setState(() {
-       nombreSocio = widget.nombre; 
-       imagenUsuario = widget.imagen;
+       nombreSectorista = widget.nombre; 
+       imagenSectorista = widget.imagen;
        tipoidentificador = widget.tipoIdentificacion;
        identificador = widget.identificacion;
        email = widget.email;
@@ -275,7 +277,7 @@ class _EstadisticasSectorClientesPageState extends State<EstadisticasSectorClien
                     leading: new CircleAvatar(
                       foregroundColor: Theme.of(context).primaryColor,
                       backgroundColor: Colors.grey,
-                      backgroundImage: new NetworkImage(imagenUsuario),
+                      backgroundImage: new NetworkImage(imagenSectorista),
                     ),
                     title: new Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -285,7 +287,7 @@ class _EstadisticasSectorClientesPageState extends State<EstadisticasSectorClien
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                nombreSocio,
+                                nombreSectorista,
                                 style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, ),
                               ),
                               Padding(
@@ -311,21 +313,21 @@ class _EstadisticasSectorClientesPageState extends State<EstadisticasSectorClien
                             ],
                           ),
                         ),
-                        // new IconButton(
-                        //       icon: Icon(FontAwesomeIcons.chartLine, color: Colors.white,),
-                        //       onPressed: () => Navigator.push(
-                        //                           context, 
-                        //                           MaterialPageRoute(
-                        //                             builder: (BuildContext context ) => EstadisticasEspFiltroMayorPage(
-                        //                               value: widget.value,
-                        //                               imagenCliente:imagenUsuario ,
-                        //                               nombreCliente: nombreSocio,
-                        //                               identificacion: '$tipoidentificador $identificador',
-
-                        //                             ) 
-                        //                           )
-                        //                         ),
-                        //     )
+                        new IconButton(
+                              icon: Icon(FontAwesomeIcons.users, color: Colors.white,),
+                              onPressed: () => Navigator.push(
+                                                  context, 
+                                                  MaterialPageRoute(
+                                                    builder: (BuildContext context ) => EstadisticaFMClientesPage(
+                                                      value: widget.value,
+                                                      nombreSectorista: nombreSectorista,
+                                                      imagenSectorista: imagenSectorista,
+                                                      tipoIdentificacion: tipoidentificador,
+                                                      identificacion: "$identificador",
+                                                    ) 
+                                                  )
+                                                ),
+                            )
                       ],
                     ),
                   ),

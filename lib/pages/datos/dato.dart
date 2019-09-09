@@ -80,6 +80,10 @@ Widget _buildListEmpresas(String imagen,
                                   '$numeroDocumentosVencidos registros por ${moneyType.format(double.parse(sumaImportesDocumentosVencidos))} ',
                                   style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                 ),
+                                Text(
+                                  'Empresa ',
+                                  style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                ),
                               ],
                             ),
                           ),
@@ -261,18 +265,22 @@ Widget _buildListEmpresas(String imagen,
                                 '$numeroDocumentosVencidos vencidos por ${moneyType.format(double.parse(sumaImportesDocumentosVencidos))}',
                                 style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
+                              Text(
+                                'Administrador',
+                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                              ),
                             ],
                           ),
                         ),
-                        new IconButton(
-                              icon: Icon(Icons.ac_unit, color: Colors.white,),
-                              onPressed: () => Navigator.push(
-                                                  context, 
-                                                  MaterialPageRoute(
-                                                    builder: (BuildContext context ) => DatoClientesPage()
-                                                  )
-                                                ),
-                            )
+                        // new IconButton(
+                        //       icon: Icon(Icons.ac_unit, color: Colors.white,),
+                        //       onPressed: () => Navigator.push(
+                        //                           context, 
+                        //                           MaterialPageRoute(
+                        //                             builder: (BuildContext context ) => DatoClientesPage()
+                        //                           )
+                        //                         ),
+                        //     )
                       ],
                     ),
                   ),

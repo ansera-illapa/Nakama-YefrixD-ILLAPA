@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:illapa/pages/estadisticas/estadisticasClientes.dart';
+import 'package:illapa/pages/estadisticas/estadisticasFMEmpresa.dart';
 import 'package:illapa/widgets.dart';
 
 
@@ -320,15 +321,21 @@ class _EstadisticasSociosPageState extends State<EstadisticasSociosPage> {
                             ],
                           ),
                         ),
-                        // new IconButton(
-                        //       icon: Icon(FontAwesomeIcons.chartLine, color: Colors.white,),
-                        //       onPressed: () => Navigator.push(
-                        //                           context, 
-                        //                           MaterialPageRoute(
-                        //                             builder: (BuildContext context ) => EstadisticasClientesPage()
-                        //                           )
-                        //                         ),
-                        //     )
+                        new IconButton(
+                              icon: Icon(FontAwesomeIcons.users, color: Colors.white,),
+                              onPressed: () => Navigator.push(
+                                                  context, 
+                                                  MaterialPageRoute(
+                                                    builder: (BuildContext context ) => EstadisticaFMEmpresaPage(
+                                                      value: widget.value,
+                                                      imagenEmpresa: imagenEmpresa,
+                                                      nombreEmpresa: nombreEmpresa,
+                                                      tipoIdentificacion: tipoidentificador,
+                                                      identificacion: identificador,
+                                                    )
+                                                  )
+                                                ),
+                            )
                       ],
                     ),
                   ),

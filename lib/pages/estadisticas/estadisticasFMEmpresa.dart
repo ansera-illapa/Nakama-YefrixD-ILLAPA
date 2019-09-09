@@ -16,25 +16,25 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-class EstadisticasEspFiltroMayorPage extends StatefulWidget {
+class EstadisticaFMEmpresaPage extends StatefulWidget {
   final int value;
-  final String imagenGestor;
-  final String nombreGestor;
+  final String imagenEmpresa;
+  final String nombreEmpresa;
   final String tipoIdentificacion;
   final String identificacion;
 
-  EstadisticasEspFiltroMayorPage({Key key, 
+  EstadisticaFMEmpresaPage({Key key, 
                       this.value,
-                      this.imagenGestor,
-                      this.nombreGestor,
+                      this.imagenEmpresa,
+                      this.nombreEmpresa,
                       this.tipoIdentificacion,
                       this.identificacion}) : super(key: key);
 
   @override
-  _EstadisticasEspFiltroMayorPageState createState() => _EstadisticasEspFiltroMayorPageState();
+  _EstadisticaFMEmpresaPageState createState() => _EstadisticaFMEmpresaPageState();
 }
 
-class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMayorPage> {
+class _EstadisticaFMEmpresaPageState extends State<EstadisticaFMEmpresaPage> {
   
   Widget _buildListTramos(int cont, int desde, int hasta, int documentos, String importes ){
     if(documentos == null){
@@ -125,7 +125,7 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
 
   var data;
   String nombreCliente = '';
-  String imagenGestorFree = '';
+  String imagenSocio = '';
   String tipoidentificador = "";
   var identificador;
   String identificacion = '';
@@ -170,12 +170,13 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
     String apiToken = await file.readAsString();
     // print(apiToken);
     final url =
-        "$urlEstadistica/filtroMayor/sectorista/sector/${widget.value}?api_token="+apiToken;
+        "$urlEstadistica/filtroMayor/empresas/${widget.value}?api_token="+apiToken;
     print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final map = json.decode(response.body);
       final code = map["code"];
+      final clienteSeleccionado = map["cliente"];
       final porcentajeDocumentos = map["porcentaje"];
       final porcentajeImporteDocumentos = map["porcentajeImportes"];
 
@@ -233,11 +234,11 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
   void initState() {
     // TODO: implement initState
 
-    if(widget.nombreGestor != null){
-      nombreCliente = widget.nombreGestor;
+    if(widget.nombreEmpresa != null){
+      nombreCliente = widget.nombreEmpresa;
       tipoIdentificacion = widget.tipoIdentificacion;
       identificacion = widget.identificacion;
-      imagenGestorFree = widget.imagenGestor;
+      imagenSocio = widget.imagenEmpresa;
 
     }
 
@@ -323,7 +324,7 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
                         leading: new CircleAvatar(
                           foregroundColor: Theme.of(context).primaryColor,
                           backgroundColor: Colors.grey,
-                          backgroundImage: new NetworkImage(imagenGestorFree),
+                          backgroundImage: new NetworkImage(imagenSocio),
                         ),
                         title: new Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -348,7 +349,7 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
                                   //   style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                   // ),
                                   Text(
-                                    'Sectorista',
+                                    'Empresa',
                                     style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                   ),
                                 ],

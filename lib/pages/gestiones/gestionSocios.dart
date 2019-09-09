@@ -322,7 +322,7 @@ class _GestionSociosPageState extends State<GestionSociosPage> {
                           ),
                         ),
                         new IconButton(
-                              icon: Icon(Icons.ac_unit, color: Colors.white,),
+                              icon: Icon(FontAwesomeIcons.users, color: Colors.white,),
                               onPressed: () => Navigator.push(
                                                   context, 
                                                   MaterialPageRoute(

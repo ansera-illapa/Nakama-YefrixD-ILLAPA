@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:illapa/pages/estadisticas/estadisticaEsp.dart';
+import 'package:illapa/pages/estadisticas/estadisticasFMSocio.dart';
 import 'package:illapa/widgets.dart';
 
 import 'package:illapa/extras/globals/globals.dart';
@@ -317,12 +318,16 @@ class _EstadisticasClientesPageState extends State<EstadisticasClientesPage> {
                           ),
                         ),
                         new IconButton(
-                              icon: Icon(FontAwesomeIcons.chartLine, color: Colors.white,),
+                              icon: Icon(FontAwesomeIcons.users, color: Colors.white,),
                               onPressed: () => Navigator.push(
                                                   context, 
                                                   MaterialPageRoute(
-                                                    builder: (BuildContext context ) => EstadisticasClientesPage(
-                                                      
+                                                    builder: (BuildContext context ) => EstadisticaFMSocioPage(
+                                                      value: widget.value,
+                                                      imagenSocio: imagenSocio,
+                                                      nombreSocio: nombreSocio,
+                                                      tipoIdentificacion: tipoidentificador,
+                                                      identificacion: identificador,
                                                     )
                                                   )
                                                 ),
@@ -363,7 +368,7 @@ class _EstadisticasClientesPageState extends State<EstadisticasClientesPage> {
                                                 data[cont]['personaNombre'], 
                                                 data[cont]['personaTipoIdentificacion'], 
                                                 "${data[cont]['personaNumeroIdentificacion']}", 
-                                                data[cont]['userEmail'], 'usuario', 
+                                                data[cont]['userEmail'], 'Cliente', 
                                                 data[cont]['clienteId'] ),
                           
                           

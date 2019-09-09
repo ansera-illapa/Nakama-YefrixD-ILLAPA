@@ -158,8 +158,9 @@ class _RecuperarContrasenaPageState extends State<RecuperarContrasenaPage> {
     form.save();
 
     try{
+      String email = _email.replaceAll(" ", "");
       await FirebaseAuth.instance
-        .sendPasswordResetEmail(email: _email);
+        .sendPasswordResetEmail(email: email);
       _scaffoldKey.currentState.hideCurrentSnackBar();
       _scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text('Tu contraseña fue enviada a tu correo electronico'),

@@ -16,14 +16,14 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-class EstadisticasEspFiltroMayorPage extends StatefulWidget {
+class EstadisticaFMGestorPage extends StatefulWidget {
   final int value;
   final String imagenGestor;
   final String nombreGestor;
   final String tipoIdentificacion;
   final String identificacion;
 
-  EstadisticasEspFiltroMayorPage({Key key, 
+  EstadisticaFMGestorPage({Key key, 
                       this.value,
                       this.imagenGestor,
                       this.nombreGestor,
@@ -31,10 +31,10 @@ class EstadisticasEspFiltroMayorPage extends StatefulWidget {
                       this.identificacion}) : super(key: key);
 
   @override
-  _EstadisticasEspFiltroMayorPageState createState() => _EstadisticasEspFiltroMayorPageState();
+  _EstadisticaFMGestorPageState createState() => _EstadisticaFMGestorPageState();
 }
 
-class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMayorPage> {
+class _EstadisticaFMGestorPageState extends State<EstadisticaFMGestorPage> {
   
   Widget _buildListTramos(int cont, int desde, int hasta, int documentos, String importes ){
     if(documentos == null){
@@ -125,7 +125,7 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
 
   var data;
   String nombreCliente = '';
-  String imagenGestorFree = '';
+  String imagenSocio = '';
   String tipoidentificador = "";
   var identificador;
   String identificacion = '';
@@ -237,7 +237,7 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
       nombreCliente = widget.nombreGestor;
       tipoIdentificacion = widget.tipoIdentificacion;
       identificacion = widget.identificacion;
-      imagenGestorFree = widget.imagenGestor;
+      imagenSocio = widget.imagenGestor;
 
     }
 
@@ -323,7 +323,7 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
                         leading: new CircleAvatar(
                           foregroundColor: Theme.of(context).primaryColor,
                           backgroundColor: Colors.grey,
-                          backgroundImage: new NetworkImage(imagenGestorFree),
+                          backgroundImage: new NetworkImage(imagenSocio),
                         ),
                         title: new Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

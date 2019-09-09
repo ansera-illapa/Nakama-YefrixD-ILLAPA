@@ -108,10 +108,11 @@ class _EstFreeClientesPageState extends State<EstFreeClientesPage> {
   }
 
   var data;
-  String nombreSocio = '';
+  String nombreGestorFree = '';
   String tipoidentificador = "";
   var identificador;
   String email = '';
+  int sectorId;
 
   int cantClientes = 0;
   bool codes;
@@ -135,16 +136,14 @@ class _EstFreeClientesPageState extends State<EstFreeClientesPage> {
       print(code);
       setState(() {
         _isLoading = load;
-        this.nombreSocio = socioSeleccionado['personaNombre'];
+        this.nombreGestorFree = socioSeleccionado['personaNombre'];
 
         this.tipoidentificador = socioSeleccionado['personaTipoIdentificacion'];
-          
-
-
-
 
         this.identificador = socioSeleccionado['personaNumeroIdentificacion'];
         this.email = socioSeleccionado['userEmail'];
+        this.sectorId = socioSeleccionado['sectorId'];
+
 
         this.data = listClientes;
         this.codes = code;
@@ -268,7 +267,7 @@ class _EstFreeClientesPageState extends State<EstFreeClientesPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                nombreSocio,
+                                nombreGestorFree,
                                 style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, ),
                               ),
                               Padding(
@@ -294,21 +293,21 @@ class _EstFreeClientesPageState extends State<EstFreeClientesPage> {
                             ],
                           ),
                         ),
-                        // new IconButton(
-                        //       icon: Icon(FontAwesomeIcons.chartLine, color: Colors.white,),
-                        //       onPressed: () => Navigator.push(
-                        //                           context, 
-                        //                           MaterialPageRoute(
-                        //                             builder: (BuildContext context ) => EstadisticasEspFiltroMayorPage(
-                        //                               value: widget.value,
-                        //                               imagenCliente:imagenUsuario ,
-                        //                               nombreCliente: nombreSocio,
-                        //                               identificacion: '$tipoidentificador $identificador',
-
-                        //                             ) 
-                        //                           )
-                        //                         ),
-                        //     )
+                        new IconButton(
+                              icon: Icon(FontAwesomeIcons.users, color: Colors.white,),
+                              onPressed: () => Navigator.push(
+                                                  context, 
+                                                  MaterialPageRoute(
+                                                    builder: (BuildContext context ) => EstadisticasEspFiltroMayorPage(
+                                                      value: sectorId,
+                                                      nombreGestor: nombreGestorFree,
+                                                      imagenGestor: imagenUsuario,
+                                                      tipoIdentificacion: tipoidentificador,
+                                                      identificacion: "$identificador",
+                                                    ) 
+                                                  )
+                                                ),
+                            )
                       ],
                     ),
                   ),

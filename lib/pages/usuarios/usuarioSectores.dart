@@ -15,6 +15,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UsuariosSectoresPage extends StatefulWidget {
+  
+  final int     idUsuarioAnterior;
+  final String  nombreUsuarioAnterior;
+  final String  tipoIdentificacionUsuarioAnterior;
+  final String  numeroIdentificacionUsuarioAnterior;
+  final String  imagenUsuarioAnterior;
+  
   final int value;
   final String nombre ;
   final String tipoIdentificacion;
@@ -24,7 +31,14 @@ class UsuariosSectoresPage extends StatefulWidget {
   
   
   
-  UsuariosSectoresPage({Key key,this.value,
+  UsuariosSectoresPage({Key key,
+                                this.idUsuarioAnterior,
+                                this.nombreUsuarioAnterior,
+                                this.tipoIdentificacionUsuarioAnterior,
+                                this.numeroIdentificacionUsuarioAnterior,
+                                this.imagenUsuarioAnterior,
+
+                                this.value,
                                 this.nombre, 
                                 this.tipoIdentificacion,
                                 this.identificacion, 
@@ -218,7 +232,21 @@ Widget _buidEstListEmpresas( String titulo, int idSector){
                 
               ),
               onPressed: (){
-                Navigator.of(context).pop();
+                widget.nombreUsuarioAnterior != null
+                ?Navigator.push(
+                    context, 
+                    MaterialPageRoute(
+                      builder: (BuildContext context ) => UsuarioNuevoPage(
+                        idSocio:                      widget.value,
+                        idUsuario:                    widget.idUsuarioAnterior,
+                        nombreUsuario:                widget.nombreUsuarioAnterior,
+                        tipoIdentificacionUsuario:    widget.tipoIdentificacionUsuarioAnterior,
+                        numeroIdentificacionUsuario:  "${widget.numeroIdentificacionUsuarioAnterior}",
+                        imagenUsuario:                widget.imagenUsuarioAnterior,
+                      )
+                    )
+                  )
+                :Navigator.of(context).pop();
               },
             )
           ),
@@ -245,7 +273,7 @@ Widget _buidEstListEmpresas( String titulo, int idSector){
             Container(
               // padding: EdgeInsets.all(5.0),
               color: Color(0xff1f3c88),
-              height: 90.0,
+              // height: 90.0,
               child: Column(
                 children: <Widget>[
                   ListTile(
@@ -273,7 +301,10 @@ Widget _buidEstListEmpresas( String titulo, int idSector){
                                 widget.correo,
                                 style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
-                              
+                              Text(
+                                'SOCIO',
+                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                              ),
                             ],
                           ),
                         ),

@@ -50,6 +50,7 @@ class _TramosMostrarPageState extends State<TramosMostrarPage> {
                         ' De $desde a $hasta', 
                         style: TextStyle(fontFamily: 'illapaBold', fontSize: 15.0, color: Colors.white),
                       ),
+                      
                     ],
                   )
                 ],
@@ -61,33 +62,12 @@ class _TramosMostrarPageState extends State<TramosMostrarPage> {
               child: Center(
                 child: Row(
                   children: <Widget>[
-
                     IconButton(
-                                icon: Icon(FontAwesomeIcons.timesCircle, color: Colors.white,),
-                                onPressed: (){
-                                  modalEliminarTramo(context, idTramo );
-
-                                },
-                                
-                              )
-                    // IconButton(
-                    //   icon: Icon(
-                    //     FontAwesomeIcons.edit,
-                    //     color: Color(0xff1f3c88)
-                    //   ),
-                    //   onPressed: (){
-                    //     Navigator.of(context).pop();
-                    //   },
-                    // ),
-                    // IconButton(
-                    //   icon: Icon(
-                    //     Icons.delete,
-                    //     color: Colors.red
-                    //   ),
-                    //   onPressed: (){
-                    //     Navigator.of(context).pop();
-                    //   },
-                    // )
+                        icon: Icon(FontAwesomeIcons.trashAlt, color: Colors.redAccent,),
+                        onPressed: (){
+                          modalEliminarTramo(context, idTramo );
+                        },
+                      )
                   ],
                 )
               ),
@@ -505,13 +485,15 @@ class _TramosMostrarPageState extends State<TramosMostrarPage> {
                             children: <Widget>[
                               Text(
                                 nombreSocio,
-                                // nombreSocio,
                                 style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, ),
                               ),
                              
                               Text(
-                                // emailSocio,
                                 emailSocio,
+                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                              ),
+                              Text(
+                                "Socio",
                                 style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                             ],

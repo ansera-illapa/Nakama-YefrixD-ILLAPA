@@ -45,13 +45,6 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
                     ListTile(
                       leading: GestureDetector(
                         onTap: (){
-                              print(imagen);
-                              print(nombre);
-                              print(identif);
-                              print(tipo);
-                              print(idCliente);
-                              print(widget.value);
-                              print(userId);
                               Navigator.push(
                                           context, 
                                           MaterialPageRoute(
@@ -112,6 +105,10 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
                                   ),
                                   Text(
                                     '$usuario',
+                                    style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                  ),
+                                  Text(
+                                    'Cliente',
                                     style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                   ),
                                 ],
@@ -347,6 +344,10 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
                               ),
                               Text(
                                 '$numeroDocumentosVencidos vencidos por ${moneyType.format(double.parse(sumaImportesDocumentosVencidos))}',
+                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                              ),
+                              Text(
+                                'Socio',
                                 style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                             ],

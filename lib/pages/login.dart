@@ -495,8 +495,9 @@ class _LoginPageState extends State<LoginPage> {
     form.save();
 
     try{
+      String email = _email.replaceAll(" ", "");
       FirebaseUser  user = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: _email, password: _password);
+        .signInWithEmailAndPassword(email: email, password: _password);
       
       if(user.isEmailVerified){
         // final SharedPreferences apiToken = await _apiToken;
@@ -504,7 +505,7 @@ class _LoginPageState extends State<LoginPage> {
           "$urlGlobal/api/loginApi";
 
         var response = await http.post(url, body: {
-                        "email": _email,
+                        "email": email,
                         "pass": _password,
                         
                       });
@@ -856,10 +857,13 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
+      ),
+      bottomNavigationBar: Container(
+        color: Colors.black,
+        child: Text('V40.1', style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, )),
       )
-      
-      
     );
+    
     
   }
 

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:illapa/pages/estadisticas/estadisticaEsp.dart';
 import 'package:illapa/pages/estadisticas/estadisticaFree/estFreeFiltroMayor.dart';
+import 'package:illapa/pages/estadisticas/estadisticaGestor/estadisticaFMGestor.dart';
 import 'package:illapa/widgets.dart';
 
 import 'package:illapa/extras/globals/globals.dart';
@@ -108,10 +109,12 @@ class _EstadisticaGestorPageState extends State<EstadisticaGestorPage> {
   }
 
   var data;
-  String nombreSocio = '';
+  String nombreGestor = '';
+  String imagenGestor = '';
   String tipoidentificador = "";
   var identificador;
   String email = '';
+  int idSector;
 
   int cantClientes = 0;
   bool codes;
@@ -135,17 +138,12 @@ class _EstadisticaGestorPageState extends State<EstadisticaGestorPage> {
       print(code);
       setState(() {
         _isLoading = load;
-        this.nombreSocio = gestorSeleccionado['personaNombre'];
-
+        this.nombreGestor = gestorSeleccionado['personaNombre'];
         this.tipoidentificador = gestorSeleccionado['personaTipoIdentificacion'];
-          
-
-
-
 
         this.identificador = gestorSeleccionado['personaNumeroIdentificacion'];
         this.email = gestorSeleccionado['userEmail'];
-
+        this.idSector = gestorSeleccionado['sectorId'];
         this.data = listClientes;
         this.codes = code;
         if(codes){
@@ -268,7 +266,7 @@ class _EstadisticaGestorPageState extends State<EstadisticaGestorPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                nombreSocio,
+                                nombreGestor,
                                 style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, ),
                               ),
                               Padding(
@@ -290,6 +288,21 @@ class _EstadisticaGestorPageState extends State<EstadisticaGestorPage> {
                             ],
                           ),
                         ),
+                        new IconButton(
+                              icon: Icon(FontAwesomeIcons.users, color: Colors.white,),
+                              onPressed: () => Navigator.push(
+                                                  context, 
+                                                  MaterialPageRoute(
+                                                    builder: (BuildContext context ) => EstadisticaFMGestorPage(
+                                                      value: idSector,
+                                                      nombreGestor: nombreGestor,
+                                                      imagenGestor: imagenUsuario,
+                                                      tipoIdentificacion: tipoidentificador,
+                                                      identificacion: "$identificador",
+                                                    ) 
+                                                  )
+                                                ),
+                            )
                         
                       ],
                     ),

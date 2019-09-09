@@ -595,6 +595,7 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
             );
         });
   }
+  
   Future<void> _cargandoAgregarDocumento() async {
   return showDialog<void>(
     context: context,
@@ -687,7 +688,18 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
     
   }
 
-  Widget _buildListDocumentos(String nombreDocumento, String fechaVenc, int vencida, String importe, int documentoId, String saldo, String moneda){
+  Widget _buildListDocumentos(  String idTipoDocumento, 
+                                String tipoDocumento, 
+                                String numeroDocumento, 
+                                String fechaEmision, 
+                                String fechaVenc, 
+                                int vencida, 
+                                String importe, 
+                                int documentoId, 
+                                String saldo, 
+                                String idTipoMoneda,
+                                String moneda){
+
     DateTime today = new DateTime.now();
     List fechaVencSeparada = fechaVenc.split("-");
     
@@ -702,15 +714,6 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
     print(fechaVencida);
     print(difference.inDays);
     vencida = difference.inDays;
-
-    // String tipoMoneda;
-    // if(moneda == "PEN"){
-    //   tipoMoneda = "S/";
-    // }else if(moneda == "USD"){
-    //   tipoMoneda = '\$';
-    // }else if(moneda == "EUR"){
-    //   tipoMoneda = "€";
-    // }
 
     String vencidaPagadaVigente = 'S';
     String saldoTotal = "Saldo $moneda ${moneyType.format(double.parse(saldo))}";
@@ -742,11 +745,15 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
                               imagen:  imagenCliente,
                               identificacion: widget.identificacion,
                               
-                              nombreDocumento: nombreDocumento,
+                              idTipoDocumento: "$idTipoDocumento",
+                              tipoDocumento: "$tipoDocumento",
+                              numeroDocumento: "$numeroDocumento",
+                              fechaEmision: fechaEmision,
                               fechaVencimiento: fechaVenc,
                               vencida: vencida,
                               saldo: saldo,
                               importe: importe,
+                              idTipoMoneda: idTipoDocumento,
                               moneda: moneda,
                               tipomoneda : moneda,
                               vencidaPagadaVigente: vencidaPagadaVigente,
@@ -772,7 +779,7 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: <Widget>[
                                           Text(
-                                            nombreDocumento,
+                                            "$tipoDocumento $numeroDocumento",
                                             style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white,fontSize: 15.0 ),
                                           ),
                                           Text(
@@ -819,11 +826,15 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
                                                                     imagen:  imagenCliente,
                                                                     identificacion: widget.identificacion,
                                                                     
-                                                                    nombreDocumento: nombreDocumento,
+                                                                    idTipoDocumento: idTipoDocumento,
+                                                                    tipoDocumento: tipoDocumento,
+                                                                    numeroDocumento: numeroDocumento,
+                                                                    fechaEmision: fechaEmision,
                                                                     fechaVencimiento: fechaVenc,
                                                                     vencida: vencida,
                                                                     saldo: saldo,
                                                                     importe: importe,
+                                                                    idTipoMoneda: idTipoDocumento,
                                                                     moneda: moneda,
                                                                     tipomoneda : moneda,
                                                                     vencidaPagadaVigente : vencidaPagadaVigente,
@@ -1038,7 +1049,10 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
                             '$identificacion',
                             style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                           ),
-
+                          Text(
+                            'CLIENTE',
+                            style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                          ),
                         ],
                       ),
                     ),
@@ -1072,7 +1086,17 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
                           
                         for(var cont =0; cont<cantDocumentos; cont++ )
 
-                          _buildListDocumentos("${data[cont]['tipo']}"+" "+"${data[cont]['numero']}",data[cont]['fechavencimiento'], 33, "${data[cont]['importe']}", data[cont]['id'],  "${data[cont]['saldo']}", data[cont]['moneda']),
+                          _buildListDocumentos( "${data[cont]['idTipoDocumento']}",
+                                                "${data[cont]['tipo']}", 
+                                                "${data[cont]['numero']}",
+                                                data[cont]['fechaEmision'], 
+                                                data[cont]['fechavencimiento'], 
+                                                33, 
+                                                "${data[cont]['importe']}", 
+                                                data[cont]['id'],  
+                                                "${data[cont]['saldo']}",
+                                                "${data[cont]['idTipoMoneda']}",
+                                                data[cont]['moneda']),
                           
                         ],
                       ),

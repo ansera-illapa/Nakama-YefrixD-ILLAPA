@@ -71,8 +71,9 @@ class _RegisterPageState extends State<RegisterPage> {
     }
     
     try{
+      String email = _email.replaceAll(" ", "");
       FirebaseUser user = await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: _email, password: _password);
+        .createUserWithEmailAndPassword(email: email, password: _password);
 
         var url =
           "$urlGlobal/api/registrarpost";
@@ -81,7 +82,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         "tipoIdentificacion": identidadSeleccionada,
                         "nombre": _nombre,
                         "dni": _dni,
-                        "email": _email,
+                        "email": email,
                         "pass": _password,
                         
                       });

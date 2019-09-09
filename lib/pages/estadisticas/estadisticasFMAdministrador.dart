@@ -16,27 +16,28 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-class EstadisticasEspFiltroMayorPage extends StatefulWidget {
+class EstadisticasFMAdministradorPage extends StatefulWidget {
   final int value;
-  final String imagenGestor;
-  final String nombreGestor;
+  final String imagenAdm;
+  final String nombreAdm;
   final String tipoIdentificacion;
   final String identificacion;
 
-  EstadisticasEspFiltroMayorPage({Key key, 
+  EstadisticasFMAdministradorPage({Key key, 
                       this.value,
-                      this.imagenGestor,
-                      this.nombreGestor,
+                      this.imagenAdm,
+                      this.nombreAdm,
                       this.tipoIdentificacion,
                       this.identificacion}) : super(key: key);
 
   @override
-  _EstadisticasEspFiltroMayorPageState createState() => _EstadisticasEspFiltroMayorPageState();
+  _EstadisticasFMAdministradorPageState createState() => _EstadisticasFMAdministradorPageState();
 }
 
-class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMayorPage> {
+class _EstadisticasFMAdministradorPageState extends State<EstadisticasFMAdministradorPage> {
   
   Widget _buildListTramos(int cont, int desde, int hasta, int documentos, String importes ){
+
     if(documentos == null){
       setState(() {
        documentos = 0; 
@@ -47,7 +48,6 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
        importes ='0.00'; 
       });
     }
-
     return 
     
       Container(
@@ -125,12 +125,11 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
 
   var data;
   String nombreCliente = '';
-  String imagenGestorFree = '';
+  String imagenAdministrador = '';
   String tipoidentificador = "";
   var identificador;
   String identificacion = '';
   String tipoIdentificacion = '';
-
   String email = '';
 
   String porcentajeVencido;
@@ -170,7 +169,7 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
     String apiToken = await file.readAsString();
     // print(apiToken);
     final url =
-        "$urlEstadistica/filtroMayor/sectorista/sector/${widget.value}?api_token="+apiToken;
+        "$urlEstadistica/empresasTodas/filtroMayor?api_token="+apiToken;
     print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
@@ -183,6 +182,7 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
       
       print(code);
       setState(() {
+
         
 
         this.porcentajeVencido = porcentajeDocumentos['vencido'];
@@ -216,6 +216,8 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
 
         this.data = tramosSocio;
         
+        
+        
         this.codes = code;
         if(codes){
           cantTramos = this.data.length;
@@ -233,11 +235,11 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
   void initState() {
     // TODO: implement initState
 
-    if(widget.nombreGestor != null){
-      nombreCliente = widget.nombreGestor;
+    if(widget.nombreAdm != null){
+      nombreCliente = widget.nombreAdm;
       tipoIdentificacion = widget.tipoIdentificacion;
       identificacion = widget.identificacion;
-      imagenGestorFree = widget.imagenGestor;
+      imagenAdministrador = widget.imagenAdm;
 
     }
 
@@ -323,7 +325,7 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
                         leading: new CircleAvatar(
                           foregroundColor: Theme.of(context).primaryColor,
                           backgroundColor: Colors.grey,
-                          backgroundImage: new NetworkImage(imagenGestorFree),
+                          backgroundImage: new NetworkImage(imagenAdministrador),
                         ),
                         title: new Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -348,7 +350,7 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
                                   //   style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                   // ),
                                   Text(
-                                    'Sectorista',
+                                    'Administrador',
                                     style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                   ),
                                 ],
@@ -411,7 +413,7 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
                     _buildListTramos(cont+1,  data[cont]['desde'],
                                               data[cont]['hasta'], 
                                               data[cont]['documentos'], 
-                                              "${data[cont]['importe']}"),
+                                             "${data[cont]['importe']}"),
                     
                     _buildTotalTramos(cantPagados.round(), importePagados),
                   ],

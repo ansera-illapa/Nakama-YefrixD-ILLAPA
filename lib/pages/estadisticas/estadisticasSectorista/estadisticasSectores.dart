@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/pages/estadisticas/estadisticasSectorista/estadisticasFMSectores.dart';
 import 'package:illapa/pages/estadisticas/estadisticasSectorista/estadisticasSectorClientes.dart';
 import 'package:illapa/pages/gestiones/gestionSectorista/gestionSectorClientes.dart';
 
@@ -269,15 +270,21 @@ Widget _buildListSectores(int id, String descripcion ){
                             ],
                           ),
                         ),
-                        // new IconButton(
-                        //       icon: Icon(Icons.ac_unit, color: Colors.white,),
-                        //       onPressed: () => Navigator.push(
-                        //                           context, 
-                        //                           MaterialPageRoute(
-                        //                             builder: (BuildContext context ) => TramosMostrarPage()
-                        //                           )
-                        //                         ),
-                        //     )
+                        new IconButton(
+                              icon: Icon(FontAwesomeIcons.users, color: Colors.white,),
+                              onPressed: () => Navigator.push(
+                                                  context, 
+                                                  MaterialPageRoute(
+                                                    builder: (BuildContext context ) => EstadisticaFMSectoresPage(
+                                                      value: widget.value,
+                                                      nombreSectorista: nombreSectorista,
+                                                      imagenSectorista: imagenSectorista,
+                                                      tipoIdentificacion: tipoIdentificacion,
+                                                      identificacion: "$identificacion",
+                                                    )
+                                                  )
+                                                ),
+                            )
                       ],
                     ),
                   ),

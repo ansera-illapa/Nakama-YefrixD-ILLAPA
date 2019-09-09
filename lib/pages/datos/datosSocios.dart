@@ -312,15 +312,15 @@ Widget buidEstListSocios(String imagen,
                             ],
                           ),
                         ),
-                        new IconButton(
-                              icon: Icon(Icons.ac_unit, color: Colors.white,),
-                              onPressed: () => Navigator.push(
-                                                  context, 
-                                                  MaterialPageRoute(
-                                                    builder: (BuildContext context ) => DatoClientesPage()
-                                                  )
-                                                ),
-                            )
+                        // new IconButton(
+                        //       icon: Icon(Icons.ac_unit, color: Colors.white,),
+                        //       onPressed: () => Navigator.push(
+                        //                           context, 
+                        //                           MaterialPageRoute(
+                        //                             builder: (BuildContext context ) => DatoClientesPage()
+                        //                           )
+                        //                         ),
+                        //     )
                       ],
                     ),
                   ),

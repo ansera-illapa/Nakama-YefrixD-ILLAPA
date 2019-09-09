@@ -13,55 +13,73 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-class UsuarioNuevoPage extends StatefulWidget {
+class UsuarioEditarUsuarioPage extends StatefulWidget {
   final int     idSocio;
+  final String  nombreCargoUsuario;
+  final bool    cargoUsuario;
   final int     idUsuario;
   final String  nombreUsuario;
   final String  tipoIdentificacionUsuario;
   final String  numeroIdentificacionUsuario;
   final String  imagenUsuario;
+  final String  url;
+  final List    sectores;
 
-  UsuarioNuevoPage({
+  UsuarioEditarUsuarioPage({
                     Key key, 
                     this.idSocio, 
                     this.idUsuario,
                     this.nombreUsuario,
+                    this.nombreCargoUsuario,
+                    this.cargoUsuario,
                     this.tipoIdentificacionUsuario,
                     this.numeroIdentificacionUsuario,
-                    this.imagenUsuario
-
+                    this.imagenUsuario,
+                    this.url,
+                    this.sectores,
                   }) : super(key: key);
 
   @override
-  _UsuarioNuevoPageState createState() => _UsuarioNuevoPageState();
+  _UsuarioEditarUsuarioPageState createState() => _UsuarioEditarUsuarioPageState();
 }
 
-class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
+class _UsuarioEditarUsuarioPageState extends State<UsuarioEditarUsuarioPage> {
 
  DateTime _dateVencimiento;
- bool selectSectorista = false;
+ bool selectSectorista;
+ bool unavez = true;
 
-
-
- 
-
-
-  Widget _sector(String sector, int cont, bool select, int disponible, int idSector){
+  Widget _sector(String sector, int cont, bool select, int disponible, int idSector, int idGestorSector ){
     var x = 0xff5893d4;
+
+
     if(select == true){
       x = 0xff1f3c88;
     }
+    bool esSector = false;
+
+    if(unavez = true){
+      if(idGestorSector != null){
+         sectorSeleccionado = cont;
+         unavez = false; 
+          esSector = true;
+      }
+    }
+
     
+
     return Padding(
             padding: EdgeInsets.all(5.0),
             child: RaisedButton(
-              onPressed: disponible == 1 ? null : (){
+              onPressed: disponible == 1 && esSector == false? null : (){
                 Navigator.of(context).pop();
                 setState(() {
                   sectorSeleccionado = cont;
                   sectorNombre = sector;
                   codSectorSeleccionado = idSector;
+                  unavez = false; 
                 });
+                print(sectorSeleccionado);
                 print(codSectorSeleccionado);
               },
               textColor: Colors.white,
@@ -83,30 +101,32 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
         context: context,
         builder: (builder) {
           return new Container(
-            height: 300.0,
+            // height: 300.0,
             color: Color(0xFF070D59),
             child: ListView(
-              
               children: <Widget>[
                 Column(
-                
                   children: <Widget>[
                     Padding(
                       padding: EdgeInsets.only(top: 10.0),
-                      child: Text('SELECCIONAR SECTOR', style: TextStyle(color: Colors.white, fontFamily: 'illapaBold', fontSize: 15.0),)
+                      child: Text('SELECCIONAR SECTOR', 
+                      style: TextStyle(color: Colors.white, fontFamily: 'illapaBold', fontSize: 15.0),)
                     ),
-                    Wrap(
-                          children: <Widget>[
-                            for(var cont =0; cont<cantSectores; cont++ )
-                              
-                              sectorSeleccionado == cont
-                              ?_sector(dataSectores[cont]['descripcion'], cont, true , dataSectores[cont]['estGestor'], dataSectores[cont]['id'] )
-                              :_sector(dataSectores[cont]['descripcion'], cont, false, dataSectores[cont]['estGestor'], dataSectores[cont]['id'] ),
-                            
-                          ],
-                        )
-                    
-                  ],
+                    for(var cont =0; cont<cantSectores; cont++ )
+                      sectorSeleccionado == cont
+                      ?_sector(dataSectores[cont]['descripcion'], 
+                                cont, 
+                                true , 
+                                dataSectores[cont]['estGestor'], 
+                                dataSectores[cont]['id'],
+                                dataSectores[cont]['idGestor'] )
+                      :_sector(dataSectores[cont]['descripcion'], 
+                                cont, 
+                                false, 
+                                dataSectores[cont]['estGestor'], 
+                                dataSectores[cont]['id'] ,
+                                dataSectores[cont]['idGestor']),
+                   ],
                 ),
               ],
             )
@@ -209,53 +229,7 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
         });
     }
 
-  agregarGestor() async{
-     final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/api.txt');
-      String apiToken = await file.readAsString();
-      print(apiToken);
-      print(codSectorSeleccionado);
-      print(widget.idUsuario);
-      bool respuesta;
-      var url =
-          "$urlUsuario/agregarGestor";
-
-        final response = await http.post(url, body: {
-
-                        "idSector": "$codSectorSeleccionado" ,
-                        "idSectorista":  "${widget.idUsuario}",
-                        "api_token": apiToken,
-                        
-                      });
-
-  }
-
-
-  agregarSectorista() async{
-     final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/api.txt');
-      String apiToken = await file.readAsString();
-      print(apiToken);
-      print("${widget.idSocio}");
-      print("$codSectoresSeleccionado");
-      print("${widget.idUsuario}");
-      bool respuesta;
-      var url =
-          "$urlUsuario/agregarSectorista";
-
-        final response = await http.post(url, body: {
-
-                        "idSocio": "${widget.idSocio}" ,
-                        "idsSectores": "$codSectoresSeleccionado",
-                        "idSectorista": "${widget.idUsuario}" ,
-                        "api_token": apiToken,
-                        
-                      });
-
-  }
-
-  bool faltaSector = false;
-  Future<bool> modalAddDocumento(context, ) {
+  Future<bool> modalAddUsuario(context, ) {
     return showDialog(
         context: context,
         barrierDismissible: true,
@@ -274,16 +248,7 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.all(15.0),
-                          child: 
-                          Column(
-                            children: <Widget>[
-                              Text('¿Estás seguro de agregar este nuevo usuario?', style: TextStyle(color: Colors.white, fontFamily: 'illapaBold', fontSize: 20.0, ), textAlign: TextAlign.center,),
-                              if(faltaSector == true)
-                                Text('Falta seleccionar un sector', style: TextStyle(color: Colors.red, fontFamily: 'illapaBold',fontSize: 15.0),)
-                            ],
-                          )
-                          
-                          
+                          child: Text('¿Estás seguro de agregar este nuevo usuario?', style: TextStyle(color: Colors.white, fontFamily: 'illapaBold', fontSize: 20.0, ), textAlign: TextAlign.center,),
                         ),
                         
                         Padding(
@@ -298,45 +263,29 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
                                   child: Text('Agregar', style: TextStyle(color: Colors.white, fontFamily: 'illapaBold', fontSize: 15.0, ),),
                                   onPressed: selectSectorista 
                                     ? (){
-                                          if(sectoresSeleccionados > 0){
-                                            agregarSectorista();
-                                            Navigator.of(context).pop();
-                                            Navigator.push(
-                                              context, 
-                                              MaterialPageRoute(
-                                                builder: (BuildContext context ) => UsuariosUsuariosPage(
-                                                  value: widget.idSocio
-                                                )
+                                          // agregarSectorista();
+                                          Navigator.of(context).pop();
+                                          Navigator.push(
+                                            context, 
+                                            MaterialPageRoute(
+                                              builder: (BuildContext context ) => UsuariosUsuariosPage(
+                                                value: widget.idSocio
                                               )
-                                            );
-                                          }else{
-                                            setState(() {
-                                             faltaSector = true; 
-                                            });
-                                            Navigator.of(context).pop();
-                                            modalAddDocumento(context);
-                                          }
+                                            )
+                                          );
                                         }
+
                                     : (){
-                                        if(sectorSeleccionado != 99){
-                                            agregarGestor();
-                                            Navigator.of(context).pop();
-                                            Navigator.push(
-                                              context, 
-                                              MaterialPageRoute(
-                                                builder: (BuildContext context ) => UsuariosUsuariosPage(
-                                                  value: widget.idSocio
-                                                )
+                                          // agregarGestor();
+                                          Navigator.of(context).pop();
+                                          Navigator.push(
+                                            context, 
+                                            MaterialPageRoute(
+                                              builder: (BuildContext context ) => UsuariosUsuariosPage(
+                                                value: widget.idSocio
                                               )
-                                            );
-                                          }else{
-                                            setState(() {
-                                             faltaSector = true; 
-                                            });
-                                            Navigator.of(context).pop();
-                                            modalAddDocumento(context);
-                                          }
-                                          
+                                            )
+                                          );
                                         }
                                 ),
                               ),
@@ -410,7 +359,7 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
                   
 }
 
-  Widget _buildSectorSelccionado(String imagen, String titulo, int contSelectsSectores, String nombreSector){
+  Widget _buildSectorSelccionado(String titulo, int contSelectsSectores, String nombreSector){
     int selecionados = 0;
     if(contSelectsSectores != 99){
       selecionados = 1;
@@ -428,7 +377,6 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
                 child: Column(
                   children: <Widget>[
                     ListTile(
-                      
                       title: new Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -445,8 +393,6 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
                                     nombreSector,
                                     style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                   ),
-                                
-                                
                               ],
                             ),
                           ),
@@ -457,15 +403,6 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
                                   '$selecionados',
                                   style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                 ),
-                                // IconButton(
-                                //   icon: Icon(FontAwesomeIcons.angleRight, color: Colors.white,),
-                                //   // onPressed: () => Navigator.push(
-                                //   //                     context, 
-                                //   //                     MaterialPageRoute(
-                                //   //                       builder: (BuildContext context ) => DatoPagosPage()
-                                //   //                     )
-                                //   //                   ),
-                                // )
                               ],
                             )
                           )
@@ -481,11 +418,9 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
 
 
 
-  Widget _buildSectoresSelccionados(String imagen, String titulo, int contSelectsSectores, String nombreSector){
-    
+  Widget _buildSectoresSelccionados(String titulo, int contSelectsSectores, String nombreSector){
     
     List nombres = nombreSector.split("W-Q");
-
     return GestureDetector(
       onTap: (){
         _selectSectores();
@@ -529,15 +464,6 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
                                   '$contSelectsSectores',
                                   style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                 ),
-                                // IconButton(
-                                //   icon: Icon(FontAwesomeIcons.angleRight, color: Colors.white,),
-                                //   // onPressed: () => Navigator.push(
-                                //   //                     context, 
-                                //   //                     MaterialPageRoute(
-                                //   //                       builder: (BuildContext context ) => DatoPagosPage()
-                                //   //                     )
-                                //   //                   ),
-                                // )
                               ],
                             )
                           )
@@ -656,7 +582,7 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
     
 
     final url =
-        "$urlUsuario/datoSocioEmpresaSectores/${widget.idSocio}?api_token="+apiToken;
+        "$urlUsuario/datoSocioEmpresaSectores/${widget.url}/${widget.idSocio}/${widget.idUsuario}?api_token="+apiToken;
     print(url);
 
     final response = await http.get(url);
@@ -668,11 +594,13 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
       final empresaSeleccionada = map["empresa"];
       final load = map["load"];
       final listSectores = map["sectores"];
+      final sectorGestor = map["sectorGestor"];
+
 
 
       print(map);
       setState(() {
-        //miomio
+        
         this.nombreEmpresa = empresaSeleccionada['empresaNombre'];
         this.imagenEmpresa = empresaSeleccionada['personaImagen'];
         this.identificadorEmpresa = "${empresaSeleccionada['personaNumeroIdentificacion']}";
@@ -685,7 +613,6 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
         this.email = socioSeleccionado['userEmail'];
   
         this.dataSectores = listSectores;
-        
 
         this.codes = code;
         if(codes){
@@ -694,13 +621,29 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
             
           }else{
             cantSectores = 0;
-            
           }
-           
           
         }else{
           cantSectores = 0;
-          
+        }
+        //miomio
+
+        if(widget.cargoUsuario == false){
+          for(var cont =0; cont<cantSectores; cont++ ){
+            if(dataSectores[cont]['id'] ==dataSectores[cont]['idGestor'] ){
+              setState(() {
+               sectorSeleccionado = cont; 
+              });
+           }
+          }
+           
+
+          setState(() {
+           sectorNombre = sectorGestor['descripcion'];
+           codSectorSeleccionado = sectorGestor['id']; 
+           print(sectorNombre);
+           print(codSectorSeleccionado);
+          });
         }
 
         
@@ -713,10 +656,15 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
   @override
   void initState() {
     // TODO: implement initState
+    setState(() {
+     selectSectorista = widget.cargoUsuario;
+    });
+    
     super.initState();
     _getDatosEmpresaSocioSectores();
     _getVariables();
   }
+
 
 
   int tipoUsuario;
@@ -761,7 +709,7 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
       appBar: new AppBar(
         centerTitle: true,
         // title: new Text("${widget.idSocio} ${widget.idUsuario}"),
-        title: Text("Agregar un nuevo usuario"),
+        title: Text("Editar usuario"),
         actions: <Widget>[
           Padding(
             padding: EdgeInsets.only(right: 20.0),
@@ -822,10 +770,13 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
                                 widget.tipoIdentificacionUsuario+ ': ${widget.numeroIdentificacionUsuario}',
                                 style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                               ),
+                              Text(
+                                widget.nombreCargoUsuario,
+                                style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                              ),
                             ],
                           ),
                         ),
-                        
                       ],
                     ),
                   ),
@@ -933,10 +884,8 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
                           ),
 
                           selectSectorista == false
-                          ?_buildSectorSelccionado('https://cdn.pixabay.com/photo/2016/02/19/10/56/man-1209494_1280.jpg', 
-                                                    'SECTOR SELECCIONADO', sectorSeleccionado, sectorNombre)
-                          : _buildSectoresSelccionados('https://cdn.pixabay.com/photo/2016/02/19/10/56/man-1209494_1280.jpg', 
-                                                        'SECTORES SELECCIONADOS', sectoresSeleccionados, sectoresNombre),
+                          ?_buildSectorSelccionado('SECTOR SELECCIONADO', sectorSeleccionado, sectorNombre)
+                          : _buildSectoresSelccionados('SECTORES SELECCIONADOS', sectoresSeleccionados, sectoresNombre),
 
                           Padding(
                             padding: EdgeInsets.only(bottom: 80.0),
@@ -962,12 +911,9 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
                         FontAwesomeIcons.save,
                         ), 
                   onPressed: () {
-                    setState(() {
-                      faltaSector = false; 
-                    });
-                    modalAddDocumento(context);
+                    // modalAddUsuario(context);
                   },
-                  tooltip: 'Agregar usuario',
+                  tooltip: 'Editar usuario',
           ),
       bottomNavigationBar: BottomAppBar(
           color: Color(0xff1f3c88),
@@ -977,6 +923,7 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
+
               IconButton(icon: Icon(FontAwesomeIcons.bezierCurve, color: Colors.white,), onPressed: () {
                 Navigator.push(
                   context, 
@@ -1000,12 +947,126 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
               },
               tooltip: 'Agregar Sector',
               ),
+              IconButton(icon: Icon(FontAwesomeIcons.userMinus, color: Colors.white,), onPressed: () {
+                modalDegradarUsuario(context);
+              }, tooltip: "Degradar Usuario",
+              ),
             ],
           ),
         ),
     );
   }
   
+  Future<bool> modalDegradarUsuario(context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          
+          return Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0)),
+              child: Container(
+                height: 180.0,
+                color: Color(0xFF070D59),
+                padding: EdgeInsets.all(10.0),
+                
+                  child: Column(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.all(15.0),
+                          child: Text('¿Estás seguro de degradar este usuario?', 
+                            style: TextStyle(color: Colors.white, fontFamily: 'illapaBold', fontSize: 20.0, ), 
+                            textAlign: TextAlign.center,),
+                        ),
+                        
+                        Padding(
+                          padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                          child: Row(
+                            children: <Widget>[
+                              
+                              Expanded(
+                                child: RaisedButton(
+                                  color: Color(0xfff7b633),
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Text('Degradar', 
+                                  style: TextStyle(color: Colors.white, fontFamily: 'illapaBold', fontSize: 15.0, ),),
+                                  onPressed:  
+                                     (){
+                                          Navigator.of(context).pop();
+                                          _cargando("Degradando Usuario");
+                                          _degradarUsuario();
+                                        }
+                                    
+                                ),
+                              ),
+                              
+                            ],
+                          ),
+                        )
+                          
+                        
+                      ],
+                    ),
+                ),
+              
+            );
+        });
+  }
+
+  _degradarUsuario() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/api.txt');
+    String apiToken = await file.readAsString();
+    
+
+    final url =
+        "$urlUsuario/degradar/${widget.url}/${widget.idSocio}/${widget.idUsuario}?api_token="+apiToken;
+    print(url);
+
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      Navigator.push(
+          context, 
+          MaterialPageRoute(
+            builder: (BuildContext context ) => UsuariosUsuariosPage(
+              value : widget.idSocio,
+              nombre : '$nombreSocio',
+              imagen : '$imagenSocio',
+              tipoDocumentoIdentidad : tipoidentificador,
+              numeroDocumentoIdentidad : "$identificador",
+              userEmail : '$email',
+            )
+          )
+        );
+    }
+  }
+
+  Future<void> _cargando(String texto) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(texto),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Container(
+                  child: Center(
+                    child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
+                          ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
    
 
 

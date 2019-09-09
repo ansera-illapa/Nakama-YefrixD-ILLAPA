@@ -16,25 +16,25 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-class EstadisticasEspFiltroMayorPage extends StatefulWidget {
+class EstadisticaFMClientesPage extends StatefulWidget {
   final int value;
-  final String imagenGestor;
-  final String nombreGestor;
+  final String imagenSectorista;
+  final String nombreSectorista;
   final String tipoIdentificacion;
   final String identificacion;
 
-  EstadisticasEspFiltroMayorPage({Key key, 
+  EstadisticaFMClientesPage({Key key, 
                       this.value,
-                      this.imagenGestor,
-                      this.nombreGestor,
+                      this.imagenSectorista,
+                      this.nombreSectorista,
                       this.tipoIdentificacion,
                       this.identificacion}) : super(key: key);
 
   @override
-  _EstadisticasEspFiltroMayorPageState createState() => _EstadisticasEspFiltroMayorPageState();
+  _EstadisticaFMClientesPageState createState() => _EstadisticaFMClientesPageState();
 }
 
-class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMayorPage> {
+class _EstadisticaFMClientesPageState extends State<EstadisticaFMClientesPage> {
   
   Widget _buildListTramos(int cont, int desde, int hasta, int documentos, String importes ){
     if(documentos == null){
@@ -125,7 +125,7 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
 
   var data;
   String nombreCliente = '';
-  String imagenGestorFree = '';
+  String imagenSocio = '';
   String tipoidentificador = "";
   var identificador;
   String identificacion = '';
@@ -233,11 +233,11 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
   void initState() {
     // TODO: implement initState
 
-    if(widget.nombreGestor != null){
-      nombreCliente = widget.nombreGestor;
+    if(widget.nombreSectorista != null){
+      nombreCliente = widget.nombreSectorista;
       tipoIdentificacion = widget.tipoIdentificacion;
       identificacion = widget.identificacion;
-      imagenGestorFree = widget.imagenGestor;
+      imagenSocio = widget.imagenSectorista;
 
     }
 
@@ -323,7 +323,7 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
                         leading: new CircleAvatar(
                           foregroundColor: Theme.of(context).primaryColor,
                           backgroundColor: Colors.grey,
-                          backgroundImage: new NetworkImage(imagenGestorFree),
+                          backgroundImage: new NetworkImage(imagenSocio),
                         ),
                         title: new Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

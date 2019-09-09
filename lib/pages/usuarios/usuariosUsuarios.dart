@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:illapa/pages/usuarios/usuarioAgregarSector.dart';
+import 'package:illapa/pages/usuarios/usuarioEditarUsuario.dart';
 import 'package:illapa/pages/usuarios/usuarioNuevo.dart';
 import 'package:illapa/pages/usuarios/usuariosEspecifico.dart';
 import 'package:illapa/widgets.dart';
@@ -16,12 +17,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UsuariosUsuariosPage extends StatefulWidget {
-  final int value;
+  final int    value;
   final String nombre;
   final String imagen;
   final String tipoDocumentoIdentidad;
   final String numeroDocumentoIdentidad;
   final String userEmail;
+
   UsuariosUsuariosPage({Key key, this.value,
                                   this.nombre,
                                   this.imagen,
@@ -43,75 +45,110 @@ Widget _buildListUsuarios(String imagen,
                           String correo, 
                           String usuario, 
                           int id, 
-                          String url){
+                          String url,
+                          bool cargoUsuario){
   
 
     return 
-    GestureDetector(
-      onTap: (){Navigator.push(
-                context, 
-                MaterialPageRoute(
-                  builder: (BuildContext context ) => UsuariosEspecificoPage(
-                    value: id,
-                    socioid: widget.value,
-                    url: url,
-                    nombre: nombre,
-                    identificacion: '$tipo $identif',
-                    correo: correo,
-                    cargo: usuario,
-                    imagen: imagen,
-                    
-                  )
-                )
-              );},
-      
-      child: Padding(
+      Padding(
         padding: EdgeInsets.only(bottom: 1.0),
         child: Container(
                 color: Color(0xff5893d4),
                 child: Column(
                   children: <Widget>[
                     ListTile(
-                      leading: new CircleAvatar(
-                        foregroundColor: Theme.of(context).primaryColor,
-                        backgroundColor: Colors.grey,
-                        backgroundImage: new NetworkImage(imagen),
+                      leading: GestureDetector(
+                        onTap: (){
+                          Navigator.push(
+                            context, 
+                            MaterialPageRoute(
+                              builder: (BuildContext context ) => UsuarioEditarUsuarioPage(
+                                idSocio: widget.value,
+                                nombreCargoUsuario: usuario,
+                                cargoUsuario: cargoUsuario,
+                                idUsuario: id,
+                                nombreUsuario: nombre,
+                                tipoIdentificacionUsuario: tipo,
+                                numeroIdentificacionUsuario: '$identif',
+                                imagenUsuario: imagen,
+                                url: url,
+
+                              )
+                            )
+                          );
+                        },
+                        child: new CircleAvatar(
+                          foregroundColor: Theme.of(context).primaryColor,
+                          backgroundColor: Colors.grey,
+                          backgroundImage: new NetworkImage(imagen),
+                        ),
                       ),
                       title: new Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           new Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  nombre,
-                                  style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, fontSize: 15.0 ),
-                                ),
-                                Text(
-                                  '$tipo $identif',
-                                  style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
-                                ),
-                                Text(
-                                  '$correo',
-                                  style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
-                                ),
-                                Text(
-                                  '$usuario',
-                                  style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
-                                ),
-                              ],
+                            child: GestureDetector(
+                              onTap: (){
+                                Navigator.push(
+                                  context, 
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context ) => UsuariosEspecificoPage(
+                                      value: id,
+                                      socioid: widget.value,
+                                      url: url,
+                                      nombre: nombre,
+                                      identificacion: '$tipo $identif',
+                                      correo: correo,
+                                      cargo: usuario,
+                                      imagen: imagen,
+                                      
+                                    )
+                                  )
+                                );
+                              },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    nombre,
+                                    style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, fontSize: 15.0 ),
+                                  ),
+                                  Text(
+                                    '$tipo $identif',
+                                    style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                  ),
+                                  Text(
+                                    '$correo',
+                                    style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                  ),
+                                  Text(
+                                    '$usuario',
+                                    style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           new IconButton(
                                 icon: Icon(FontAwesomeIcons.angleRight, color: Colors.white,),
-                                onPressed: (){},
-                                // onPressed: () => Navigator.push(
-                                //                     context, 
-                                //                     MaterialPageRoute(
-                                //                       builder: (BuildContext context ) => DatoClientesPage()
-                                //                     )
-                                //                   ),
+                                onPressed: (){
+                                  Navigator.push(
+                                    context, 
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context ) => UsuariosEspecificoPage(
+                                        value: id,
+                                        socioid: widget.value,
+                                        url: url,
+                                        nombre: nombre,
+                                        identificacion: '$tipo $identif',
+                                        correo: correo,
+                                        cargo: usuario,
+                                        imagen: imagen,
+                                        
+                                      )
+                                    )
+                                  );
+                                },
                               )
                         ],
                       ),
@@ -119,8 +156,7 @@ Widget _buildListUsuarios(String imagen,
                   ],
                 ),
               ),
-        )
-    );
+        );
   }
 
 
@@ -398,7 +434,7 @@ Widget _buildListUsuarios(String imagen,
                                                 dataSectoristas[cont]['personaTipoIdentificacion'], 
                                                 "${dataSectoristas[cont]['personaNumeroIdentificacion']}", 
                                                 dataSectoristas[cont]['userEmail'], 'Sectorista',
-                                                dataSectoristas[cont]['sectoristasId'], 'sectorista'),
+                                                dataSectoristas[cont]['sectoristasId'], 'sectorista',true),
                           
                           for(var cont =0; cont<cantGestores; cont++ )                          
                             if(dataGestores[cont]['personaNombre'].indexOf(textoBusqueda.toUpperCase()) != -1 || dataGestores[cont]['personaNombre'].indexOf(textoBusqueda.toLowerCase()) != -1  )
@@ -407,7 +443,7 @@ Widget _buildListUsuarios(String imagen,
                                                 dataGestores[cont]['personaTipoIdentificacion'], 
                                                 "${dataGestores[cont]['personaNumeroIdentificacion']}", 
                                                 dataGestores[cont]['userEmail'], 'Gestor', 
-                                                dataGestores[cont]['gestorId'], 'gestor'),
+                                                dataGestores[cont]['gestorId'], 'gestor', false),
                           
                         ],
                       ),
@@ -429,8 +465,8 @@ Widget _buildListUsuarios(String imagen,
                         FontAwesomeIcons.plus,
                         ), 
                   onPressed: () {
-                    addSectorUsuario(context);
-                    
+                    // addSectorUsuario(context); Agregar usuario o secto
+                    usuarioBuscar(context);
 
                   },
           ),
@@ -740,17 +776,15 @@ Future<bool> addSector(context) {
                                   labelText: "Correo",
                                 ),
                               ),
-                            emailExiste
-                            ?Text(
-                              'Este correo no existe',
-                              style: TextStyle(
-                                fontFamily: 'illapaBold',
-                                fontSize: 12.0,
-                                color: Colors.red
+                            if(emailExiste)
+                              Text(
+                                'Este correo no existe',
+                                style: TextStyle(
+                                  fontFamily: 'illapaBold',
+                                  fontSize: 12.0,
+                                  color: Colors.red
+                                ),
                               ),
-                            )
-                            :Text(''),
-                            
                           ],
                         )
                     ),
@@ -999,18 +1033,18 @@ Future<bool> addSector(context) {
                               // _isLoading=false;
                               // _getUsuarios();
                               Navigator.push(
-                                            context, 
-                                            MaterialPageRoute(
-                                              builder: (BuildContext context ) => UsuarioNuevoPage(
-                                                idSocio: widget.value,
-                                                idUsuario: idSectoristaValido,
-                                                nombreUsuario: nombreUsuarioValidado,
-                                                tipoIdentificacionUsuario: tipoidentificadorValido,
-                                                numeroIdentificacionUsuario: "$identificadorValido",
-                                                imagenUsuario: imagenValido,
-                                              )
-                                            )
-                                          );
+                                  context, 
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context ) => UsuarioNuevoPage(
+                                      idSocio: widget.value,
+                                      idUsuario: idSectoristaValido,
+                                      nombreUsuario: nombreUsuarioValidado,
+                                      tipoIdentificacionUsuario: tipoidentificadorValido,
+                                      numeroIdentificacionUsuario: "$identificadorValido",
+                                      imagenUsuario: imagenValido,
+                                    )
+                                  )
+                                );
 
                               print("usuario asociado");
                             },

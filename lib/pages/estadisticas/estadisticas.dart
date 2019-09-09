@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/pages/estadisticas/estadisticasFMAdministrador.dart';
 import 'package:illapa/pages/estadisticas/estadisticasSocios.dart';
 import 'package:illapa/widgets.dart';
 
@@ -76,6 +77,10 @@ class _EstadisticaPageState extends State<EstadisticaPage> {
                                 ),
                                 Text(
                                   '$numeroDocumentosVencidos registros por ${moneyType.format(double.parse(sumaImportesDocumentosVencidos))} ',
+                                  style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                ),
+                                Text(
+                                  'Empresa',
                                   style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                 ),
                               ],
@@ -256,25 +261,30 @@ class _EstadisticaPageState extends State<EstadisticaPage> {
                                 '$numeroDocumentosVencidos vencidos por ${moneyType.format(double.parse(sumaImportesDocumentosVencidos))}',
                                 style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                               ),
+                              Text(
+                                'Administrador',
+                                style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                              ),
                             ],
                           ),
                         ),
-                        // new IconButton(
-                        //       icon: Icon(FontAwesomeIcons.chartLine, color: Colors.white,),
-                        //       onPressed: () => Navigator.push(
-                        //                           context, 
-                        //                           MaterialPageRoute(
-                        //                             builder: (BuildContext context ) => EstadisticasSociosPage(
-                        //                               value: idEmpresa,
-                        //                                 nombre: nombreEmpresa,
-                        //                                 imagen: imagen,
-                        //                                 tipoDocumentoIdentidad: tipoDocumentoIdentidad,
-                        //                                 numeroDocumentoIdentidad: numeroDocumentoIdentidad,
-                        //                                 userEmail: userEmail,
-                        //                             )
-                        //                           )
-                        //                         ),
-                        //     )
+                        new IconButton(
+                              icon: Icon(FontAwesomeIcons.users, color: Colors.white,),
+                              onPressed: (){
+                                Navigator.push(
+                                          context, 
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context ) => EstadisticasFMAdministradorPage(
+                                              value: idUsuario,
+                                              imagenAdm: imagenAdmin,
+                                              nombreAdm: 'Illapa',
+                                              tipoIdentificacion: '-',
+                                              identificacion: '-',
+                                            )
+                                          )
+                                        );
+                              }
+                            )
                       ],
                     ),
                   ),
