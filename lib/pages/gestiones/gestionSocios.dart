@@ -1,22 +1,15 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'package:illapa/pages/gestiones/gestionClientes.dart';
 import 'package:illapa/pages/gestiones/gestionEmpresa/gestionFiltroMayor.dart';
-
 import 'package:illapa/widgets.dart';
-
-
-
-
 import 'package:illapa/extras/globals/globals.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 class GestionSociosPage extends StatefulWidget {
   final int value;
@@ -41,6 +34,15 @@ class GestionSociosPage extends StatefulWidget {
 
 
 class _GestionSociosPageState extends State<GestionSociosPage> {
+
+  bool _buscar = false;
+  String textoBusqueda = '' ;
+  bool ordenAZ = true;
+  bool ordenZA = false;
+  bool orden19 = false;
+  bool orden91 = false;
+
+  var moneyType = new NumberFormat("#,##0.00", "en_US");
 
   Widget _buildListGestionEmpresas(String imagen, 
                                   String nombre, 
@@ -90,11 +92,11 @@ class _GestionSociosPageState extends State<GestionSociosPage> {
                                   style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white ,fontSize: 15.0 ),
                                 ),
                                 Text(
-                                  '$numeroDocumentos registros por $sumaImportesDocumentos',
+                                  '$numeroDocumentos registros por ${moneyType.format(double.parse(sumaImportesDocumentos))}',
                                   style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                 ),
                                 Text(
-                                  '$numeroDocumentosVencidos vencidos por $sumaImportesDocumentosVencidos',
+                                  '$numeroDocumentosVencidos vencidos por ${moneyType.format(double.parse(sumaImportesDocumentosVencidos))}',
                                   style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                 ),
                               ],
@@ -165,8 +167,6 @@ class _GestionSociosPageState extends State<GestionSociosPage> {
         this.imagenEmpresa = empresaSeleccionada['personaImagen'];
         this.numeroDocumentos = empresaSeleccionada['numeroDocumentos'];
         this.sumaImportesDocumentos = empresaSeleccionada['sumaImportesDocumentos'];
-
-
         this.numeroDocumentosVencidos = empresaSeleccionadaVencidos['numeroDocumentosVencidos'];
         this.sumaImportesDocumentosVencidos = empresaSeleccionadaVencidos['sumaImportesDocumentosVencidos'];
         
@@ -178,10 +178,24 @@ class _GestionSociosPageState extends State<GestionSociosPage> {
         }else{
           cantSocios = 0;
         }
-
-
       });
     }
+  }
+
+  int orderAZ(var a,var b){
+    return a.compareTo(b);
+  }
+
+  int order19(String a,String b){
+    int numeroA = double.parse(a).round();
+    int numeroB = double.parse(b).round();
+    if(numeroA < numeroB){
+      return -1;
+    }
+    if(numeroA > numeroB){
+      return 1;
+    }
+    return 0;
   }
 
   Widget _loading(){
@@ -311,11 +325,11 @@ class _GestionSociosPageState extends State<GestionSociosPage> {
                                 style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, ),
                               ),
                               Text(
-                                '$numeroDocumentos registros por $sumaImportesDocumentos',
+                                '$numeroDocumentos registros por ${moneyType.format(double.parse(sumaImportesDocumentos))}',
                                 style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
-                                '$numeroDocumentosVencidos vencidos por $sumaImportesDocumentosVencidos',
+                                '$numeroDocumentosVencidos vencidos por ${moneyType.format(double.parse(sumaImportesDocumentosVencidos))}',
                                 style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                             ],
@@ -345,6 +359,26 @@ class _GestionSociosPageState extends State<GestionSociosPage> {
                 ],
               ),
             ),
+            if(_buscar)
+              Padding(
+                padding: EdgeInsets.all(5.0),
+                child: Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.all(5.0),
+                  child: TextField(
+                    
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      hintText: 'Buscar'
+                    ),
+                    onChanged: (text){
+                      setState(() {
+                          textoBusqueda = text;
+                      });
+                    },
+                  ),
+                ),
+              ),
             if(!_isLoading)
               _loading(),
 
@@ -368,6 +402,7 @@ class _GestionSociosPageState extends State<GestionSociosPage> {
                         children: <Widget>[
 
                           for(var cont =0; cont<cantSocios; cont++ )
+                          if(data[cont]['personaNombre'].indexOf(textoBusqueda.toUpperCase()) != -1 || data[cont]['personaNombre'].indexOf(textoBusqueda.toLowerCase()) != -1  )
                             _buildListGestionEmpresas(data[cont]['personaImagen'], 
                                                       data[cont]['personaNombre'], 
                                                       data[cont]['numeroDocumentos'], 
@@ -387,28 +422,107 @@ class _GestionSociosPageState extends State<GestionSociosPage> {
           ],
         ),
       ),
-
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){},
-        tooltip: '',
-        
-        child: Icon(FontAwesomeIcons.ellipsisH),
-      ),
-
-        // bottomNavigationBar: BottomAppBar(
-        //   color: Color(0xff1f3c88),
-        //   shape: CircularNotchedRectangle(),
-        //   notchMargin: 2.0,
-        //   child: new 
-        //     Row(
-        //       crossAxisAlignment: CrossAxisAlignment.center,
-        //       textDirection: TextDirection.rtl,
-        //       children: [
-        //         IconButton(icon: Icon(Icons.power_input, color: Colors.white,), onPressed: () {},),
-        //       ],
-        //     ),
-        // ),
-        
+      bottomNavigationBar: BottomAppBar(
+          color: Color(0xff1f3c88),
+          shape: CircularNotchedRectangle(),
+          notchMargin: 4.0,
+          child: new Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+               _buscar
+                ?IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.timesCircle, 
+                    
+                    color: Colors.white,
+                    ), 
+                  onPressed: () {
+                    setState(() {
+                      _buscar = false;
+                    });
+                  },)
+                :IconButton(
+                  icon: Icon(
+                    Icons.search, 
+                    color: Colors.white,
+                    ), 
+                  onPressed: () {
+                    setState(() {
+                      _buscar = true;
+                    });
+                  },),
+              if(ordenAZ)
+                IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.sortAlphaUp, 
+                    color: Colors.white,
+                  ), 
+                  onPressed: () {
+                    setState(() {
+                      ordenAZ = false;
+                      ordenZA = true;
+                    });
+                    data.sort((a, b) {
+                      return orderAZ(b['personaNombre'],a['personaNombre']);
+                    });
+                  },
+                  tooltip: "Ordenar de la Z a la A",
+                ),
+              if(ordenZA)
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortAlphaDown, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    ordenZA = false;
+                    orden19 = true;
+                  });
+                  data.sort((a, b) {
+                    return orderAZ(a['personaNombre'],b['personaNombre']);
+                  });
+                },
+                tooltip: "Ordenar de la A a la Z",
+              ),
+              if(orden19)
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortNumericDown, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    orden19 = false;
+                    orden91 = true;
+                  });
+                  data.sort((a, b) {
+                    return order19("${a['sumaImportesDocumentosVencidos']}","${b['sumaImportesDocumentosVencidos']}");
+                  });
+                },
+                tooltip: "Ordenar de importe vencido de menor a mayor",
+              ),
+              if(orden91)
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortNumericUp, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    orden91 = false;
+                    ordenAZ = true;
+                  });
+                  data.sort((a, b) {
+                    return order19("${b['sumaImportesDocumentosVencidos']}","${a['sumaImportesDocumentosVencidos']}");
+                  });
+                },
+                tooltip: "Ordenar de importe vencido de mayor a menor",
+              )
+            ],
+          ),
+        ),
     );
     
   }

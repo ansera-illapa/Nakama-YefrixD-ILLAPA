@@ -25,6 +25,12 @@ class TramosMostrarPage extends StatefulWidget {
 }
 
 class _TramosMostrarPageState extends State<TramosMostrarPage> {
+  bool _buscar = false;
+  String textoBusqueda = '' ;
+  bool ordenAZ = true;
+  bool ordenZA = false;
+  bool orden19 = false;
+  bool orden91 = false;
 
   Widget _buildListTramos(int cont, int desde, int hasta, String nombreTramo, int idTramo){
 
@@ -365,6 +371,21 @@ class _TramosMostrarPageState extends State<TramosMostrarPage> {
       });
     }
   }
+
+  int orderAZ(var a,var b){
+    return a.compareTo(b);
+  }
+
+  int order19(var a,var b){
+    if(a<b){
+      return -1;
+    }
+    if(a>b){
+      return 1;
+    }
+    return 0;
+  }
+
   bool _isLoading = false;
   Widget _loading(){
       barrierDismissible: true;
@@ -514,6 +535,27 @@ class _TramosMostrarPageState extends State<TramosMostrarPage> {
                 ],
               ),
             ),
+            if(_buscar)
+              Padding(
+                padding: EdgeInsets.all(5.0),
+                child: Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.all(5.0),
+                  child: TextField(
+                    
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      hintText: 'Buscar'
+                    ),
+                    onChanged: (text){
+                      setState(() {
+                          textoBusqueda = text;
+                          print(textoBusqueda);
+                      });
+                    },
+                  ),
+                ),
+              ),
             !_isLoading
             ?  _loading()
             :Container(
@@ -535,18 +577,10 @@ class _TramosMostrarPageState extends State<TramosMostrarPage> {
                       color: Color(0xff070D59),
                       child: Column(
                         children: <Widget>[
-                          // _buidEstListEmpresas('https://cdn.pixabay.com/photo/2016/02/19/10/56/man-1209494_1280.jpg', 'Socio 1', 1, 987140650, 'socio1@hotmail.com', 'usuario'),
                           
                           for(var cont =0; cont<cantTramos; cont++ )
+                          if(data[cont]['nombre'].indexOf(textoBusqueda.toUpperCase()) != -1 || data[cont]['nombre'].indexOf(textoBusqueda.toLowerCase()) != -1  )
                           _buildListTramos(cont+1, data[cont]['inicio'], data[cont]['fin'], data[cont]['nombre'], data[cont]['id']),
-                          // _buildListTramos(2, -30, 0,),
-                          // _buildListTramos(3, 1, 15, ),
-                          // _buildListTramos(4, 16, 30, ),
-                          // _buildListTramos(5, 31, 60, ),
-                          // _buildListTramos(6, 61, 90, ),
-                          // _buildListTramos(7, 91, 9999,),
-                          
-                          
                         ],
                       ),
                       
@@ -560,14 +594,123 @@ class _TramosMostrarPageState extends State<TramosMostrarPage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          modalAddTramo(context);
-        },
-        tooltip: 'Agregar un nuevo tramo',
-        
-        child: Icon(FontAwesomeIcons.plus),
-      ),
+      floatingActionButtonLocation: 
+          FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: Color(0xff1f3c88),
+            child: 
+                  const Icon(
+                        FontAwesomeIcons.plus,
+                        ), 
+                  onPressed: () {
+                    modalAddTramo(context);
+                  },
+                  tooltip: 'Agregar un nuevo tramo',
+          ),
+
+        bottomNavigationBar: BottomAppBar(
+          color: Color(0xff1f3c88),
+          shape: CircularNotchedRectangle(),
+          notchMargin: 4.0,
+          child: new Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+               _buscar
+                ?IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.timesCircle, 
+                    
+                    color: Colors.white,
+                    ), 
+                  onPressed: () {
+                    setState(() {
+                      _buscar = false;
+                    });
+                  },)
+                :IconButton(
+                  icon: Icon(
+                    Icons.search, 
+                    color: Colors.white,
+                    ), 
+                  onPressed: () {
+                    setState(() {
+                      _buscar = true;
+                    });
+                  },),
+              if(ordenAZ)
+                IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.sortAlphaUp, 
+                    color: Colors.white,
+                  ), 
+                  onPressed: () {
+                    setState(() {
+                      ordenAZ = false;
+                      ordenZA = true;
+                    });
+                    data.sort((a, b) {
+                      return orderAZ(b['nombre'],a['nombre']);
+                    });
+                  },
+                  tooltip: "Ordenar de la A a la Z",
+                ),
+              if(ordenZA)
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortAlphaDown, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    ordenZA = false;
+                    orden19 = true;
+                  });
+                  data.sort((a, b) {
+                    return orderAZ(a['nombre'],b['nombre']);
+                  });
+                },
+                tooltip: "Ordenar de la Z a la A",
+              ),
+              if(orden19)
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortNumericDown, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    orden19 = false;
+                    orden91 = true;
+                  });
+                  data.sort((a, b) {
+                    return order19(b['inicio'],a['inicio']);
+                  });
+                },
+                tooltip: "Ordenar de inico menor a mayor",
+              ),
+              if(orden91)
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortNumericUp, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    orden91 = false;
+                    ordenAZ = true;
+                  });
+                  data.sort((a, b) {
+                    return order19(a['inicio'],b['inicio']);
+                  });
+                },
+                tooltip: "Ordenar de inico mayor a menor",
+              )
+
+
+            ],
+          ),
+        ),
     );
     
   }

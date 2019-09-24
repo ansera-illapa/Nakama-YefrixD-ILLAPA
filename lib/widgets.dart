@@ -405,14 +405,10 @@ class Sidebar extends StatelessWidget {
       default:
     }
     
-    
-    String imagenSidebar = '';
+    var imagenSidebar = '';
     if( imagenUsuario != null ){
       imagenSidebar = imagenUsuario;
     }
-
-    
-
 
     return 
          Drawer(
@@ -434,13 +430,20 @@ class Sidebar extends StatelessWidget {
                     style: TextStyle(
                       fontFamily: 'illapaBold',
                     )),
-                  accountEmail: new 
-                    Text(
-                      cargo,
-                      style: TextStyle(
-                        fontFamily: 'illapaMedium',
+                  accountEmail: Column(
+                    children: <Widget>[
+                      Text(
+                        cargo,
+                        style: TextStyle(
+                          fontFamily: 'illapaMedium',
+                        ),
                       ),
-                    ),
+                      Text('DEMO',style: TextStyle(
+                          fontFamily: 'illapaMedium',
+                        ),)
+                    ],
+                  )
+                    
                   
                   
                 ),

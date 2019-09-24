@@ -36,8 +36,10 @@ class EstadisticasSociosPage extends StatefulWidget {
 }
 
 class _EstadisticasSociosPageState extends State<EstadisticasSociosPage> {
-
-
+  bool _buscar = false;
+  String textoBusqueda = '' ;
+  bool ordenAZ = true;
+  bool ordenZA = false;
   
   Widget buidEstListSocios(String imagen, 
                             String nombre, 
@@ -170,11 +172,11 @@ class _EstadisticasSociosPageState extends State<EstadisticasSociosPage> {
         }else{
           cantSocios = 0;
         }
-        
-        
-        
       });
     }
+  }
+  int orderAZ(var a,var b){
+    return a.compareTo(b);
   }
   bool _isLoading = false;
   Widget _loading(){
@@ -342,6 +344,28 @@ class _EstadisticasSociosPageState extends State<EstadisticasSociosPage> {
                 ],
               ),
             ),
+
+            if(_buscar)
+              Padding(
+                padding: EdgeInsets.all(5.0),
+                child: Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.all(5.0),
+                  child: TextField(
+                    
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      hintText: 'Buscar'
+                    ),
+                    onChanged: (text){
+                      setState(() {
+                          textoBusqueda = text;
+                          print(textoBusqueda);
+                      });
+                    },
+                  ),
+                ),
+              ),
             if(!_isLoading)
               _loading(),
 
@@ -365,6 +389,7 @@ class _EstadisticasSociosPageState extends State<EstadisticasSociosPage> {
                       child: Column(
                         children: <Widget>[
                           for(var cont =0; cont<cantSocios; cont++ )
+                          if(data[cont]['personaNombre'].indexOf(textoBusqueda.toUpperCase()) != -1 || data[cont]['personaNombre'].indexOf(textoBusqueda.toLowerCase()) != -1  )
                           buidEstListSocios(data[cont]['personaImagen'], 
                                             data[cont]['personaNombre'], 
                                             data[cont]['personaTipoIdentificacion'], 
@@ -382,7 +407,75 @@ class _EstadisticasSociosPageState extends State<EstadisticasSociosPage> {
           ],
         ),
       ),
+      bottomNavigationBar: BottomAppBar(
+          color: Color(0xff1f3c88),
+          shape: CircularNotchedRectangle(),
+          notchMargin: 4.0,
+          child: new Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+               _buscar
+                ?IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.timesCircle, 
+                    
+                    color: Colors.white,
+                    ), 
+                  onPressed: () {
+                    setState(() {
+                      _buscar = false;
+                    });
+                  },)
+                :IconButton(
+                  icon: Icon(
+                    Icons.search, 
+                    color: Colors.white,
+                    ), 
+                  onPressed: () {
+                    setState(() {
+                      _buscar = true;
+                    });
+                  },),
+              if(ordenAZ)
+                IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.sortAlphaUp, 
+                    color: Colors.white,
+                  ), 
+                  onPressed: () {
+                    setState(() {
+                      ordenAZ = false;
+                      ordenZA = true;
+                    });
+                    data.sort((a, b) {
+                      return orderAZ(b['personaNombre'],a['personaNombre']);
+                    });
+                  },
+                  tooltip: "Ordenar de la A a la Z",
+                ),
+              if(ordenZA)
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortAlphaDown, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    ordenZA = false;
+                    ordenAZ = true;
+                  });
+                  data.sort((a, b) {
+                    return orderAZ(a['personaNombre'],b['personaNombre']);
+                  });
+                },
+                tooltip: "Ordenar de la Z a la A",
+              ),
+            ],
+          ),
+        ),
     );
+
   }
 }
 

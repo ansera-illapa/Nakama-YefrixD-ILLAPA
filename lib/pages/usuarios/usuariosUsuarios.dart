@@ -38,6 +38,7 @@ class UsuariosUsuariosPage extends StatefulWidget {
 class _UsuariosUsuariosPageState extends State<UsuariosUsuariosPage> {
   bool _buscar = false;
   String textoBusqueda = '';
+  bool ordenAZ = false;
 Widget _buildListUsuarios(String imagen, 
                           String nombre, 
                           String tipo, 
@@ -62,18 +63,24 @@ Widget _buildListUsuarios(String imagen,
                           Navigator.push(
                             context, 
                             MaterialPageRoute(
-                              builder: (BuildContext context ) => UsuarioEditarUsuarioPage(
-                                idSocio: widget.value,
-                                nombreCargoUsuario: usuario,
-                                cargoUsuario: cargoUsuario,
-                                idUsuario: id,
-                                nombreUsuario: nombre,
-                                tipoIdentificacionUsuario: tipo,
-                                numeroIdentificacionUsuario: '$identif',
-                                imagenUsuario: imagen,
-                                url: url,
+                              builder: (BuildContext context ) => UsuariosEspecificoPage(
+                                      value: id,
+                                      socioid: widget.value,
+                                      url: url,
+                                      nombre: nombre,
+                                      tipoIdentificacion: '$tipo',
+                                      numeroIdentificacion: '$identif',
+                                      correo: correo,
+                                      cargo: usuario,
+                                      imagen: imagen,
+                                      cargoUsuario: cargoUsuario,
 
-                              )
+                                      nombreSocio: widget.nombre,
+                                      imagenSocio: widget.imagen,
+                                      tipoDocumentoIdentidadSocio: widget.tipoDocumentoIdentidad,
+                                      numeroDocumentoIdentidadSocio: widget.numeroDocumentoIdentidad,
+                                      userEmailSocio: widget.userEmail,
+                                    )
                             )
                           );
                         },
@@ -97,11 +104,18 @@ Widget _buildListUsuarios(String imagen,
                                       socioid: widget.value,
                                       url: url,
                                       nombre: nombre,
-                                      identificacion: '$tipo $identif',
+                                      tipoIdentificacion: '$tipo',
+                                      numeroIdentificacion: '$identif',
                                       correo: correo,
                                       cargo: usuario,
                                       imagen: imagen,
-                                      
+                                      cargoUsuario: cargoUsuario,
+
+                                      nombreSocio: widget.nombre,
+                                      imagenSocio: widget.imagen,
+                                      tipoDocumentoIdentidadSocio: widget.tipoDocumentoIdentidad,
+                                      numeroDocumentoIdentidadSocio: widget.numeroDocumentoIdentidad,
+                                      userEmailSocio: widget.userEmail,
                                     )
                                   )
                                 );
@@ -140,10 +154,18 @@ Widget _buildListUsuarios(String imagen,
                                         socioid: widget.value,
                                         url: url,
                                         nombre: nombre,
-                                        identificacion: '$tipo $identif',
+                                        tipoIdentificacion: '$tipo',
+                                        numeroIdentificacion: '$identif',
                                         correo: correo,
                                         cargo: usuario,
                                         imagen: imagen,
+                                        cargoUsuario: cargoUsuario,
+
+                                        nombreSocio: widget.nombre,
+                                        imagenSocio: widget.imagen,
+                                        tipoDocumentoIdentidadSocio: widget.tipoDocumentoIdentidad,
+                                        numeroDocumentoIdentidadSocio: widget.numeroDocumentoIdentidad,
+                                        userEmailSocio: widget.userEmail,
                                         
                                       )
                                     )
@@ -205,10 +227,8 @@ Widget _buildListUsuarios(String imagen,
         if(codes){
           if(dataSectoristas != null){
             cantSectoristas = this.dataSectoristas.length;
-            
           }else{
             cantSectoristas = 0;
-            
           }
           if(dataGestores != null){
             cantGestores = this.dataGestores.length;
@@ -223,6 +243,14 @@ Widget _buildListUsuarios(String imagen,
         
       });
     }
+  }
+
+  int orderAZ(var a,var b){
+    return a.compareTo(b);
+  }
+
+  int orderZA(var a,var b){
+    return b.compareTo(a);
   }
 
 
@@ -252,8 +280,8 @@ Widget _buildListUsuarios(String imagen,
       tipoidentificador = widget.tipoDocumentoIdentidad;
       identificador = widget.numeroDocumentoIdentidad;
       email = widget.userEmail;
-
     }
+    
     // TODO: implement initState
     super.initState();
     _getUsuarios();
@@ -501,9 +529,42 @@ Widget _buildListUsuarios(String imagen,
                       _buscar = true;
                     });
                   },),
-              IconButton(icon: Icon(FontAwesomeIcons.ellipsisH, color: Colors.white,), onPressed: () {
-                _getUsuarios();
-              },),
+              ordenAZ
+              ?IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortAlphaUp, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    ordenAZ = false;
+                  });
+                  dataGestores.sort((a, b) {
+                    return orderZA(a['empresaNombre'],b['empresaNombre']);
+                  });
+                  dataSectoristas.sort((a, b) {
+                    return orderZA(a['empresaNombre'],b['empresaNombre']);
+                  });
+                  
+                },
+              )
+              :IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortAlphaDown, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    ordenAZ = true;
+                  });
+                  dataSectoristas.sort((a, b) {
+                    return orderZA(a['empresaNombre'],b['empresaNombre']);
+                  });
+                  dataGestores.sort((a, b) {
+                    return orderAZ(a['empresaNombre'],b['empresaNombre']);
+                  });
+                },
+              )
             ],
           ),
         ),

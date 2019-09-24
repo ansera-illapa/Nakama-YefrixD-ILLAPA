@@ -20,8 +20,9 @@ class TramosEmpresasPage extends StatefulWidget {
 }
 
 class _TramosEmpresasPageState extends State<TramosEmpresasPage> {
-
-  
+  bool _buscar = false;
+  bool ordenAZ = false;
+  String textoBusqueda = '' ;
 Widget _buidEstListEmpresas(String imagen, 
                             String nombre, 
                             String tipoDocumentoIdentidad, 
@@ -126,6 +127,13 @@ Widget _buidEstListEmpresas(String imagen,
         
       });
     }
+  }
+  int orderAZ(var a,var b){
+    return a.compareTo(b);
+  }
+
+  int orderZA(var a,var b){
+    return b.compareTo(a);
   }
 
   bool _isLoading = false;
@@ -253,6 +261,27 @@ Widget _buidEstListEmpresas(String imagen,
                 ],
               ),
             ),
+            if(_buscar)
+              Padding(
+                padding: EdgeInsets.all(5.0),
+                child: Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.all(5.0),
+                  child: TextField(
+                    
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      hintText: 'Buscar'
+                    ),
+                    onChanged: (text){
+                      setState(() {
+                          textoBusqueda = text;
+                          print(textoBusqueda);
+                      });
+                    },
+                  ),
+                ),
+              ),
             if(!_isLoading)
               _loading(),            
             Container(
@@ -276,6 +305,7 @@ Widget _buidEstListEmpresas(String imagen,
                         children: <Widget>[
 
                           for(var cont =0; cont<cantEmpresas; cont++ )
+                          if(data[cont]['empresaNombre'].indexOf(textoBusqueda.toUpperCase()) != -1 || data[cont]['empresaNombre'].indexOf(textoBusqueda.toLowerCase()) != -1  )
                           _buidEstListEmpresas(data[cont]['personaImagen'], 
                                               data[cont]['empresaNombre'], 
                                               "${data[cont]['personaTipoIdentificacion']}", 
@@ -295,12 +325,68 @@ Widget _buidEstListEmpresas(String imagen,
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){},
-        tooltip: 'Show DatePicker',
-        
-        child: Icon(FontAwesomeIcons.ellipsisH),
-      ),
+      bottomNavigationBar: BottomAppBar(
+          color: Color(0xff1f3c88),
+          shape: CircularNotchedRectangle(),
+          notchMargin: 4.0,
+          child: new Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+               _buscar
+                ?IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.timesCircle, 
+                    
+                    color: Colors.white,
+                    ), 
+                  onPressed: () {
+                    setState(() {
+                      _buscar = false;
+                    });
+                  },)
+                :IconButton(
+                  icon: Icon(
+                    Icons.search, 
+                    color: Colors.white,
+                    ), 
+                  onPressed: () {
+                    setState(() {
+                      _buscar = true;
+                    });
+                  },),
+              ordenAZ
+              ?IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortAlphaUp, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    ordenAZ = false;
+                  });
+                  data.sort((a, b) {
+                    return orderZA(a['empresaNombre'],b['empresaNombre']);
+                  });
+                },
+              )
+              :IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortAlphaDown, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    ordenAZ = true;
+                  });
+                  data.sort((a, b) {
+                    return orderAZ(a['empresaNombre'],b['empresaNombre']);
+                  });
+                },
+              )
+            ],
+          ),
+        ),
     );
     
   }

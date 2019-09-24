@@ -31,7 +31,9 @@ class TramosSociosPage extends StatefulWidget {
 }
 
 class _TramosSociosPageState extends State<TramosSociosPage> {
-
+  bool _buscar = false;
+  bool ordenAZ = false;
+  String textoBusqueda = '' ;
   
 Widget _buildListSocios(String imagen, 
                           String nombre, 
@@ -145,7 +147,7 @@ Widget _buildListSocios(String imagen,
       print(code);
       setState(() {
         _isLoading = load;
-        this.nombreEmpresa = empresaSeleccionada['empresaNombre'];
+        this.nombreEmpresa = empresaSeleccionada['personaNombre'];
         this.imagenEmpresa = empresaSeleccionada['personaImagen'];
         this.emailEmpresa = empresaSeleccionada['userEmail'];
         if(empresaSeleccionada['personaTipoIdentificacion'] == 1){
@@ -168,6 +170,14 @@ Widget _buildListSocios(String imagen,
       });
     }
   }
+  int orderAZ(var a,var b){
+    return a.compareTo(b);
+  }
+
+  int orderZA(var a,var b){
+    return b.compareTo(a);
+  }
+
   bool _isLoading = false;
   Widget _loading(){
       barrierDismissible: true;
@@ -315,6 +325,27 @@ Widget _buildListSocios(String imagen,
                 ],
               ),
             ),
+            if(_buscar)
+              Padding(
+                padding: EdgeInsets.all(5.0),
+                child: Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.all(5.0),
+                  child: TextField(
+                    
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      hintText: 'Buscar'
+                    ),
+                    onChanged: (text){
+                      setState(() {
+                          textoBusqueda = text;
+                          print(textoBusqueda);
+                      });
+                    },
+                  ),
+                ),
+              ),
             if(!_isLoading)
               _loading(),             
             Container(
@@ -338,6 +369,7 @@ Widget _buildListSocios(String imagen,
                         children: <Widget>[
 
                           for(var cont =0; cont<cantSocios; cont++ )
+                          if(data[cont]['personaNombre'].indexOf(textoBusqueda.toUpperCase()) != -1 || data[cont]['personaNombre'].indexOf(textoBusqueda.toLowerCase()) != -1  )
                             _buildListSocios(data[cont]['personaImagen'], 
                                              data[cont]['personaNombre'], 
                                              data[cont]['personaTipoIdentificacion'], 
@@ -358,12 +390,68 @@ Widget _buildListSocios(String imagen,
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){},
-        tooltip: 'Show DatePicker',
-        
-        child: Icon(FontAwesomeIcons.ellipsisH),
-      ),
+      bottomNavigationBar: BottomAppBar(
+          color: Color(0xff1f3c88),
+          shape: CircularNotchedRectangle(),
+          notchMargin: 4.0,
+          child: new Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+               _buscar
+                ?IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.timesCircle, 
+                    
+                    color: Colors.white,
+                    ), 
+                  onPressed: () {
+                    setState(() {
+                      _buscar = false;
+                    });
+                  },)
+                :IconButton(
+                  icon: Icon(
+                    Icons.search, 
+                    color: Colors.white,
+                    ), 
+                  onPressed: () {
+                    setState(() {
+                      _buscar = true;
+                    });
+                  },),
+              ordenAZ
+              ?IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortAlphaUp, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    ordenAZ = false;
+                  });
+                  data.sort((a, b) {
+                    return orderZA(a['personaNombre'],b['personaNombre']);
+                  });
+                },
+              )
+              :IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortAlphaDown, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    ordenAZ = true;
+                  });
+                  data.sort((a, b) {
+                    return orderAZ(a['personaNombre'],b['personaNombre']);
+                  });
+                },
+              )
+            ],
+          ),
+        ),
     );
     
   }

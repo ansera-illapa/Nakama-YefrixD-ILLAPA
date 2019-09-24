@@ -41,6 +41,10 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
   bool _sectorSelect = false;
   bool _gestorSelect = false;
   String textoBusqueda = '' ;
+  bool ordenAZ = true;
+  bool ordenZA = false;
+  bool orden19 = false;
+  bool orden91 = false;
   var moneyType = new NumberFormat("#,##0.00", "en_US");
 
   Widget _buildListGestionEmpresas(String imagen, 
@@ -76,7 +80,7 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
                           leading: new CircleAvatar(
                             foregroundColor: Theme.of(context).primaryColor,
                             backgroundColor: Colors.grey,
-                            backgroundImage: new NetworkImage(urlImagenes+imagen),
+                            backgroundImage: new NetworkImage(imagen),
                           ),
                           title: new Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -90,11 +94,11 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
                                       style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white,fontSize: 15.0  ),
                                     ),
                                     Text(
-                                      '$numeroDocumentos registros por $sumaImportesDocumentos',
+                                      '$numeroDocumentos registros por ${moneyType.format(double.parse(sumaImportesDocumentos))}',
                                       style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                     ),
                                     Text(
-                                      '$numeroDocumentosVencidos vencidos por $sumaImportesDocumentosVencidos',
+                                      '$numeroDocumentosVencidos vencidos por ${moneyType.format(double.parse(sumaImportesDocumentosVencidos))}',
                                       style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                     ),
                                   ],
@@ -366,7 +370,7 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
   int cantClientes = 0;
   bool codes;
   bool _isLoading = false;
-
+  int pagina = 1;
   
   _getClientes() async {
     final directory = await getApplicationDocumentsDirectory();
@@ -374,7 +378,7 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
     String apiToken = await file.readAsString();
     // print(apiToken);
     final url =
-        "$urlGlobal/api/clientesTodos/${widget.value}?api_token="+apiToken;
+        "$urlGlobal/api/clientesTodos/${widget.value}?api_token="+apiToken+"&page="+"$pagina";
     print(url);
 
     final response = await http.get(url);
@@ -398,16 +402,43 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
         this.numeroDocumentosVencidos = socioVencido['numeroDocumentosVencidos'];
         this.sumaImportesDocumentosVencidos = socioVencido['sumaImportesDocumentosVencidos'];
         
-        this.data = listClientes;
+        if(data == null){
+          this.data = listClientes;
+        }else{
+          if(listClientes == null){
+            print("Ya no hay mas");
+          }else{
+            this.data += listClientes;
+          }
+          
+        }
+        
+
         this.codes = code;
         if(codes){
           cantClientes = this.data.length;
         }else{
-          cantClientes = 0;
+          print("no hay datos");
         }
         
       });
     }
+  }
+
+  int orderAZ(var a,var b){
+    return a.compareTo(b);
+  }
+
+  int order19(String a,String b){
+    int numeroA = double.parse(a).round();
+    int numeroB = double.parse(b).round();
+    if(numeroA < numeroB){
+      return -1;
+    }
+    if(numeroA > numeroB){
+      return 1;
+    }
+    return 0;
   }
 
 
@@ -456,9 +487,23 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
     
   }
 
+  final scrollController = ScrollController();
+
   @override
   void initState() {
-    
+    scrollController.addListener(() {
+      if (scrollController.position.maxScrollExtent ==
+          scrollController.offset) {
+            print('jalaaa');
+            setState(() {
+              _isLoading = false;
+             pagina = pagina+1; 
+            });
+            _getClientes();
+            print(pagina);
+      }
+    });
+
     if(widget.nombre != null){
       nombreSocio = widget.nombre;
       imagenSocio = widget.imagen;
@@ -544,6 +589,7 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
       body: Container(
         padding: EdgeInsets.all(10.0),
         child: ListView(
+          controller: scrollController,
           children: <Widget>[
 
             Container(
@@ -579,15 +625,6 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
                             ],
                           ),
                         ),
-                        // new IconButton(
-                        //       icon: Icon(Icons.ac_unit, color: Colors.white,),
-                        //       onPressed: () => Navigator.push(
-                        //                           context, 
-                        //                           MaterialPageRoute(
-                        //                             builder: (BuildContext context ) => GestionClientesPage()
-                        //                           )
-                        //                         ),
-                        //     )
                       ],
                     ),
                   ),
@@ -616,8 +653,6 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
                   ),
                 ),
               ),
-            if(!_isLoading)
-              _loading(),
 
             Container(
               color: Color(0xfff7b633),
@@ -625,12 +660,8 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                    // padding: EdgeInsets.only(top: 5.0),
                     width: 5.0,
-                    
                     color: Color(0xfff7b633),
-                    
-                  
                   ),
                   Expanded(
                     child: Container(
@@ -664,20 +695,42 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
                                                               data[cont]['numeroDocumentosVencidos'], 
                                                               data[cont]['sumaImportesDocumentosVencidos'], 
                                                               data[cont]['clienteId']),
+                          
                            
                           
                         ],
+                        
                       ),
                       
                     ),
-                  )
+                  ),
+                  
                 ],
               )
             ),
+            if(!_isLoading)
+              _loading(),
+            Padding(
+              padding: EdgeInsets.only(bottom: 40.0),
+            )
+
+            
           ],
         ),
       ),
-        bottomNavigationBar: BottomAppBar(
+      floatingActionButtonLocation: 
+        FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Color(0xff1f3c88),
+          child: 
+            const Icon(
+                  FontAwesomeIcons.ellipsisH,
+                  ), 
+            onPressed: () {
+              _mostrarFiltros();
+            },
+        ),
+      bottomNavigationBar: BottomAppBar(
           color: Color(0xff1f3c88),
           shape: CircularNotchedRectangle(),
           notchMargin: 4.0,
@@ -685,42 +738,143 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              
-              _buscar
-              ?IconButton(
-                icon: Icon(
-                  FontAwesomeIcons.timesCircle, 
-                  
-                  color: Colors.white,
-                  ), 
-                onPressed: () {
-                  setState(() {
-                    _buscar = false;
-                  });
-                },)
-              :IconButton(
-                icon: Icon(
-                  Icons.search, 
-                  color: Colors.white,
-                  ), 
-                onPressed: () {
-                  setState(() {
-                    _buscar = true;
-                  });
-                },),
-              
-              IconButton(
-                icon: Icon(
-                  FontAwesomeIcons.ellipsisH, 
-                  color: Colors.white,
+               _buscar
+                ?IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.timesCircle, 
+                    
+                    color: Colors.white,
+                    ), 
+                  onPressed: () {
+                    setState(() {
+                      _buscar = false;
+                    });
+                  },)
+                :IconButton(
+                  icon: Icon(
+                    Icons.search, 
+                    color: Colors.white,
+                    ), 
+                  onPressed: () {
+                    setState(() {
+                      _buscar = true;
+                    });
+                  },),
+              if(ordenAZ)
+                IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.sortAlphaUp, 
+                    color: Colors.white,
                   ), 
                   onPressed: () {
-                    _mostrarFiltros();
-                    },
+                    setState(() {
+                      ordenAZ = false;
+                      ordenZA = true;
+                    });
+                    data.sort((a, b) {
+                      return orderAZ(b['personaNombre'],a['personaNombre']);
+                    });
+                  },
+                  tooltip: "Ordenar de la Z a la A",
                 ),
+              if(ordenZA)
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortAlphaDown, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    ordenZA = false;
+                    orden19 = true;
+                  });
+                  data.sort((a, b) {
+                    return orderAZ(a['personaNombre'],b['personaNombre']);
+                  });
+                },
+                tooltip: "Ordenar de la A a la Z",
+              ),
+              if(orden19)
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortNumericDown, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    orden19 = false;
+                    orden91 = true;
+                  });
+                  data.sort((a, b) {
+                    return order19("${a['sumaImportesDocumentosVencidos']}","${b['sumaImportesDocumentosVencidos']}");
+                  });
+                },
+                tooltip: "Ordenar de importe vencido de menor a mayor",
+              ),
+              if(orden91)
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortNumericUp, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    orden91 = false;
+                    ordenAZ = true;
+                  });
+                  data.sort((a, b) {
+                    return order19("${b['sumaImportesDocumentosVencidos']}","${a['sumaImportesDocumentosVencidos']}");
+                  });
+                },
+                tooltip: "Ordenar de importe vencido de mayor a menor",
+              )
             ],
           ),
         ),
+        // bottomNavigationBar: BottomAppBar(
+        //   color: Color(0xff1f3c88),
+        //   shape: CircularNotchedRectangle(),
+        //   notchMargin: 4.0,
+        //   child: new Row(
+        //     mainAxisSize: MainAxisSize.max,
+        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //     children: <Widget>[
+              
+        //       _buscar
+        //       ?IconButton(
+        //         icon: Icon(
+        //           FontAwesomeIcons.timesCircle, 
+                  
+        //           color: Colors.white,
+        //           ), 
+        //         onPressed: () {
+        //           setState(() {
+        //             _buscar = false;
+        //           });
+        //         },)
+        //       :IconButton(
+        //         icon: Icon(
+        //           Icons.search, 
+        //           color: Colors.white,
+        //           ), 
+        //         onPressed: () {
+        //           setState(() {
+        //             _buscar = true;
+        //           });
+        //         },),
+              
+        //       IconButton(
+        //         icon: Icon(
+        //           FontAwesomeIcons.ellipsisH, 
+        //           color: Colors.white,
+        //           ), 
+        //           onPressed: () {
+        //             _mostrarFiltros();
+        //             },
+        //         ),
+        //     ],
+        //   ),
+        // ),
         
     );
     

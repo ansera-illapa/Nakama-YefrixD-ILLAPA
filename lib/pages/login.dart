@@ -507,7 +507,6 @@ class _LoginPageState extends State<LoginPage> {
         var response = await http.post(url, body: {
                         "email": email,
                         "pass": _password,
-                        
                       });
         final directory = await getApplicationDocumentsDirectory();
         final fileApi = File('${directory.path}/api.txt');
@@ -860,7 +859,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
       bottomNavigationBar: Container(
         color: Colors.black,
-        child: Text('V40.1', style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, )),
+        child: Text('V40.6', style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, )),
       )
     );
     

@@ -185,6 +185,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     final url =
         "$urlGlobal/api/tiposDocumentosIdentidad";
+    print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final map = json.decode(response.body);

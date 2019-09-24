@@ -21,6 +21,12 @@ class DatoPage extends StatefulWidget {
 }
 
 class _DatoPageState extends State<DatoPage> {
+  bool _buscar = false;
+  String textoBusqueda = '' ;
+  bool ordenAZ = true;
+  bool ordenZA = false;
+  bool orden19 = false;
+  bool orden91 = false;
 
   var moneyType = new NumberFormat("#,##0.00", "en_US");
 Widget _buildListEmpresas(String imagen, 
@@ -156,6 +162,19 @@ Widget _buildListEmpresas(String imagen,
       });
     }
   }
+  int orderAZ(var a,var b){
+    return a.compareTo(b);
+  }
+
+  int order19(var a,var b){
+    if(a<b){
+      return -1;
+    }
+    if(a>b){
+      return 1;
+    }
+    return 0;
+  }
 
   bool _isLoading = false;
   Widget _loading(){
@@ -287,6 +306,27 @@ Widget _buildListEmpresas(String imagen,
                 ],
               ),
             ),
+            if(_buscar)
+              Padding(
+                padding: EdgeInsets.all(5.0),
+                child: Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.all(5.0),
+                  child: TextField(
+                    
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      hintText: 'Buscar'
+                    ),
+                    onChanged: (text){
+                      setState(() {
+                          textoBusqueda = text;
+                          print(textoBusqueda);
+                      });
+                    },
+                  ),
+                ),
+              ),
             if(!_isLoading)
               _loading(), 
 
@@ -311,6 +351,7 @@ Widget _buildListEmpresas(String imagen,
                         children: <Widget>[
 
                           for(var cont =0; cont<cantEmpresas; cont++ )
+                          if(data[cont]['empresaNombre'].indexOf(textoBusqueda.toUpperCase()) != -1 || data[cont]['empresaNombre'].indexOf(textoBusqueda.toLowerCase()) != -1  )
                             _buildListEmpresas( data[cont]['personaImagen'], 
                                                 data[cont]['empresaNombre'], 
                                                 data[cont]['numeroDocumentos'], 
@@ -334,38 +375,109 @@ Widget _buildListEmpresas(String imagen,
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){},
-        tooltip: 'Por nombre alfabetico',
-        
-        child: Icon(FontAwesomeIcons.ellipsisH),
-      ),
+      bottomNavigationBar: BottomAppBar(
+          color: Color(0xff1f3c88),
+          shape: CircularNotchedRectangle(),
+          notchMargin: 4.0,
+          child: new Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+               _buscar
+                ?IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.timesCircle, 
+                    
+                    color: Colors.white,
+                    ), 
+                  onPressed: () {
+                    setState(() {
+                      _buscar = false;
+                    });
+                  },)
+                :IconButton(
+                  icon: Icon(
+                    Icons.search, 
+                    color: Colors.white,
+                    ), 
+                  onPressed: () {
+                    setState(() {
+                      _buscar = true;
+                    });
+                  },),
+              if(ordenAZ)
+                IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.sortAlphaUp, 
+                    color: Colors.white,
+                  ), 
+                  onPressed: () {
+                    setState(() {
+                      ordenAZ = false;
+                      ordenZA = true;
+                    });
+                    data.sort((a, b) {
+                      return orderAZ(b['empresaNombre'],a['empresaNombre']);
+                    });
+                  },
+                  tooltip: "Ordenar de la A a la Z",
+                ),
+              if(ordenZA)
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortAlphaDown, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    ordenZA = false;
+                    orden19 = true;
+                  });
+                  data.sort((a, b) {
+                    return orderAZ(a['empresaNombre'],b['empresaNombre']);
+                  });
+                },
+                tooltip: "Ordenar de la Z a la A",
+              ),
+              if(orden19)
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortNumericDown, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    orden19 = false;
+                    orden91 = true;
+                  });
+                  data.sort((a, b) {
+                    return order19(b['sumaImportesDocumentosVencidos'],a['sumaImportesDocumentosVencidos']);
+                  });
+                },
+                tooltip: "Ordenar de importe vencido de menor a mayor",
+              ),
+              if(orden91)
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortNumericUp, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    orden91 = false;
+                    ordenAZ = true;
+                  });
+                  data.sort((a, b) {
+                    return order19(a['sumaImportesDocumentosVencidos'],b['sumaImportesDocumentosVencidos']);
+                  });
+                },
+                tooltip: "Ordenar de importe vencido de mayor a menor",
+              )
 
-      // floatingActionButtonLocation: 
-      //     FloatingActionButtonLocation.centerDocked,
-      //     floatingActionButton: FloatingActionButton(
-      //       backgroundColor: Color(0xff1f3c88),
-      //       child: 
-      //             const Icon(
-      //                   FontAwesomeIcons.plus,
-      //                   ), 
-      //             onPressed: () {},
-      //     ),
 
-      //   bottomNavigationBar: BottomAppBar(
-      //     color: Color(0xff1f3c88),
-      //     shape: CircularNotchedRectangle(),
-      //     notchMargin: 4.0,
-      //     child: new Row(
-      //       mainAxisSize: MainAxisSize.max,
-      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //       children: <Widget>[
-      //         IconButton(icon: Icon(Icons.search, color: Colors.white,), onPressed: () {},),
-      //         IconButton(icon: Icon(FontAwesomeIcons.ellipsisH, color: Colors.white,), onPressed: () {},),
-      //       ],
-      //     ),
-      //   ),
-
+            ],
+          ),
+        ),
     );
     
   }

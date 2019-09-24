@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class UsuariosEmpresasPage extends StatefulWidget {
 class _UsuariosEmpresasPageState extends State<UsuariosEmpresasPage> {
   bool _buscar = false;
   String textoBusqueda = '' ;
+  bool ordenAZ = false;
 Widget _buildListGestionEmpresas(String imagen, 
                                 String nombre, 
                                 String tipoDocumentoIdentidad, 
@@ -124,6 +126,7 @@ Widget _buildListGestionEmpresas(String imagen,
     print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
+      print(response.body);
       final map = json.decode(response.body);
       final users = map["result"];
       final load = map["load"];
@@ -135,12 +138,17 @@ Widget _buildListGestionEmpresas(String imagen,
         if(code == true){
           cantEmpresas = this.data.length;  
         }
-        
-        
       });
     }
   }
 
+  int orderAZ(var a,var b){
+    return a.compareTo(b);
+  }
+
+  int orderZA(var a,var b){
+    return b.compareTo(a);
+  }
   _agregarEmpresa() async{
       final directory = await getApplicationDocumentsDirectory();
       final file = File('${directory.path}/api.txt');
@@ -474,7 +482,37 @@ Widget _buildListGestionEmpresas(String imagen,
                       _buscar = true;
                     });
                   },),
-              IconButton(icon: Icon(FontAwesomeIcons.ellipsisH, color: Colors.white,), onPressed: () {},),
+              ordenAZ
+              ?IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortAlphaUp, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    ordenAZ = false;
+                  });
+                  data.sort((a, b) {
+                    return orderZA(a['empresaNombre'],b['empresaNombre']);
+                  });
+                },
+              )
+              :IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortAlphaDown, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    ordenAZ = true;
+                  });
+                  data.sort((a, b) {
+                    return orderAZ(a['empresaNombre'],b['empresaNombre']);
+                  });
+                },
+              )
+
+
             ],
           ),
         ),

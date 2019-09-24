@@ -29,6 +29,9 @@ class DatoClientesPage extends StatefulWidget {
 class _DatoClientesPageState extends State<DatoClientesPage> {
   bool _buscar = false;
   String textoBusqueda = '';
+  bool ordenAZ = true;
+  bool ordenZA = false;
+
   var moneyType = new NumberFormat("#,##0.00", "en_US");
 
   Widget _buildListClientes(String imagen, String nombre, String tipo, String identif, String correo, String usuario, int idCliente, int userId){
@@ -213,6 +216,9 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
           
       });
     }
+  }
+  int orderAZ(var a,var b){
+    return a.compareTo(b);
   }
   bool _isLoading = false;
   Widget _loading(){
@@ -422,8 +428,6 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
                                                   'Cliente', 
                                                   data[cont]['clienteId'],
                                                   data[cont]['userId'] ),
-                          //miomio
-                          
                         ],
                       ),
                       
@@ -486,7 +490,40 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
                     _buscar = true;
                   });
                 },),
-              IconButton(icon: Icon(FontAwesomeIcons.ellipsisH, color: Colors.white,), onPressed: () {},),
+              if(ordenAZ)
+                IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.sortAlphaUp, 
+                    color: Colors.white,
+                  ), 
+                  onPressed: () {
+                    setState(() {
+                      ordenAZ = false;
+                      ordenZA = true;
+                    });
+                    data.sort((a, b) {
+                      return orderAZ(b['personaNombre'],a['personaNombre']);
+                    });
+                  },
+                  tooltip: "Ordenar de la A a la Z",
+                ),
+              if(ordenZA)
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortAlphaDown, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    ordenZA = false;
+                    ordenAZ = true;
+                  });
+                  data.sort((a, b) {
+                    return orderAZ(a['personaNombre'],b['personaNombre']);
+                  });
+                },
+                tooltip: "Ordenar de la Z a la A",
+              ),
             ],
           ),
         ),

@@ -229,7 +229,7 @@ class _UsuarioEditarUsuarioPageState extends State<UsuarioEditarUsuarioPage> {
         });
     }
 
-  Future<bool> modalAddUsuario(context, ) {
+  Future<bool> modalEditUsuario(context, ) {
     return showDialog(
         context: context,
         barrierDismissible: true,
@@ -248,7 +248,9 @@ class _UsuarioEditarUsuarioPageState extends State<UsuarioEditarUsuarioPage> {
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.all(15.0),
-                          child: Text('¿Estás seguro de agregar este nuevo usuario?', style: TextStyle(color: Colors.white, fontFamily: 'illapaBold', fontSize: 20.0, ), textAlign: TextAlign.center,),
+                          child: Text('¿Estás seguro de editar este usuario?', 
+                            style: TextStyle(color: Colors.white, fontFamily: 'illapaBold', fontSize: 20.0, ), 
+                            textAlign: TextAlign.center,),
                         ),
                         
                         Padding(
@@ -260,10 +262,10 @@ class _UsuarioEditarUsuarioPageState extends State<UsuarioEditarUsuarioPage> {
                                 child: RaisedButton(
                                   color: Color(0xfff7b633),
                                   padding: EdgeInsets.all(10.0),
-                                  child: Text('Agregar', style: TextStyle(color: Colors.white, fontFamily: 'illapaBold', fontSize: 15.0, ),),
+                                  child: Text('Editar', style: TextStyle(color: Colors.white, fontFamily: 'illapaBold', fontSize: 15.0, ),),
                                   onPressed: selectSectorista 
                                     ? (){
-                                          // agregarSectorista();
+                                          // editarSectorista();
                                           Navigator.of(context).pop();
                                           Navigator.push(
                                             context, 
@@ -276,7 +278,7 @@ class _UsuarioEditarUsuarioPageState extends State<UsuarioEditarUsuarioPage> {
                                         }
 
                                     : (){
-                                          // agregarGestor();
+                                          // editarGestor();
                                           Navigator.of(context).pop();
                                           Navigator.push(
                                             context, 
@@ -911,7 +913,7 @@ class _UsuarioEditarUsuarioPageState extends State<UsuarioEditarUsuarioPage> {
                         FontAwesomeIcons.save,
                         ), 
                   onPressed: () {
-                    // modalAddUsuario(context);
+                    modalEditUsuario(context);
                   },
                   tooltip: 'Editar usuario',
           ),
@@ -1013,6 +1015,34 @@ class _UsuarioEditarUsuarioPageState extends State<UsuarioEditarUsuarioPage> {
               
             );
         });
+  }
+
+  _editarUsuario() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/api.txt');
+    String apiToken = await file.readAsString();
+    
+
+    final url =
+        "$urlUsuario/editar/${widget.url}/${widget.idSocio}/${widget.idUsuario}?api_token="+apiToken;
+    print(url);
+
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      Navigator.push(
+          context, 
+          MaterialPageRoute(
+            builder: (BuildContext context ) => UsuariosUsuariosPage(
+              value : widget.idSocio,
+              nombre : '$nombreSocio',
+              imagen : '$imagenSocio',
+              tipoDocumentoIdentidad : tipoidentificador,
+              numeroDocumentoIdentidad : "$identificador",
+              userEmail : '$email',
+            )
+          )
+        );
+    }
   }
 
   _degradarUsuario() async {

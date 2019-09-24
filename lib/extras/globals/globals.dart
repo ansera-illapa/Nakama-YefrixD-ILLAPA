@@ -2,26 +2,26 @@
 library my_prj.globals;
 
 
-String urlGlobal =  'http://35.222.139.100';
-String urlGestion =  'http://35.222.139.100/api/gestion';
-String urlGestionSectoristas =  'http://35.222.139.100/api/sectorista/gestion';
-String urlGestionFree =  'http://35.222.139.100/api/gestionFree';
+String urlGlobal =  'http://demo.ansera.pe';
+String urlGestion =  urlGlobal+'/api/gestion';
+String urlGestionSectoristas =  urlGlobal+'/api/sectorista/gestion';
+String urlGestionFree =  urlGlobal+'/api/gestionFree';
 
-String urlVencimiento =  'http://35.222.139.100/api/vencimiento';
+String urlVencimiento =  urlGlobal+'/api/vencimiento';
 
-String urlEstadistica =  'http://35.222.139.100/api/estadistica';
-String urlEstadisticasGestor =  'http://35.222.139.100/api/estadistica/gestor';
-String urlEstadisticasSectoristas =  'http://35.222.139.100/api/estadistica/sectorista';
-String urlEstFree =  'http://35.222.139.100/api/estadisticasFree';
+String urlEstadistica =  urlGlobal+'/api/estadistica';
+String urlEstadisticasGestor =  urlGlobal+'/api/estadistica/gestor';
+String urlEstadisticasSectoristas =  urlGlobal+'/api/estadistica/sectorista';
+String urlEstFree =  urlGlobal+'/api/estadisticasFree';
 
 
-String urlDato =  'http://35.222.139.100/api/dato';
-String urlDatFree =  'http://35.222.139.100/api/datoFree';
+String urlDato =  urlGlobal+'/api/dato';
+String urlDatFree =  urlGlobal+'/api/datoFree';
 
-String urlUsuario =  'http://35.222.139.100/api/usuario';
+String urlUsuario =  urlGlobal+'/api/usuario';
 
-String urlTramo =  'http://35.222.139.100/api/tramo';
-String urlTramoFree =  'http://35.222.139.100/api/tramoFree';
+String urlTramo =  urlGlobal+'/api/tramo';
+String urlTramoFree =  urlGlobal+'/api/tramoFree';
       
 // String urlSubirImagen = 'http://35.222.139.100/api/datoFree';
 // String urlImagenes = 'http://35.222.139.100/';

@@ -37,6 +37,7 @@ class UsuariosSociosPage extends StatefulWidget {
 class _UsuariosSociosPageState extends State<UsuariosSociosPage> {
   bool _buscar = false;
   String textoBusqueda = '';
+  bool ordenAZ = false;
   Widget _buidEstListEmpresas(String imagen, 
                               String nombre, 
                               String tipoDocumentoIdentidad, 
@@ -161,6 +162,7 @@ class _UsuariosSociosPageState extends State<UsuariosSociosPage> {
     print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
+      print(response.body);
       final map = json.decode(response.body);
       final code = map["code"];
       final empresaSeleccionada = map["empresa"];
@@ -188,6 +190,13 @@ class _UsuariosSociosPageState extends State<UsuariosSociosPage> {
         
       });
     }
+  }
+  int orderAZ(var a,var b){
+    return a.compareTo(b);
+  }
+
+  int orderZA(var a,var b){
+    return b.compareTo(a);
   }
 
   agregarSocio() async{
@@ -472,7 +481,35 @@ class _UsuariosSociosPageState extends State<UsuariosSociosPage> {
                       _buscar = true;
                     });
                   },),
-              IconButton(icon: Icon(FontAwesomeIcons.ellipsisH, color: Colors.white,), onPressed: () {},),
+              ordenAZ
+              ?IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortAlphaUp, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    ordenAZ = false;
+                  });
+                  data.sort((a, b) {
+                    return orderZA(a['personaNombre'],b['personaNombre']);
+                  });
+                },
+              )
+              :IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.sortAlphaDown, 
+                  color: Colors.white,
+                ), 
+                onPressed: () {
+                  setState(() {
+                    ordenAZ = true;
+                  });
+                  data.sort((a, b) {
+                    return orderAZ(a['personaNombre'],b['personaNombre']);
+                  });
+                },
+              )
             ],
           ),
         ),
