@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:illapa/behaviors/hiddenScrollBehavior.dart';
+import 'package:illapa/extras/globals/globals.dart';
 import 'package:illapa/widgets.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
 
 
 class ConfirmacionPage extends StatefulWidget{
@@ -80,28 +83,28 @@ class _ConfirmacionPageState extends State<ConfirmacionPage> {
                         padding: EdgeInsets.only(top: 10.0),
                       ),  
 
-                      Text('Contraseña',  style: TextStyle(color: Colors.white, fontFamily: 'illapaBold',),),
-                      Container(
-                        height: 33.0,
-                        child: TextFormField(
-                            controller:  contrasena,
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              fillColor: Colors.white,
-                              filled: true,
-                            ),
-                            validator: (val){
-                              if(val.isEmpty){
-                                return 'Falta la contraseña';
-                              }else{
-                                return null;
-                              }
-                            },
+                      // Text('Contraseña',  style: TextStyle(color: Colors.white, fontFamily: 'illapaBold',),),
+                      // Container(
+                      //   height: 33.0,
+                      //   child: TextFormField(
+                      //       controller:  contrasena,
+                      //       obscureText: true,
+                      //       decoration: InputDecoration(
+                      //         fillColor: Colors.white,
+                      //         filled: true,
+                      //       ),
+                      //       validator: (val){
+                      //         if(val.isEmpty){
+                      //           return 'Falta la contraseña';
+                      //         }else{
+                      //           return null;
+                      //         }
+                      //       },
                              
                              
                             
-                          ),
-                      ),
+                      //     ),
+                      // ),
                       
 
 
@@ -118,7 +121,7 @@ class _ConfirmacionPageState extends State<ConfirmacionPage> {
                     children: <Widget>[
                       Expanded(
                         child: new RaisedButton(
-                          child: new Text("Enviar"),
+                          child: new Text("Enviar", style: TextStyle(color: Colors.white ),),
                           color: Color(0xffF7B633), 
                           onPressed: (){
                             _enviarConfirmacion();
@@ -140,17 +143,9 @@ class _ConfirmacionPageState extends State<ConfirmacionPage> {
                     ],
                   ),
                 ),
-                
-                
-                
-                
-                
                 new Padding(
                   padding: const EdgeInsets.all(5.0),
                 ),
-                
-                
-
               ],
             ),
           ),
@@ -163,21 +158,28 @@ class _ConfirmacionPageState extends State<ConfirmacionPage> {
   TextEditingController contrasena = TextEditingController();
   _enviarConfirmacion() async{
     
-    FirebaseUser  user = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email.text, password: contrasena.text);
-    
-    if(user.isEmailVerified){
-      _scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text('Tu correo ya fue validado'),
-      ));
+    // REENVIAR CORREO CONFIRMACION 
+
+    String url = "$urlGlobal/api/reenviar/correo/confirmacion/"+email.text;
+    final response = await http.get(url);
+    print(response.body);
+    if (response.statusCode == 200) {
+      final verificado = response.body;
+      if(verificado == "false"){
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text('Se te envío el correo de confirmación '),
+        ));
+        Navigator.of(context).pop();
+      }else{
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text('Tu correo ya fue validado'),
+        ));
+        Navigator.of(context).pop();
+      }
     }else{
-      await user.sendEmailVerification();
       _scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text('Se te envío el correo de confirmación '),
+        content: Text('Problemas con el servidor'),
       ));
     }
-    
-    
   }
-
 }

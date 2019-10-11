@@ -2,6 +2,7 @@
 library my_prj.globals;
 
 
+// String urlGlobal =  'http://192.168.1.15:8000';
 String urlGlobal =  'http://demo.ansera.pe';
 String urlGestion =  urlGlobal+'/api/gestion';
 String urlGestionSectoristas =  urlGlobal+'/api/sectorista/gestion';

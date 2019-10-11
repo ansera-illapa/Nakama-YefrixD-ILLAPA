@@ -36,7 +36,7 @@ class _RegisterPageState extends State<RegisterPage> {
   bool correoExistente = false;
   String api;
 
-  _register() async{  
+  _register() async{
   
     if(_isRegistering) return;
 
@@ -44,8 +44,6 @@ class _RegisterPageState extends State<RegisterPage> {
      _isRegistering = true; 
      correoExistente = false;
     });
-
-    
 
     _scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text('Registrando usuario'),
@@ -72,11 +70,11 @@ class _RegisterPageState extends State<RegisterPage> {
     
     try{
       String email = _email.replaceAll(" ", "");
-      FirebaseUser user = await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: email, password: _password);
+      
+      // REGISTRAR USUARIO
+      
 
-        var url =
-          "$urlGlobal/api/registrarpost";
+        String url ="$urlGlobal/api/registrarpost";
 
         var response = await http.post(url, body: {
                         "tipoIdentificacion": identidadSeleccionada,
@@ -91,7 +89,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
         
       try{
-        await user.sendEmailVerification();
+        // enviar correo confirmacion
+        
         
 
       }catch(e){
@@ -297,13 +296,8 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                             )
                           ),
-                          
                         ],
                       ),
-                      
-
-
-
                       Padding(
                         padding: EdgeInsets.only(top: 5.0),
                       ),
@@ -334,16 +328,12 @@ class _RegisterPageState extends State<RegisterPage> {
                             )
                           ),
                         ),
-                      
-
                       TextFormField(
-                        
                         decoration: InputDecoration(
                           fillColor: Colors.white,
                           filled: true,
                           hintText: "Illapa@hotmail.com",
                           labelText: "Correo",
-                          
                         ),
                         validator: (val){
                           if(val.isEmpty){
@@ -392,19 +382,12 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: new Text("Registrarse"),
                   color: Color(0xffF7B633), 
                   onPressed: (){
-                    
                     _register();
-
                   },
-                  
                 ),
-                
-                
-                
                 new Padding(
                   padding: const EdgeInsets.all(5.0),
                 ),
-                
                 Container(
                   child: Column(
                     children: <Widget>[
@@ -422,12 +405,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         },
                         child: Text('Inicia sesión aquí', style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, )),
                       ),
-                      
                     ],
                   ),
-
                 )
-
               ],
             ),
           ),

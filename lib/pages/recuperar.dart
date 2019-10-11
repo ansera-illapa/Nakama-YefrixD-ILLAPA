@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:illapa/behaviors/hiddenScrollBehavior.dart';
+import 'package:illapa/extras/globals/globals.dart';
 import 'package:illapa/widgets.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
 
 
 class RecuperarContrasenaPage extends StatefulWidget{
@@ -77,14 +80,6 @@ class _RecuperarContrasenaPageState extends State<RecuperarContrasenaPage> {
                             },
                           ),
                       ),
-                      
-
-
-                      
-
-
-
-
                     ],
                   ),
                 ),
@@ -118,17 +113,9 @@ class _RecuperarContrasenaPageState extends State<RecuperarContrasenaPage> {
                     ],
                   ),
                 ),
-                
-                
-                
-                
-                
                 new Padding(
                   padding: const EdgeInsets.all(5.0),
                 ),
-                
-                
-
               ],
             ),
           ),
@@ -159,13 +146,28 @@ class _RecuperarContrasenaPageState extends State<RecuperarContrasenaPage> {
 
     try{
       String email = _email.replaceAll(" ", "");
-      await FirebaseAuth.instance
-        .sendPasswordResetEmail(email: email);
-      _scaffoldKey.currentState.hideCurrentSnackBar();
-      _scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text('Tu contraseña fue enviada a tu correo electronico'),
-        duration: Duration(seconds: 10),
-      ));
+      // RECUPERAR CONTRASEÑA 
+
+      String url ="$urlGlobal/recuperar/email/"+email;
+
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        _scaffoldKey.currentState.hideCurrentSnackBar();
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text('Acabamos de enviarte un mensaje a tu correo.'),
+          duration: Duration(seconds: 10),
+        ));
+      }else{
+        _scaffoldKey.currentState.hideCurrentSnackBar();
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text('Ocurrio un error al intentar conectar con el servidor'),
+          duration: Duration(seconds: 10),
+        ));
+      }
+
+
+      
     }catch(e){
       //MUESTRA LOS MENSAJES DE ERROR
       _scaffoldKey.currentState.hideCurrentSnackBar();
@@ -174,7 +176,7 @@ class _RecuperarContrasenaPageState extends State<RecuperarContrasenaPage> {
           content: Text(e.message),
           duration: Duration(seconds: 10),
           action: SnackBarAction(
-            label: 'Dismiss',
+            label: 'Cerrar',
             onPressed: (){
               _scaffoldKey.currentState.hideCurrentSnackBar();
             },
