@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/extras/chart/samples/pie_chart_documentos.dart';
 import 'package:illapa/extras/chart/samples/pie_chart_sample2.dart';
 import 'package:illapa/pages/estadisticas/estadisticas.dart';
@@ -341,7 +342,7 @@ class _EstadisticaFMClientesPageState extends State<EstadisticaFMClientesPage> {
                                   ),
                                   Text(
                                     '$tipoIdentificacion $identificacion',
-                                    style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                    style: new TextStyle(color: AppTheme.naranja, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                   ),
                                   // Text(
                                   //   email,
@@ -349,7 +350,7 @@ class _EstadisticaFMClientesPageState extends State<EstadisticaFMClientesPage> {
                                   // ),
                                   Text(
                                     'Sectorista',
-                                    style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                    style: new TextStyle(color: AppTheme.naranja, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                   ),
                                 ],
                               ),

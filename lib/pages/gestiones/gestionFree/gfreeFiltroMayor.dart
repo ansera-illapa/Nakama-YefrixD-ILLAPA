@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:illapa/behaviors/hiddenScrollBehavior.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/gestiones/gestionClienteAccion.dart';
 import 'package:illapa/widgets.dart';
 
@@ -207,11 +208,11 @@ class _GfreeFiltroMayorPageState extends State<GfreeFiltroMayorPage> {
                               ),
                               Text(
                                 '${widget.numeroDocumentos} registros por ${widget.sumaImportesDocumentos}',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
                                 '${widget.numeroDocumentosVencidos} vencidos por ${widget.sumaImportesDocumentosVencidos}',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                               
                             ],

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/datos/datosClientes.dart';
 import 'package:illapa/pages/datos/datosFree/datFreeMaps.dart';
 import 'package:illapa/widgets.dart';
@@ -263,19 +264,38 @@ class _DatFreeClienteEditarPageState extends State<DatFreeClienteEditarPage> {
                                               ],
                                             ),
                                             Padding(padding: EdgeInsets.only(top: 5.0),),
-                                            Container(
-                                              height: 30.0,
-                                              child: TextField(
-                                                  onChanged: (text){
-                                                    list[x] = text;
-                                                    // value = value+text;
-                                                  },
-                                                  decoration: InputDecoration(
-                                                    filled: true,
-                                                    hintText: tercerCampo,
+                                            if(y==2)
+                                                Container(
+                                                  // height: 30.0,
+                                                  child: TextField(
+                                                    keyboardType: TextInputType.number,
+                                                    maxLength: 11,
+                                                      onChanged: (text){
+                                                        list[x] = text;
+                                                        // value = value+text;
+                                                      },
+                                                      decoration: InputDecoration(
+                                                        filled: true,
+                                                        hintText: tercerCampo,
+                                                      ),
                                                   ),
-                                              ),
-                                            )
+                                                ),
+                                            if(y==3)
+                                              Container(
+                                                // height: 30.0,
+                                                child: TextField(
+                                                  // keyboardType: TextInputType.number,
+                                                  // maxLength: 11,
+                                                    onChanged: (text){
+                                                      list[x] = text;
+                                                      // value = value+text;
+                                                    },
+                                                    decoration: InputDecoration(
+                                                      filled: true,
+                                                      hintText: tercerCampo,
+                                                    ),
+                                                ),
+                                              )
                                           ],
 
                                         )
@@ -716,14 +736,16 @@ class _DatFreeClienteEditarPageState extends State<DatFreeClienteEditarPage> {
     print("subir Imagen:");
     print(url);
     
-    http.post(url, body: {
-      "api_token": apiToken,
-      "idCliente":"${widget.clienteId}",
-      "image":base64Image,
-      "nombre": fileName
-    });
+    final response = await http.post(url, body: {
+                      "api_token": apiToken,
+                      "idCliente":"${widget.clienteId}",
+                      "image":base64Image,
+                      "nombre": fileName
+                    });
+    print("respuesta imagen");
+    print(response.body);
 
-    print( "BASE:"+base64Image);
+    //miomio
 
 
   }
@@ -862,7 +884,7 @@ class _DatFreeClienteEditarPageState extends State<DatFreeClienteEditarPage> {
                                 ),
                                 Text(
                                   '${widget.tipodnioruc} ${widget.dnioruc}',
-                                  style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                  style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                                 ),
                                 
                                 
@@ -901,12 +923,14 @@ class _DatFreeClienteEditarPageState extends State<DatFreeClienteEditarPage> {
 
                             for(int cont = 0; cont < cantDirecciones; cont++)
                               _buildClienteAsociado(
-                                                      "Ciudad: "+"${listDirecciones[cont]['ciudad']}"+
-                                                      "("+"${listDirecciones[cont]['codigopostal']}"+")"+
-                                                      "\nCalle: "+ "${listDirecciones[cont]['calle']}", listDirecciones[cont]['id'], 1),
+                                                      // "Ciudad: "+"${listDirecciones[cont]['ciudad']}"+
+                                                      // "("+"${listDirecciones[cont]['codigopostal']}"+")"+
+                                                      "Calle: "+ "${listDirecciones[cont]['calle']}", listDirecciones[cont]['id'], 1),
                             
                             for(int cont= 0 ; cont < cantDireccionesAgregadas; cont++)
-                              _buildClienteAsociado( ""+ pais[cont]+"\n"+ciudad[cont]+ "("+"${codPostal[cont]}"+")"+ "\n"+calle[cont],9,9 ),
+                              _buildClienteAsociado(
+                                ""+ pais[cont]+"\n"+ciudad[cont]+ "("+"${codPostal[cont]}"+")"+ "\n"+
+                                calle[cont],9,9 ),
 
                             _buildDireccion()
                             // _buildListDatosCliente(contDireccion, 'Dirección', 1, direccionesList, 'CIUDAD', 'CODIGO POSTAL', 'CALLE', direccionesCiudad ,direccionesCodigoPostal),
@@ -1109,6 +1133,7 @@ class _DatFreeClienteEditarPageState extends State<DatFreeClienteEditarPage> {
     print("PAISES TELEFONOS:");
     print(listTelefonoPais);
 
+    
     final response = await http.post(url, body: {
 
                     "api_token": apiToken,
@@ -1167,7 +1192,8 @@ class _DatFreeClienteEditarPageState extends State<DatFreeClienteEditarPage> {
                     
                     // "idSocioSeleccionado": "${widget.value}" ,
                   });
-        print(response);
+    print("RESPUESTA");
+    print(response.body);
     if (response.statusCode == 200) {
       final map = json.decode(response.body);  
       final estado = map["estado"];
@@ -1338,7 +1364,7 @@ class _DatFreeClienteEditarPageState extends State<DatFreeClienteEditarPage> {
                                   child: RaisedButton(
                                     color: Color(0xfff7b633),
                                     padding: EdgeInsets.all(10.0),
-                                    child: Text('Agregar', style: TextStyle(color: Colors.white)),
+                                    child: Text('Guardar', style: TextStyle(color: Colors.white)),
                                     onPressed:  
                                       (){ 
                                         _actualizarCliente();
@@ -1393,7 +1419,7 @@ class _DatFreeClienteEditarPageState extends State<DatFreeClienteEditarPage> {
     // then get the Prediction selected
     Prediction p = await PlacesAutocomplete.show(
       context: context,
-      apiKey: kGoogleApiKey,
+      apiKey: globalApiMaps,
       // onError: onError,
       mode: _mode,
       language: "es",
@@ -1480,11 +1506,11 @@ class _DatFreeClienteEditarPageState extends State<DatFreeClienteEditarPage> {
 
 }
 
-const kGoogleApiKey = "AIzaSyCIP0p6wU1IvM9ioCKjKQIG92dkO6-Dm0M";
+// const kGoogleApiKey = "AIzaSyCIP0p6wU1IvM9ioCKjKQIG92dkO6-Dm0M";
 // final homeScaffoldKey = GlobalKey<ScaffoldState>();
 // final searchScaffoldKey = GlobalKey<ScaffoldState>();
 
-GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
+GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: globalApiMaps);
 Mode _mode = Mode.overlay;
 
 

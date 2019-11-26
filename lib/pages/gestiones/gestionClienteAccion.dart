@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/extras/appTema.dart';
 
 import 'package:illapa/widgets.dart';
 import 'dart:ui' as ui;
@@ -226,7 +227,7 @@ class _GestionClienteAccionPageState extends State<GestionClienteAccionPage> {
                               ),
                               Text(
                                 '${widget.tipoIdentificacion} ${widget.numeroIdentificacion}',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                               
                               

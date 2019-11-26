@@ -1,8 +1,8 @@
 
 import 'dart:io';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:illapa/extras/globals/globals.dart';
 import 'package:illapa/pages/gestiones/gestion.dart';
 import 'package:illapa/pages/gestiones/gestionClientes.dart';
 import 'package:illapa/pages/gestiones/gestionEmpresa/gestionEmpresa.dart';
@@ -53,21 +53,31 @@ class _TodoAppState extends State<TodoApp>{
 
 
     getRootPage().then((Widget page) async{
-      if(await FirebaseAuth.instance.currentUser() == null ){
+      final directory = await getApplicationDocumentsDirectory();
+      final fileId = File('${directory.path}/id.txt');
+      String uId;
+      try{
+        uId = await fileId.readAsString();
+      }catch(error){
+        setState(() {
+          _rootPage = page;
+        });
+      }
+      
+      print("USUARIO CONECTADO:");
+      print("$uId");
+      if(uId == "null" || uId == null ){
         setState(() {
           _rootPage = page;
         });
       }else{
-        FirebaseUser  user = await FirebaseAuth.instance.currentUser();
 
-        if(user.isEmailVerified == true){
-
-          final directory = await getApplicationDocumentsDirectory();
+          
           final fileTipo = File('${directory.path}/tipo.txt');
-          final fileId = File('${directory.path}/id.txt');
+          
 
           String uTipo = await fileTipo.readAsString();
-          String uId = await fileId.readAsString();
+          
           int usuarioTipo = int.parse(uTipo);
           int idUsuario = int.parse(uId);
 
@@ -110,14 +120,6 @@ class _TodoAppState extends State<TodoApp>{
           case 99: Navigator.of(context).pushReplacementNamed('/gestion'); break;
           default:
         }
-
-        }else{
-          setState(() {
-            _rootPage = LoginPage();
-          });
-        }
-        
-      
       }
     });
   }
@@ -126,7 +128,7 @@ class _TodoAppState extends State<TodoApp>{
   Widget _rootPage = LoginPage();
   
   Future<Widget> getRootPage() async =>
-    await FirebaseAuth.instance.currentUser() == null 
+    globalNombre == null 
      ?LoginPage()
      :GestionPage();
 

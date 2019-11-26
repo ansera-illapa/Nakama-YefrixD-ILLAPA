@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:illapa/behaviors/hiddenScrollBehavior.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/extras/globals/globals.dart';
 import 'package:illapa/widgets.dart';
 import 'package:http/http.dart' as http;
@@ -122,7 +123,7 @@ class _ConfirmacionPageState extends State<ConfirmacionPage> {
                       Expanded(
                         child: new RaisedButton(
                           child: new Text("Enviar", style: TextStyle(color: Colors.white ),),
-                          color: Color(0xffF7B633), 
+                          color: AppTheme.naranja, 
                           onPressed: (){
                             _enviarConfirmacion();
                           },
@@ -160,7 +161,7 @@ class _ConfirmacionPageState extends State<ConfirmacionPage> {
     
     // REENVIAR CORREO CONFIRMACION 
 
-    String url = "$urlGlobal/api/reenviar/correo/confirmacion/"+email.text;
+    String url = "$urlGlobalMails/api/reenviar/correo/confirmacion/"+email.text;
     final response = await http.get(url);
     print(response.body);
     if (response.statusCode == 200) {

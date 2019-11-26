@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/datos/datosClientes.dart';
 import 'package:illapa/widgets.dart';
 
@@ -231,9 +232,28 @@ class _DatFreeNuevoPageState extends State<DatFreeNuevoPage> {
 
                                               
                                               Padding(padding: EdgeInsets.only(top: 5.0),),
+                                              if(y==2)
+                                                Container(
+                                                  // height: 30.0,
+                                                  child: TextField(
+                                                      keyboardType: TextInputType.number,
+                                                      maxLength: 11,
+                                                      onChanged: (text){
+                                                        list[x] = text;
+                                                        // value = value+text;
+                                                      },
+                                                      decoration: InputDecoration(
+                                                        filled: true,
+                                                        hintText: tercerCampo,
+                                                      ),
+                                                  ),
+                                                ),
+                                              if(y==3)
                                               Container(
-                                                height: 30.0,
+                                                // height: 30.0,
                                                 child: TextField(
+                                                    // keyboardType: TextInputType.number,
+                                                    // maxLength: 11,
                                                     onChanged: (text){
                                                       list[x] = text;
                                                       // value = value+text;
@@ -262,7 +282,14 @@ class _DatFreeNuevoPageState extends State<DatFreeNuevoPage> {
                                               onPressed: _handlePressButton,
                                             ),
 
-                                            Text('Agregar Dirección', style: TextStyle( color: Colors.white, fontFamily: 'illapaBold', fontSize: 15.0),),
+                                            Text(
+                                              'Agregar Dirección', 
+                                              style: TextStyle(
+                                                color: Colors.white, 
+                                                fontFamily: 'illapaBold', 
+                                                fontSize: 15.0
+                                              ),
+                                            ),
                                             
                                           ],
                                         ),
@@ -736,7 +763,7 @@ class _DatFreeNuevoPageState extends State<DatFreeNuevoPage> {
                               ),
                               Text(
                                 '${widget.dnioruc}',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                               
                             ],
@@ -774,7 +801,8 @@ class _DatFreeNuevoPageState extends State<DatFreeNuevoPage> {
                           
                           
                           for(int cont= 0 ; cont < cantDirecciones; cont++)
-                            _buildClienteAsociado( ""+ pais[cont]+"\n"+ciudad[cont]+ "("+"${codPostal[cont]}"+")"+ "\n"+calle[cont]),
+                            // _buildClienteAsociado( ""+ pais[cont]+"\n"+ciudad[cont]+ "("+"${codPostal[cont]}"+")"+ "\n"+calle[cont]),
+                            _buildClienteAsociado( "("+calle[cont]+")"),
                                                     
                                                     
                           _buildDireccion()
@@ -1296,7 +1324,7 @@ Future<bool> showReview(context) {
     // then get the Prediction selected
     Prediction p = await PlacesAutocomplete.show(
       context: context,
-      apiKey: kGoogleApiKey,
+      apiKey: globalApiMaps,
       // onError: onError,
       mode: _mode,
       language: "es",
@@ -1377,8 +1405,8 @@ Future<bool> showReview(context) {
   }
 }
 
-const kGoogleApiKey = "AIzaSyCIP0p6wU1IvM9ioCKjKQIG92dkO6-Dm0M";
+// const kGoogleApiKey = "AIzaSyCIP0p6wU1IvM9ioCKjKQIG92dkO6-Dm0M";
 
 
-GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
+GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: globalApiMaps);
 Mode _mode = Mode.overlay;

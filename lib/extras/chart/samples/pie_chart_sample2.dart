@@ -72,23 +72,24 @@ class PieChartSample2 extends StatelessWidget {
                         PieChartSectionData(
                           color: Color(0xfff5893d4),
                           value: porcentajeVigente,
-                          title: "$porcentajeVigente% \n ${moneyType.format(vigente)} ",
+                          title: "$porcentajeVigente% (${moneyType.format(vigente)}) ",
                           radius: 20,
-                          titleStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xffffffff)),
+                          titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xffffffff)),
                         ),
                         PieChartSectionData(
                           color: Color(0xffff7b633),
                           value: porcentajePagado,
-                          title: "$porcentajePagado% \n ${moneyType.format(pagado)}",
+                          title: "$porcentajePagado% (${moneyType.format(pagado)})",
                           radius: 20,
-                          titleStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xffffffff)),
+                          titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xffffffff)),
                         ),
                         PieChartSectionData(
                           color: Color(0xff1f3c88),
                           value: porcentajeVencido,
-                          title: "$porcentajeVencido%\n ${moneyType.format(vencido)}",
+                          title: "$porcentajeVencido% (${moneyType.format(vencido)})",
                           radius: 20,
-                          titleStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xffffffff)),
+                          
+                          titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xffffffff)),
                         ),
 
                       ]

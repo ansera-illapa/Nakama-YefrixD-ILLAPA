@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/datos/datosClientes.dart';
 import 'package:illapa/pages/usuarios/usuarioAgregarSector.dart';
 import 'package:illapa/pages/usuarios/usuarioSectores.dart';
@@ -347,15 +348,15 @@ class _UsuariosSociosPageState extends State<UsuariosSociosPage> {
                               ),
                               Text(
                                 '$tipoidentificador $identificador',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
                                 email,
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
                                 'Empresa',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                             ],
                           ),

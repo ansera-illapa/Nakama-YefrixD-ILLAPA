@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/gestiones/gestionFMAdministrador.dart';
 import 'package:illapa/pages/gestiones/gestionSocios.dart';
 import 'package:illapa/widgets.dart';
@@ -245,247 +246,250 @@ Widget _buildListGestionEmpresas(String imagen,
   @override
   Widget build(BuildContext context) {
     
-    return new Scaffold(
-      appBar: new AppBar(
-        centerTitle: true,
-        title: new Text('Gestión'),
+    return GestureDetector(
+      onTap: (){},
+      child: Scaffold(
+        appBar: new AppBar(
+          centerTitle: true,
+          title: new Text('Gestión'),
+          backgroundColor: Color(0xFF070D59),
+        ),
         backgroundColor: Color(0xFF070D59),
-      ),
-      backgroundColor: Color(0xFF070D59),
-      drawer: Theme(
-        data: Theme.of(context).copyWith(
-          canvasColor: Color(0xFF070D59),
+        drawer: Theme(
+          data: Theme.of(context).copyWith(
+            canvasColor: Color(0xFF070D59),
+          ),
+          child: Sidebar(
+            tipousuario: tipoUsuario,
+            idusuario: idUsuario,
+            // imagenUsuario: imagenUsuario,
+            imagenUsuario: imagenAdmin,
+            nombre : nombreUsuario
+          ),
         ),
-        child: Sidebar(
-          tipousuario: tipoUsuario,
-          idusuario: idUsuario,
-          // imagenUsuario: imagenUsuario,
-          imagenUsuario: imagenAdmin,
-          nombre : nombreUsuario
-        ),
-      ),
-      body: Container(
-        padding: EdgeInsets.all(10.0),
-        child: ListView(
-          children: <Widget>[
-            
-            Container(
-              color: Color(0xff1f3c88),
-              // height: 80.0,
-              child: Column(
-                children: <Widget>[
-                  ListTile(
-                    leading: new CircleAvatar(
-                      foregroundColor: Theme.of(context).primaryColor,
-                      backgroundColor: Colors.grey,
-                      backgroundImage: new NetworkImage(imagenAdmin),
-                    ),
-                    title: new Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        new Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                'Illapa',
-                                style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, ),
-                              ),
-                              Text(
-                                '$numeroDocumentos registros por ${moneyType.format(double.parse(sumaImporteDocumentos))}', 
-                                style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
-                              ),
-                              Text(
-                                '$numeroDocumentosVencidos vencidos por ${moneyType.format(double.parse(sumaImportesDocumentosVencidos))}',
-                                style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
-                              ),
-                            ],
-                          ),
-                        ),
-                        new IconButton(
-                              icon: Icon(FontAwesomeIcons.users, color: Colors.white,),
-                              onPressed: (){
-                                Navigator.push(
-                                          context, 
-                                          MaterialPageRoute(
-                                            builder: (BuildContext context ) => GestionFMAdministradorPage(
-                                              value: idUsuario,
-                                              tipoUsuario: tipoUsuario,
-                                              nombreUsuario: nombreUsuario,
-                                              imagenUsuario: imagenUsuario,
-                                              apiToken: apiToken,
-                                            )
-                                          )
-                                        );
-                              },
-                            )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if(_buscar)
-              Padding(
-                padding: EdgeInsets.all(5.0),
-                child: Container(
-                  color: Colors.white,
-                  padding: EdgeInsets.all(5.0),
-                  child: TextField(
-                    
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      hintText: 'Buscar'
-                    ),
-                    onChanged: (text){
-                      setState(() {
-                          textoBusqueda = text;
-                          print(textoBusqueda);
-                      });
-                    },
-                  ),
-                ),
-              ),
-            if(!_isLoading)
-              _loading(),
-            Container(
-              color: Color(0xfff7b633),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    // padding: EdgeInsets.only(top: 5.0),
-                    width: 5.0,
-                    // height: MediaQuery.of(context).size.height/100,
-                    // height: double.,
-                    color: Color(0xfff7b633),
-                  ),
-                  Expanded(
-                    child: Container(
-                      color: Color(0xff070D59),
-                      child: Column(
+        body: Container(
+          padding: EdgeInsets.all(10.0),
+          child: ListView(
+            children: <Widget>[
+              
+              Container(
+                color: Color(0xff1f3c88),
+                // height: 80.0,
+                child: Column(
+                  children: <Widget>[
+                    ListTile(
+                      leading: new CircleAvatar(
+                        foregroundColor: Theme.of(context).primaryColor,
+                        backgroundColor: Colors.grey,
+                        backgroundImage: new NetworkImage(imagenAdmin),
+                      ),
+                      title: new Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          for(var cont =0; cont<cantEmpresas; cont++ )
-                          if(data[cont]['empresaNombre'].indexOf(textoBusqueda.toUpperCase()) != -1 || data[cont]['empresaNombre'].indexOf(textoBusqueda.toLowerCase()) != -1  )
-                            _buildListGestionEmpresas(data[cont]['personaImagen'],
-                                                      data[cont]['empresaNombre'], 
-                                                      data[cont]['numeroDocumentos'], 
-                                                      data[cont]['sumaImportesDocumentos'], 
-                                                      data[cont]['numeroDocumentosVencidos'], 
-                                                      data[cont]['sumaImportesDocumentosVencidos'], 
-                                                      data[cont]['empresaId']),
+                          new Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  'Illapa',
+                                  style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, ),
+                                ),
+                                Text(
+                                  '$numeroDocumentos registros por ${moneyType.format(double.parse(sumaImporteDocumentos))}', 
+                                  style: new TextStyle(color: AppTheme.naranja, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                ),
+                                Text(
+                                  '$numeroDocumentosVencidos vencidos por ${moneyType.format(double.parse(sumaImportesDocumentosVencidos))}',
+                                  style: new TextStyle(color: AppTheme.naranja, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                ),
+                              ],
+                            ),
+                          ),
+                          new IconButton(
+                                icon: Icon(FontAwesomeIcons.users, color: Colors.white,),
+                                onPressed: (){
+                                  Navigator.push(
+                                            context, 
+                                            MaterialPageRoute(
+                                              builder: (BuildContext context ) => GestionFMAdministradorPage(
+                                                value: idUsuario,
+                                                tipoUsuario: tipoUsuario,
+                                                nombreUsuario: nombreUsuario,
+                                                imagenUsuario: imagenUsuario,
+                                                apiToken: apiToken,
+                                              )
+                                            )
+                                          );
+                                },
+                              )
                         ],
                       ),
-                      
                     ),
-                  )
-                ],
-              )
-            ),
-          ],
+                  ],
+                ),
+              ),
+              if(_buscar)
+                Padding(
+                  padding: EdgeInsets.all(5.0),
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(5.0),
+                    child: TextField(
+                      
+                      decoration: InputDecoration(
+                        fillColor: Colors.white,
+                        hintText: 'Buscar'
+                      ),
+                      onChanged: (text){
+                        setState(() {
+                            textoBusqueda = text;
+                            print(textoBusqueda);
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              if(!_isLoading)
+                _loading(),
+              Container(
+                color: Color(0xfff7b633),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      // padding: EdgeInsets.only(top: 5.0),
+                      width: 5.0,
+                      // height: MediaQuery.of(context).size.height/100,
+                      // height: double.,
+                      color: Color(0xfff7b633),
+                    ),
+                    Expanded(
+                      child: Container(
+                        color: Color(0xff070D59),
+                        child: Column(
+                          children: <Widget>[
+                            for(var cont =0; cont<cantEmpresas; cont++ )
+                            if(data[cont]['empresaNombre'].indexOf(textoBusqueda.toUpperCase()) != -1 || data[cont]['empresaNombre'].indexOf(textoBusqueda.toLowerCase()) != -1  )
+                              _buildListGestionEmpresas(data[cont]['personaImagen'],
+                                                        data[cont]['empresaNombre'], 
+                                                        data[cont]['numeroDocumentos'], 
+                                                        data[cont]['sumaImportesDocumentos'], 
+                                                        data[cont]['numeroDocumentosVencidos'], 
+                                                        data[cont]['sumaImportesDocumentosVencidos'], 
+                                                        data[cont]['empresaId']),
+                          ],
+                        ),
+                        
+                      ),
+                    )
+                  ],
+                )
+              ),
+            ],
+          ),
         ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-          color: Color(0xff1f3c88),
-          shape: CircularNotchedRectangle(),
-          notchMargin: 4.0,
-          child: new Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-               _buscar
-                ?IconButton(
-                  icon: Icon(
-                    FontAwesomeIcons.timesCircle, 
-                    
-                    color: Colors.white,
+        bottomNavigationBar: BottomAppBar(
+            color: Color(0xff1f3c88),
+            shape: CircularNotchedRectangle(),
+            notchMargin: 4.0,
+            child: new Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                _buscar
+                  ?IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.timesCircle, 
+                      
+                      color: Colors.white,
+                      ), 
+                    onPressed: () {
+                      setState(() {
+                        _buscar = false;
+                      });
+                    },)
+                  :IconButton(
+                    icon: Icon(
+                      Icons.search, 
+                      color: Colors.white,
+                      ), 
+                    onPressed: () {
+                      setState(() {
+                        _buscar = true;
+                      });
+                    },),
+                if(ordenAZ)
+                  IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.sortAlphaUp, 
+                      color: Colors.white,
                     ), 
-                  onPressed: () {
-                    setState(() {
-                      _buscar = false;
-                    });
-                  },)
-                :IconButton(
-                  icon: Icon(
-                    Icons.search, 
-                    color: Colors.white,
-                    ), 
-                  onPressed: () {
-                    setState(() {
-                      _buscar = true;
-                    });
-                  },),
-              if(ordenAZ)
+                    onPressed: () {
+                      setState(() {
+                        ordenAZ = false;
+                        ordenZA = true;
+                      });
+                      data.sort((a, b) {
+                        return orderAZ(b['empresaNombre'],a['empresaNombre']);
+                      });
+                    },
+                    tooltip: "Ordenar de la Z a la A",
+                  ),
+                if(ordenZA)
                 IconButton(
                   icon: Icon(
-                    FontAwesomeIcons.sortAlphaUp, 
+                    FontAwesomeIcons.sortAlphaDown, 
                     color: Colors.white,
                   ), 
                   onPressed: () {
                     setState(() {
-                      ordenAZ = false;
-                      ordenZA = true;
+                      ordenZA = false;
+                      orden19 = true;
                     });
                     data.sort((a, b) {
-                      return orderAZ(b['empresaNombre'],a['empresaNombre']);
+                      return orderAZ(a['empresaNombre'],b['empresaNombre']);
                     });
                   },
-                  tooltip: "Ordenar de la Z a la A",
+                  tooltip: "Ordenar de la A a la Z",
                 ),
-              if(ordenZA)
-              IconButton(
-                icon: Icon(
-                  FontAwesomeIcons.sortAlphaDown, 
-                  color: Colors.white,
-                ), 
-                onPressed: () {
-                  setState(() {
-                    ordenZA = false;
-                    orden19 = true;
-                  });
-                  data.sort((a, b) {
-                    return orderAZ(a['empresaNombre'],b['empresaNombre']);
-                  });
-                },
-                tooltip: "Ordenar de la A a la Z",
-              ),
-              if(orden19)
-              IconButton(
-                icon: Icon(
-                  FontAwesomeIcons.sortNumericDown, 
-                  color: Colors.white,
-                ), 
-                onPressed: () {
-                  setState(() {
-                    orden19 = false;
-                    orden91 = true;
-                  });
-                  data.sort((a, b) {
-                    return order19("${a['sumaImportesDocumentosVencidos']}","${b['sumaImportesDocumentosVencidos']}");
-                  });
-                },
-                tooltip: "Ordenar de importe vencido de menor a mayor",
-              ),
-              if(orden91)
-              IconButton(
-                icon: Icon(
-                  FontAwesomeIcons.sortNumericUp, 
-                  color: Colors.white,
-                ), 
-                onPressed: () {
-                  setState(() {
-                    orden91 = false;
-                    ordenAZ = true;
-                  });
-                  data.sort((a, b) {
-                    return order19("${b['sumaImportesDocumentosVencidos']}","${a['sumaImportesDocumentosVencidos']}");
-                  });
-                },
-                tooltip: "Ordenar de importe vencido de mayor a menor",
-              )
-            ],
+                if(orden19)
+                IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.sortNumericDown, 
+                    color: Colors.white,
+                  ), 
+                  onPressed: () {
+                    setState(() {
+                      orden19 = false;
+                      orden91 = true;
+                    });
+                    data.sort((a, b) {
+                      return order19("${a['sumaImportesDocumentosVencidos']}","${b['sumaImportesDocumentosVencidos']}");
+                    });
+                  },
+                  tooltip: "Ordenar de importe vencido de menor a mayor",
+                ),
+                if(orden91)
+                IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.sortNumericUp, 
+                    color: Colors.white,
+                  ), 
+                  onPressed: () {
+                    setState(() {
+                      orden91 = false;
+                      ordenAZ = true;
+                    });
+                    data.sort((a, b) {
+                      return order19("${b['sumaImportesDocumentosVencidos']}","${a['sumaImportesDocumentosVencidos']}");
+                    });
+                  },
+                  tooltip: "Ordenar de importe vencido de mayor a menor",
+                )
+              ],
+            ),
           ),
-        ),
+      )
     );
   }
 }

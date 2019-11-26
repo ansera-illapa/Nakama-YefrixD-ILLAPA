@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/usuarios/usuarioAgregarSector.dart';
 import 'package:illapa/pages/usuarios/usuarioNuevo.dart';
 import 'package:illapa/widgets.dart';
@@ -295,15 +296,15 @@ Widget _buidEstListEmpresas( String titulo, int idSector){
                               ),
                               Text(
                                 widget.tipoIdentificacion +" "+ widget.identificacion,
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
                                 widget.correo,
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
                                 'SOCIO',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                             ],
                           ),

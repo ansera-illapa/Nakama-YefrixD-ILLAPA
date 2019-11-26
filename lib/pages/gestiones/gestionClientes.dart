@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/gestiones/gestionCliente.dart';
 import 'package:illapa/widgets.dart';
 
@@ -80,7 +81,7 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
                           leading: new CircleAvatar(
                             foregroundColor: Theme.of(context).primaryColor,
                             backgroundColor: Colors.grey,
-                            backgroundImage: new NetworkImage(imagen),
+                            backgroundImage: new NetworkImage(urlImagenes+imagen),
                           ),
                           title: new Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -552,330 +553,290 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        centerTitle: true,
-        title: new Text('Gestión'),
-        actions: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: IconButton(
-              icon: Icon(
-                FontAwesomeIcons.arrowCircleLeft,
-                color: Colors.grey
-                
-              ),
-              onPressed: (){
-                Navigator.of(context).pop();
-              },
-            )
-          ),
-          
-        ],
-        backgroundColor: Color(0xFF070D59),
-      ),
-      backgroundColor: Color(0xFF070D59),
-      drawer: Theme(
-        data: Theme.of(context).copyWith(
-          canvasColor: Color(0xFF070D59),
-        ),
-        child: Sidebar(
-          tipousuario: tipoUsuario,
-          idusuario: idUsuario,
-          imagenUsuario: imagenUsuario,
-          nombre : nombreUsuario
-        ),
-      ),
-      body: Container(
-        padding: EdgeInsets.all(10.0),
-        child: ListView(
-          controller: scrollController,
-          children: <Widget>[
-
-            Container(
-              color: Color(0xff1f3c88),
-              // height: 80.0,
-              child: Column(
-                children: <Widget>[
-                  ListTile(
-                    leading: new CircleAvatar(
-                      foregroundColor: Theme.of(context).primaryColor,
-                      backgroundColor: Colors.grey,
-                      backgroundImage: new NetworkImage(imagenSocio),
-                    ),
-                    title: new Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        new Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                nombreSocio,
-                                style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, ),
-                              ),
-                              Text(
-                                '$numeroDocumentos registros por ${moneyType.format(double.parse(sumaImportesDocumentos))}',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
-                              ),
-                              Text(
-                                '$numeroDocumentosVencidos vencidos por ${moneyType.format(double.parse(sumaImportesDocumentosVencidos))}',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+    return WillPopScope(
+      onWillPop: (){
+        
+      },
+      child: new Scaffold(
+        appBar: new AppBar(
+          centerTitle: true,
+          title: new Text('Gestión'),
+          actions: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.arrowCircleLeft,
+                  color: Colors.grey
+                  
+                ),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+              )
             ),
-            if(_buscar)
-              Padding(
-                padding: EdgeInsets.all(5.0),
-                child: Container(
-                  color: Colors.white,
-                  padding: EdgeInsets.all(5.0),
-                  child: TextField(
-                    
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      hintText: 'Buscar'
+            
+          ],
+          backgroundColor: Color(0xFF070D59),
+        ),
+        backgroundColor: Color(0xFF070D59),
+        drawer: Theme(
+          data: Theme.of(context).copyWith(
+            canvasColor: Color(0xFF070D59),
+          ),
+          child: Sidebar(
+            tipousuario: tipoUsuario,
+            idusuario: idUsuario,
+            imagenUsuario: imagenUsuario,
+            nombre : nombreUsuario
+          ),
+        ),
+        body: Container(
+          padding: EdgeInsets.all(10.0),
+          child: ListView(
+            controller: scrollController,
+            children: <Widget>[
+
+              Container(
+                color: Color(0xff1f3c88),
+                // height: 80.0,
+                child: Column(
+                  children: <Widget>[
+                    ListTile(
+                      leading: new CircleAvatar(
+                        foregroundColor: Theme.of(context).primaryColor,
+                        backgroundColor: Colors.grey,
+                        backgroundImage: new NetworkImage(imagenSocio),
+                      ),
+                      title: new Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          new Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  nombreSocio,
+                                  style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, ),
+                                ),
+                                Text(
+                                  '$numeroDocumentos registros por ${moneyType.format(double.parse(sumaImportesDocumentos))}',
+                                  style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                ),
+                                Text(
+                                  '$numeroDocumentosVencidos vencidos por ${moneyType.format(double.parse(sumaImportesDocumentosVencidos))}',
+                                  style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    onChanged: (text){
-                      
-                      setState(() {
-                          textoBusqueda = text;
-                          print(textoBusqueda);
-                      });
-                    },
-                  ),
+                  ],
                 ),
               ),
-
-            Container(
-              color: Color(0xfff7b633),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    width: 5.0,
-                    color: Color(0xfff7b633),
+              if(_buscar)
+                Padding(
+                  padding: EdgeInsets.all(5.0),
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(5.0),
+                    child: TextField(
+                      
+                      decoration: InputDecoration(
+                        fillColor: Colors.white,
+                        hintText: 'Buscar'
+                      ),
+                      onChanged: (text){
+                        
+                        setState(() {
+                            textoBusqueda = text;
+                            print(textoBusqueda);
+                        });
+                      },
+                    ),
                   ),
-                  Expanded(
-                    child: Container(
-                      // color: Colors.black,
-                      color: Color(0xff070D59),
-                      child: Column(
-                        children: <Widget>[
-                          
-                          if(cantSectoresSeleccionados == 0)
-                            for(var cont =0; cont < cantClientes; cont++ )
-                              if(data[cont]['personaNombre'].indexOf(textoBusqueda.toUpperCase()) != -1 || data[cont]['personaNombre'].indexOf(textoBusqueda.toLowerCase()) != -1)
-                                if(data[cont]['numeroDocumentosVencidos'] > 0)
-                                  _buildListGestionEmpresas(data[cont]['personaImagen'], 
-                                                            data[cont]['personaNombre'], 
-                                                            data[cont]['numeroDocumentos'], 
-                                                            data[cont]['sumaImportesDocumentos'], 
-                                                            data[cont]['numeroDocumentosVencidos'], 
-                                                            data[cont]['sumaImportesDocumentosVencidos'], 
-                                                            data[cont]['clienteId']),
-                          
-                          if(cantSectoresSeleccionados > 0) //MIOMIO
-                            for(var cont =0; cont < cantClientes; cont++ )
-                              for(var contAr =0; contAr < cantSectoresSeleccionados; contAr++ )
-                                if(nombresSectoresSeleccionados[contAr] == data[cont]['sectorId'])
-                                  if(data[cont]['personaNombre'].indexOf(textoBusqueda.toUpperCase()) != -1 || data[cont]['personaNombre'].indexOf(textoBusqueda.toLowerCase()) != -1)
-                                    if(data[cont]['numeroDocumentosVencidos'] > 0)
-                                      _buildListGestionEmpresas(data[cont]['personaImagen'], 
+                ),
+
+              Container(
+                color: Color(0xfff7b633),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      width: 5.0,
+                      color: Color(0xfff7b633),
+                    ),
+                    Expanded(
+                      child: Container(
+                        // color: Colors.black,
+                        color: Color(0xff070D59),
+                        child: Column(
+                          children: <Widget>[
+                            
+                            if(cantSectoresSeleccionados == 0)
+                              for(var cont =0; cont < cantClientes; cont++ )
+                                if(data[cont]['personaNombre'].indexOf(textoBusqueda.toUpperCase()) != -1 || data[cont]['personaNombre'].indexOf(textoBusqueda.toLowerCase()) != -1)
+                                  if(data[cont]['numeroDocumentosVencidos'] > 0)
+                                    _buildListGestionEmpresas(data[cont]['personaImagen'], 
                                                               data[cont]['personaNombre'], 
                                                               data[cont]['numeroDocumentos'], 
                                                               data[cont]['sumaImportesDocumentos'], 
                                                               data[cont]['numeroDocumentosVencidos'], 
                                                               data[cont]['sumaImportesDocumentosVencidos'], 
                                                               data[cont]['clienteId']),
+                            
+                            if(cantSectoresSeleccionados > 0) //MIOMIO
+                              for(var cont =0; cont < cantClientes; cont++ )
+                                for(var contAr =0; contAr < cantSectoresSeleccionados; contAr++ )
+                                  if(nombresSectoresSeleccionados[contAr] == data[cont]['sectorId'])
+                                    if(data[cont]['personaNombre'].indexOf(textoBusqueda.toUpperCase()) != -1 || data[cont]['personaNombre'].indexOf(textoBusqueda.toLowerCase()) != -1)
+                                      if(data[cont]['numeroDocumentosVencidos'] > 0)
+                                        _buildListGestionEmpresas(data[cont]['personaImagen'], 
+                                                                data[cont]['personaNombre'], 
+                                                                data[cont]['numeroDocumentos'], 
+                                                                data[cont]['sumaImportesDocumentos'], 
+                                                                data[cont]['numeroDocumentosVencidos'], 
+                                                                data[cont]['sumaImportesDocumentosVencidos'], 
+                                                                data[cont]['clienteId']),
+                            
+                            
+                            
+                          ],
                           
-                           
-                          
-                        ],
+                        ),
                         
                       ),
-                      
                     ),
-                  ),
-                  
-                ],
-              )
-            ),
-            if(!_isLoading)
-              _loading(),
-            Padding(
-              padding: EdgeInsets.only(bottom: 40.0),
-            )
-
-            
-          ],
-        ),
-      ),
-      floatingActionButtonLocation: 
-        FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Color(0xff1f3c88),
-          child: 
-            const Icon(
-                  FontAwesomeIcons.ellipsisH,
-                  ), 
-            onPressed: () {
-              _mostrarFiltros();
-            },
-        ),
-      bottomNavigationBar: BottomAppBar(
-          color: Color(0xff1f3c88),
-          shape: CircularNotchedRectangle(),
-          notchMargin: 4.0,
-          child: new Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-               _buscar
-                ?IconButton(
-                  icon: Icon(
-                    FontAwesomeIcons.timesCircle, 
                     
-                    color: Colors.white,
-                    ), 
-                  onPressed: () {
-                    setState(() {
-                      _buscar = false;
-                    });
-                  },)
-                :IconButton(
-                  icon: Icon(
-                    Icons.search, 
-                    color: Colors.white,
-                    ), 
-                  onPressed: () {
-                    setState(() {
-                      _buscar = true;
-                    });
-                  },),
-              if(ordenAZ)
-                IconButton(
-                  icon: Icon(
-                    FontAwesomeIcons.sortAlphaUp, 
-                    color: Colors.white,
-                  ), 
-                  onPressed: () {
-                    setState(() {
-                      ordenAZ = false;
-                      ordenZA = true;
-                    });
-                    data.sort((a, b) {
-                      return orderAZ(b['personaNombre'],a['personaNombre']);
-                    });
-                  },
-                  tooltip: "Ordenar de la Z a la A",
-                ),
-              if(ordenZA)
-              IconButton(
-                icon: Icon(
-                  FontAwesomeIcons.sortAlphaDown, 
-                  color: Colors.white,
-                ), 
-                onPressed: () {
-                  setState(() {
-                    ordenZA = false;
-                    orden19 = true;
-                  });
-                  data.sort((a, b) {
-                    return orderAZ(a['personaNombre'],b['personaNombre']);
-                  });
-                },
-                tooltip: "Ordenar de la A a la Z",
+                  ],
+                )
               ),
-              if(orden19)
-              IconButton(
-                icon: Icon(
-                  FontAwesomeIcons.sortNumericDown, 
-                  color: Colors.white,
-                ), 
-                onPressed: () {
-                  setState(() {
-                    orden19 = false;
-                    orden91 = true;
-                  });
-                  data.sort((a, b) {
-                    return order19("${a['sumaImportesDocumentosVencidos']}","${b['sumaImportesDocumentosVencidos']}");
-                  });
-                },
-                tooltip: "Ordenar de importe vencido de menor a mayor",
-              ),
-              if(orden91)
-              IconButton(
-                icon: Icon(
-                  FontAwesomeIcons.sortNumericUp, 
-                  color: Colors.white,
-                ), 
-                onPressed: () {
-                  setState(() {
-                    orden91 = false;
-                    ordenAZ = true;
-                  });
-                  data.sort((a, b) {
-                    return order19("${b['sumaImportesDocumentosVencidos']}","${a['sumaImportesDocumentosVencidos']}");
-                  });
-                },
-                tooltip: "Ordenar de importe vencido de mayor a menor",
+              if(!_isLoading)
+                _loading(),
+              Padding(
+                padding: EdgeInsets.only(bottom: 40.0),
               )
+
+              
             ],
           ),
         ),
-        // bottomNavigationBar: BottomAppBar(
-        //   color: Color(0xff1f3c88),
-        //   shape: CircularNotchedRectangle(),
-        //   notchMargin: 4.0,
-        //   child: new Row(
-        //     mainAxisSize: MainAxisSize.max,
-        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //     children: <Widget>[
-              
-        //       _buscar
-        //       ?IconButton(
-        //         icon: Icon(
-        //           FontAwesomeIcons.timesCircle, 
-                  
-        //           color: Colors.white,
-        //           ), 
-        //         onPressed: () {
-        //           setState(() {
-        //             _buscar = false;
-        //           });
-        //         },)
-        //       :IconButton(
-        //         icon: Icon(
-        //           Icons.search, 
-        //           color: Colors.white,
-        //           ), 
-        //         onPressed: () {
-        //           setState(() {
-        //             _buscar = true;
-        //           });
-        //         },),
-              
-        //       IconButton(
-        //         icon: Icon(
-        //           FontAwesomeIcons.ellipsisH, 
-        //           color: Colors.white,
-        //           ), 
-        //           onPressed: () {
-        //             _mostrarFiltros();
-        //             },
-        //         ),
-        //     ],
-        //   ),
-        // ),
-        
+        floatingActionButtonLocation: 
+          FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: Color(0xff1f3c88),
+            child: 
+              const Icon(
+                    FontAwesomeIcons.ellipsisH,
+                    ), 
+              onPressed: () {
+                _mostrarFiltros();
+              },
+          ),
+        bottomNavigationBar: BottomAppBar(
+            color: Color(0xff1f3c88),
+            shape: CircularNotchedRectangle(),
+            notchMargin: 4.0,
+            child: new Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                _buscar
+                  ?IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.timesCircle, 
+                      
+                      color: Colors.white,
+                      ), 
+                    onPressed: () {
+                      setState(() {
+                        _buscar = false;
+                      });
+                    },)
+                  :IconButton(
+                    icon: Icon(
+                      Icons.search, 
+                      color: Colors.white,
+                      ), 
+                    onPressed: () {
+                      setState(() {
+                        _buscar = true;
+                      });
+                    },),
+                if(ordenAZ)
+                  IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.sortAlphaUp, 
+                      color: Colors.white,
+                    ), 
+                    onPressed: () {
+                      setState(() {
+                        ordenAZ = false;
+                        ordenZA = true;
+                      });
+                      data.sort((a, b) {
+                        return orderAZ(b['personaNombre'],a['personaNombre']);
+                      });
+                    },
+                    tooltip: "Ordenar de la Z a la A",
+                  ),
+                if(ordenZA)
+                IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.sortAlphaDown, 
+                    color: Colors.white,
+                  ), 
+                  onPressed: () {
+                    setState(() {
+                      ordenZA = false;
+                      orden19 = true;
+                    });
+                    data.sort((a, b) {
+                      return orderAZ(a['personaNombre'],b['personaNombre']);
+                    });
+                  },
+                  tooltip: "Ordenar de la A a la Z",
+                ),
+                if(orden19)
+                IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.sortNumericDown, 
+                    color: Colors.white,
+                  ), 
+                  onPressed: () {
+                    setState(() {
+                      orden19 = false;
+                      orden91 = true;
+                    });
+                    data.sort((a, b) {
+                      return order19("${a['sumaImportesDocumentosVencidos']}","${b['sumaImportesDocumentosVencidos']}");
+                    });
+                  },
+                  tooltip: "Ordenar de importe vencido de menor a mayor",
+                ),
+                if(orden91)
+                IconButton(
+                  icon: Icon(
+                    FontAwesomeIcons.sortNumericUp, 
+                    color: Colors.white,
+                  ), 
+                  onPressed: () {
+                    setState(() {
+                      orden91 = false;
+                      ordenAZ = true;
+                    });
+                    data.sort((a, b) {
+                      return order19("${b['sumaImportesDocumentosVencidos']}","${a['sumaImportesDocumentosVencidos']}");
+                    });
+                  },
+                  tooltip: "Ordenar de importe vencido de mayor a menor",
+                )
+              ],
+            ),
+          ),
+      ),
     );
     
   }

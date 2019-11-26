@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/datos/datosClientes.dart';
 import 'package:illapa/pages/tramos/tramosSocios.dart';
 import 'package:illapa/widgets.dart';
@@ -241,7 +242,7 @@ Widget _buidEstListEmpresas(String imagen,
                               ),
                               Text(
                                 'Administrador',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                             ],
                           ),

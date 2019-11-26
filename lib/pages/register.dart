@@ -1,8 +1,9 @@
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:illapa/behaviors/hiddenScrollBehavior.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/extras/globals/globals.dart';
 import 'package:illapa/pages/login.dart';
 import 'package:illapa/widgets.dart';
@@ -25,7 +26,7 @@ class _RegisterPageState extends State<RegisterPage> {
   
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   
-  
+  bool ocultarContrasena = true;
   String _email;
   String _nombre = '';
   String _password;
@@ -74,8 +75,8 @@ class _RegisterPageState extends State<RegisterPage> {
       // REGISTRAR USUARIO
       
 
-        String url ="$urlGlobal/api/registrarpost";
-
+        String url ="$urlGlobalMails/api/registrarpost";
+        print(url);
         var response = await http.post(url, body: {
                         "tipoIdentificacion": identidadSeleccionada,
                         "nombre": _nombre,
@@ -84,8 +85,29 @@ class _RegisterPageState extends State<RegisterPage> {
                         "pass": _password,
                         
                       });
-        api = response.body;
         print('Respuesta ${response.body}');
+        if(response.body == "false"){
+          setState(() {
+            correoExistente = true; 
+            });
+            _scaffoldKey.currentState.hideCurrentSnackBar();
+            _scaffoldKey.currentState.showSnackBar(
+              SnackBar(
+                content: Text("Este correo ya existe"),
+                duration: Duration(seconds: 5),
+                
+                action: SnackBarAction(
+                  label: 'Cerrar',
+                  onPressed: (){
+                    _scaffoldKey.currentState.hideCurrentSnackBar();
+                  },
+                ),
+              ),
+            );
+        }else{
+          api = response.body;
+        }
+        
 
         
       try{
@@ -228,187 +250,286 @@ class _RegisterPageState extends State<RegisterPage> {
       // appBar: new AppBar(
       // ),
       key: _scaffoldKey,
-      body: Container(
-        padding: EdgeInsets.all(20.0),
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/img/fondo.jpeg"),
-            fit: BoxFit.cover
+      body: WillPopScope(
+        onWillPop: (){
+          Navigator.of(context).pop();
+        },
+        child: Container(
+          padding: EdgeInsets.all(20.0),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/img/fondo.jpeg"),
+              fit: BoxFit.cover
+            ),
           ),
-        ),
-        
-        child: ScrollConfiguration(
-          behavior: HiddenScrollBehavior(),
           
-          child: Form(
-            key: _formKey,
-            child: ListView(
-              children: <Widget>[
-                
-                Padding(
-                  padding: EdgeInsets.only(top: 10.0),
-                ),
-                LogoImg(),
-                Container(
-                  padding: EdgeInsets.only(top: 80),
-                  child: Column(
-                    children: <Widget>[
+          child: ScrollConfiguration(
+            behavior: HiddenScrollBehavior(),
+            
+            child: Form(
+              key: _formKey,
+              child: ListView(
+                children: <Widget>[
+                  
+                  Padding(
+                    padding: EdgeInsets.only(top: 10.0),
+                  ),
+                  LogoImg(),
+                  Container(
+                    padding: EdgeInsets.only(top: 80),
+                    child: Column(
+                      children: <Widget>[
 
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            flex: 2,
-                            child: Container(
-                              color: Colors.white,
-                              child: DropdownButton(
-                                isExpanded: true,
-                                value: identidadSeleccionada,
-                                items: listTipos,
-                                onChanged: seleccionarIdentidad,
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                              flex: 2,
+                              child: Container(
+                                color: Colors.white,
+                                child: DropdownButton(
+                                  isExpanded: true,
+                                  value: identidadSeleccionada,
+                                  items: listTipos,
+                                  onChanged: seleccionarIdentidad,
 
-                              ),
-                            )
-                          ),
-                          Expanded(
-                            flex: 4,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 10.0),
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  fillColor: Colors.white,
-                                  filled: true,
-                                  hintText: "",
-                                  labelText: "Numero Identificación",
-                                  
                                 ),
-                                validator: (val){
-                                  if(val.isEmpty){
-                                    return 'Debe ser un DNI real';
-                                  }else{
-                                    return null;
-                                  }
-                                },
-                                onSaved: (val){
-                                  setState((){
-                                    _dni = val;
-                                  });
-                                },
-                              ),
-                            )
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 5.0),
-                      ),
-                      if(identidadSeleccionada != '1' && identidadSeleccionada != '2'  )
-                        Container(
-                          child: Padding(
-                            padding: EdgeInsets.only(bottom: 5.0),
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                  fillColor: Colors.white,
-                                  filled: true,
-                                  hintText: "",
-                                  labelText: "Nombres completos",
-                                  
-                                ),
-                                validator: (val){
+                              )
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: TextFormField(
+                                  keyboardType: TextInputType.number,
+                                  maxLength: 11,
+                                  decoration: InputDecoration(
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    hintText: "",
+                                    labelText: "Numero Identificación",
+                                    
+                                  ),
+                                  validator: (val){
                                     if(val.isEmpty){
-                                      return 'Este campo es necesario';
+                                      return 'Debe ser un DNI real';
                                     }else{
                                       return null;
                                     }
                                   },
                                   onSaved: (val){
                                     setState((){
-                                      _nombre = val;
+                                      _dni = val;
                                     });
                                   },
-                            )
-                          ),
+                                ),
+                              )
+                            ),
+                          ],
                         ),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          hintText: "Illapa@hotmail.com",
-                          labelText: "Correo",
+                        Padding(
+                          padding: EdgeInsets.only(top: 5.0),
                         ),
-                        validator: (val){
-                          if(val.isEmpty){
-                            return 'Debe ser una direccion de correo electronico existente';
-                          }else{
-                            return null;
-                          }
-                        },
-                        onSaved: (val){
-                          setState((){
-                            _email = val;
-                          });
-                        },
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 5.0),
-                      ),
-                      TextFormField(
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          hintText: "**********",
-                          labelText: "Contraseña",
-                          
+                        if(identidadSeleccionada != '1' && identidadSeleccionada != '2'  )
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: 5.0, bottom: 5.0, ),
+                            child: Container(
+                              height: 50,
+                              padding: EdgeInsets.only(left:10.0, right: 10.0, ),
+                              color: Colors.white,
+                              child: TextFormField(
+                                validator: (val){
+                                  if(val.isEmpty){
+                                    return 'Este campo es necesario';
+                                  }else{
+                                    return null;
+                                  }
+                                },
+                                onSaved: (val){
+                                  setState((){
+                                    _nombre = val;
+                                  });
+                                },
+                              // obscureText: ocultarContrasena,
+                              style: TextStyle(
+                                fontFamily: AppTheme.fontName,
+                                fontSize: 16.0,
+                                color: Colors.black
+                              ),
+                              
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Nombres completos",
+                                // labelText: "Nombres completos",
+                                hintStyle: TextStyle(
+                                    fontFamily: AppTheme.fontName, 
+                                    fontSize: 16.0
+                                ),
+                              ),
+                            ),
+                          )
                         ),
-                        validator: (val){
-                          if(val.isEmpty){
-                            return 'debe poner una contraseña';
-                          }else{
-                            return null;
-                          }
-                        },
-                        onSaved: (val){
-                          setState(() {
-                              _password = val;
-                          });
-                        },
-                      ),
-                    ],
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: 5.0, bottom: 5.0, ),
+                            child: Container(
+                              height: 50,
+                              padding: EdgeInsets.only(left:10.0, right: 10.0, ),
+                              color: Colors.white,
+                              child: TextFormField(
+                                validator: (val){
+                                  if(val.isEmpty){
+                                    return 'Debe ser una direccion de correo electronico existente';
+                                  }else{
+                                    return null;
+                                  }
+                                },
+                                onSaved: (val){
+                                  setState((){
+                                    _email = val;
+                                  });
+                                },
+                              // obscureText: ocultarContrasena,
+                              style: TextStyle(
+                                fontFamily: AppTheme.fontName,
+                                fontSize: 16.0,
+                                color: Colors.black
+                              ),
+                              
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Correo",
+                                // labelText: "Correo",
+                                hintStyle: TextStyle(
+                                    fontFamily: AppTheme.fontName, 
+                                    fontSize: 16.0
+                                ),
+                              ),
+                            ),
+                          )
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: 5.0, bottom: 20.0, ),
+                            child: Container(
+                              height: 50,
+                              padding: EdgeInsets.only(left:10.0, right: 10.0, ),
+                              color: Colors.white,
+                              child: TextFormField(
+                                validator: (val){
+                                  if(val.isEmpty){
+                                    return 'Debe poner una contraseña';
+                                  }else{
+                                    return null;
+                                  }
+                                },
+                                onSaved: (val){
+                                  setState(() {
+                                      _password = val;
+                                  });
+                                },
+                              obscureText: ocultarContrasena,
+                              style: TextStyle(
+                                fontFamily: AppTheme.fontName,
+                                fontSize: 16.0,
+                                color: Colors.black
+                              ),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Contraseña",
+                                // labelText: "Contraseña",
+                                hintStyle: TextStyle(
+                                    fontFamily: AppTheme.fontName, 
+                                    fontSize: 16.0
+                                ),
+                                suffixIcon: IconButton(
+                                  onPressed: (){
+                                    setState(() {
+                                      if(ocultarContrasena){
+                                        ocultarContrasena = false;
+                                      }else{
+                                        ocultarContrasena = true;
+                                      }
+                                    });
+                                  },
+                                  icon: Icon(
+                                      ocultarContrasena
+                                        ? FontAwesomeIcons.eye
+                                        : FontAwesomeIcons.eyeSlash,
+                                    size: 15.0,
+                                    color: Colors.black,
+                                  ),
+                                )
+                              ),
+                            ),
+                          )
+                        ),
+                        // TextFormField(
+                        //   obscureText: true,
+                        //   decoration: InputDecoration(
+                        //     fillColor: Colors.white,
+                        //     filled: true,
+                        //     hintText: "**********",
+                        //     labelText: "Contraseña",
+                            
+                        //   ),
+                        //   validator: (val){
+                        //     if(val.isEmpty){
+                        //       return 'Debe poner una contraseña';
+                        //     }else{
+                        //       return null;
+                        //     }
+                        //   },
+                        //   onSaved: (val){
+                        //     setState(() {
+                        //         _password = val;
+                        //     });
+                        //   },
+                        // ),
+                      ],
+                    ),
                   ),
-                ),
-                
-                new RaisedButton(
                   
-                  child: new Text("Registrarse"),
-                  color: Color(0xffF7B633), 
-                  onPressed: (){
-                    _register();
-                  },
-                ),
-                new Padding(
-                  padding: const EdgeInsets.all(5.0),
-                ),
-                Container(
-                  child: Column(
-                    children: <Widget>[
-
-                      GestureDetector(
-                        onTap: (){
-                          print('olvide');
-                        },
-                        child: Text('¿Ya estas registrado?', style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, )),
+                  new RaisedButton(
+                    
+                    
+                    child: new Text(
+                      "Registrarse",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'illapaBold',
                       ),
-                      GestureDetector(
-                        onTap: (){
-                          Navigator.of(context).pushReplacementNamed('/login');
-                          print('olvide');
-                        },
-                        child: Text('Inicia sesión aquí', style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, )),
-                      ),
-                    ],
+                    ),
+                    color: Color(0xffF7B633), 
+                    onPressed: (){
+                      _register();
+                    },
                   ),
-                )
-              ],
+                  new Padding(
+                    padding: const EdgeInsets.all(5.0),
+                  ),
+                  Container(
+                    child: Column(
+                      children: <Widget>[
+
+                        GestureDetector(
+                          onTap: (){
+                            print('olvide');
+                          },
+                          child: Text('¿Ya estas registrado?', style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, )),
+                        ),
+                        GestureDetector(
+                          onTap: (){
+                            Navigator.of(context).pushReplacementNamed('/login');
+                            print('olvide');
+                          },
+                          child: Text('Inicia sesión aquí', style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, )),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),

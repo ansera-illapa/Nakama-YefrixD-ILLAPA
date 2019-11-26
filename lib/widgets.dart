@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:illapa/extras/google_places/buscarLugares.dart';
@@ -84,16 +84,18 @@ class Sidebar extends StatelessWidget {
       final fileApi = File('${directory.path}/api.txt');
       await fileApi.writeAsString('ApiEliminada');
 
+      final fileId = File('${directory.path}/id.txt');
+      await fileId.writeAsString("null");
+
       
       final file = File('${directory.path}/api.txt');
       String apiToken = await file.readAsString();
       print(apiToken);
-
-      await FirebaseAuth.instance.signOut();
-      Navigator.push(
-      context,
-      new MaterialPageRoute(
-          builder: (BuildContext context) => new LoginPage()));
+      exit(0);
+      // Navigator.push(
+      // context,
+      // new MaterialPageRoute(
+      //     builder: (BuildContext context) => new LoginPage()));
     }
 
     _rutaGestion(){
@@ -438,9 +440,10 @@ class Sidebar extends StatelessWidget {
                           fontFamily: 'illapaMedium',
                         ),
                       ),
-                      Text('DEMO',style: TextStyle(
-                          fontFamily: 'illapaMedium',
-                        ),)
+                      // Text('DEMO',style: TextStyle(
+                      //     fontFamily: 'illapaMedium',
+                      //   ),
+                      // )
                     ],
                   )
                     
@@ -579,7 +582,7 @@ class Sidebar extends StatelessWidget {
                   
                   title: new Text('Cerrar Sesión', style: TextStyle(color: Colors.white, fontFamily: 'illapaBold'),),
                   onTap: () {
-                    Navigator.of(context).pop();
+                    // Navigator.of(context).pop();
                     _logout();
                     
                   },

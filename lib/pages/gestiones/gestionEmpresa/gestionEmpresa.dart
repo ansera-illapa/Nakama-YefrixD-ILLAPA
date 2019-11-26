@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/gestiones/gestionCliente.dart';
 import 'package:illapa/pages/gestiones/gestionFree/gfreeFiltroMayor.dart';
 import 'package:illapa/widgets.dart';
@@ -318,11 +319,11 @@ class _GestionEmpresaPageState extends State<GestionEmpresaPage> {
                               ),
                               Text(
                                 '$numeroDocumentos registros por $sumaImporteDocumentos',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
                                 '$numeroDocumentosVencidos vencidos por $sumaImportesDocumentosVencidos',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                             ],
                           ),

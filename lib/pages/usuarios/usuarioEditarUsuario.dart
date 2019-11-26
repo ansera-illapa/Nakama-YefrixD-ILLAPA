@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/usuarios/usuarioSectores.dart';
 import 'package:illapa/pages/usuarios/usuariosUsuarios.dart';
 import 'package:illapa/widgets.dart';
@@ -770,11 +771,11 @@ class _UsuarioEditarUsuarioPageState extends State<UsuarioEditarUsuarioPage> {
                               ),
                               Text(
                                 widget.tipoIdentificacionUsuario+ ': ${widget.numeroIdentificacionUsuario}',
-                                style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 12.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
                                 widget.nombreCargoUsuario,
-                                style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 12.0, fontFamily: 'illapaMedium'),
                               ),
                             ],
                           ),

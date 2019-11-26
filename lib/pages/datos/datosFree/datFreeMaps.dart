@@ -215,7 +215,7 @@ class _DatFreeMapsPageState extends State<DatFreeMapsPage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0)),
                 child: Container(
-                  height: 300.0,
+                  height: 260.0,
                   color: Color(0xFF070D59),
                   padding: EdgeInsets.all(10.0),
                   
@@ -240,102 +240,103 @@ class _DatFreeMapsPageState extends State<DatFreeMapsPage> {
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         // textDirection: TextDirection.ltr,
                                         children: <Widget>[
-                                          Expanded(
-                                            child: Column(
-                                              children: <Widget>[
-                                                Text('País', 
-                                                  style: 
-                                                    TextStyle(
-                                                      color: Colors.white, 
-                                                      fontFamily: 'illapaBold', 
-                                                      fontSize: 16.0, 
-                                                    ), textAlign: TextAlign.center,
-                                                  ),
-                                                  Container(              
-                                                    height: 40,
-                                                    child: TextField(
-                                                            controller: campoPais,
-                                                            onChanged: (text){
-                                                              widget.pais[widget.cantDirecciones] = text;
-                                                            },
-                                                            decoration: InputDecoration(
+                                          // Expanded(
+                                          //   child: Column(
+                                          //     children: <Widget>[
+                                          //       Text('País', 
+                                          //         style: 
+                                          //           TextStyle(
+                                          //             color: Colors.white, 
+                                          //             fontFamily: 'illapaBold', 
+                                          //             fontSize: 16.0, 
+                                          //           ), textAlign: TextAlign.center,
+                                          //         ),
+                                          //         Container(              
+                                          //           height: 40,
+                                          //           child: TextField(
+                                          //                   controller: campoPais,
+                                          //                   onChanged: (text){
+                                          //                     widget.pais[widget.cantDirecciones] = text;
+                                          //                   },
+                                          //                   decoration: InputDecoration(
                                                                 
-                                                              fillColor: Colors.white,
-                                                              filled: true,
+                                          //                     fillColor: Colors.white,
+                                          //                     filled: true,
                                                              
-                                                            ),
-                                                          ),
-                                                  ),
-                                              ],
-                                            )
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.all(2.0),
-                                          ),
-                                          Expanded(
-                                            child: Column(
-                                              children: <Widget>[
-                                                Text('Ciudad', 
-                                                  style: 
-                                                    TextStyle(
-                                                      color: Colors.white, 
-                                                      fontFamily: 'illapaBold', 
-                                                      fontSize: 16.0, 
-                                                    ), textAlign: TextAlign.center,),
-                                                Container(              
-                                                    height: 40,
-                                                    child: TextField(
-                                                      controller: campoCiudad,
-                                                            onChanged: (text){
-                                                              widget.ciudad[widget.cantDirecciones] = text;
-                                                            },
-                                                            // keyboardType: TextInputType.number,
-                                                            decoration: InputDecoration(
+                                          //                   ),
+                                          //                 ),
+                                          //         ),
+                                          //     ],
+                                          //   )
+                                          // ),
+                                          
+                                          // Padding(
+                                          //   padding: EdgeInsets.all(2.0),
+                                          // ),
+                                          // Expanded(
+                                          //   child: Column(
+                                          //     children: <Widget>[
+                                          //       Text('Ciudad', 
+                                          //         style: 
+                                          //           TextStyle(
+                                          //             color: Colors.white, 
+                                          //             fontFamily: 'illapaBold', 
+                                          //             fontSize: 16.0, 
+                                          //           ), textAlign: TextAlign.center,),
+                                          //       Container(              
+                                          //           height: 40,
+                                          //           child: TextField(
+                                          //             controller: campoCiudad,
+                                          //                   onChanged: (text){
+                                          //                     widget.ciudad[widget.cantDirecciones] = text;
+                                          //                   },
+                                          //                   // keyboardType: TextInputType.number,
+                                          //                   decoration: InputDecoration(
                                                                 
-                                                              fillColor: Colors.white,
-                                                              filled: true,
-                                                              // hintText: "25000.00",
-                                                              // labelText: "25000.00",
-                                                            ),
-                                                          ),
-                                                  ),
-                                              ],
-                                            )
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.all(2.0),
-                                          ),
-                                          Expanded(
-                                            child: Column(
-                                              children: <Widget>[
-                                                Text('Cod Postal', 
-                                                  style: 
-                                                    TextStyle(
-                                                      color: Colors.white, 
-                                                      fontFamily: 'illapaBold', 
-                                                      fontSize: 16.0, 
-                                                    ), textAlign: TextAlign.center,),
-                                                Container(              
-                                                    height: 40,
-                                                    child: TextField(
-                                                            controller: campoCodigoPostal,
-                                                            onChanged: (text){
-                                                              widget.codPostal[widget.cantDirecciones] = text;
-                                                            },
-                                                            keyboardType: TextInputType.number,
-                                                            decoration: InputDecoration(
-                                                              fillColor: Colors.white,
-                                                              filled: true,
-                                                            ),
-                                                          ),
-                                                  ),
-                                              ],
-                                            )
-                                          ),
+                                          //                     fillColor: Colors.white,
+                                          //                     filled: true,
+                                          //                     // hintText: "25000.00",
+                                          //                     // labelText: "25000.00",
+                                          //                   ),
+                                          //                 ),
+                                          //         ),
+                                          //     ],
+                                          //   )
+                                          // ),
+                                          // Padding(
+                                          //   padding: EdgeInsets.all(2.0),
+                                          // ),
+                                          // Expanded(
+                                          //   child: Column(
+                                          //     children: <Widget>[
+                                          //       Text('Cod Postal', 
+                                          //         style: 
+                                          //           TextStyle(
+                                          //             color: Colors.white, 
+                                          //             fontFamily: 'illapaBold', 
+                                          //             fontSize: 16.0, 
+                                          //           ), textAlign: TextAlign.center,),
+                                          //       Container(              
+                                          //           height: 40,
+                                          //           child: TextField(
+                                          //                   controller: campoCodigoPostal,
+                                          //                   onChanged: (text){
+                                          //                     widget.codPostal[widget.cantDirecciones] = text;
+                                          //                   },
+                                          //                   keyboardType: TextInputType.number,
+                                          //                   decoration: InputDecoration(
+                                          //                     fillColor: Colors.white,
+                                          //                     filled: true,
+                                          //                   ),
+                                          //                 ),
+                                          //         ),
+                                          //     ],
+                                          //   )
+                                          // ),
                                           
                                         ],
                                       ),
-                                     Text('Calle', 
+                                     Text('Ubicación', 
                                                   style: 
                                                     TextStyle(
                                                       color: Colors.white, 
@@ -382,7 +383,11 @@ class _DatFreeMapsPageState extends State<DatFreeMapsPage> {
                                           padding: EdgeInsets.all(10.0),
                                           child: Text('Agregar', style: TextStyle(color: Colors.white,)), 
                                           onPressed: (){
+                                            setState(() {
+                                             widget.ciudad[widget.cantDirecciones] = "none";
+                                             widget.pais[widget.cantDirecciones] = "none";
 
+                                            });
                                             if(widget.calle[widget.cantDirecciones] != null && widget.ciudad[widget.cantDirecciones] != null && widget.pais[widget.cantDirecciones] != null){
                                               
                                               

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/datos/datoDocumento.dart';
 import 'package:illapa/pages/datos/datoNuevo.dart';
 import 'package:illapa/pages/datos/datosFree/datFreeClienteEditar.dart';
@@ -78,47 +79,43 @@ class _DatFreeClientesPageState extends State<DatFreeClientesPage> {
                             children: <Widget>[
                               new Expanded(
                                 child: GestureDetector(
-                                onTap: (){Navigator.push(
-                                          context, 
-                                          MaterialPageRoute(
-                                            builder: (BuildContext context ) => DatoDocumentoPage(
-                                              //miomioidAnterior: widget.value,
-                                              tipoUsuario: 5,
-
-                                              value: idCliente,
-                                              imagen: urlImagenes+imagen,
-                                              nombre: nombre,
-                                              identificacion: '$tipo $identif',
-
-
-                                            )
-                                          )
-                                        );},
-                                        child:Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: <Widget>[
-                                                  Text(
-                                                    nombre,
-                                                    style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, fontSize: 15.0 ),
-                                                  ),
-                                                  Text(
-                                                    '$tipo $identif',
-                                                    style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
-                                                  ),
-                                                  Text(
-                                                    '$correo',
-                                                    style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
-                                                  ),
-                                                  Text(
-                                                    '$usuario',
-                                                    style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
-                                                  ),
-                                                ],
-                                              ),
+                                  onTap: (){
+                                    Navigator.push(
+                                      context, 
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context ) => DatoDocumentoPage(
+                                          idAnterior: widget.value,
+                                          tipoUsuario: 5,
+                                          value: idCliente,
+                                          imagen: urlImagenes+imagen,
+                                          nombre: nombre,
+                                          identificacion: '$tipo $identif',
                                         )
-                                
-                                
-                                
+                                      )
+                                    );
+                                  },
+                                  child:Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        nombre,
+                                        style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, fontSize: 15.0 ),
+                                      ),
+                                      Text(
+                                        '$tipo $identif',
+                                        style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                      ),
+                                      Text(
+                                        '$correo',
+                                        style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                      ),
+                                      Text(
+                                        '$usuario',
+                                        style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                      ),
+                                    ],
+                                  ),
+                                )
                               ),
                               new IconButton(
                                     icon: Icon(FontAwesomeIcons.angleRight, color: Colors.white,),
@@ -326,11 +323,11 @@ class _DatFreeClientesPageState extends State<DatFreeClientesPage> {
                               ),
                               Text(
                                 '$numeroDocumentos registros por $sumaImporteDocumentos',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
                                 '$numeroDocumentosVencidos vencidos por $sumaImportesDocumentosVencidos',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                             ],
                           ),
@@ -597,6 +594,12 @@ class _DatFreeClientesPageState extends State<DatFreeClientesPage> {
         
       }
           
+    }else{
+      setState(() {
+        dniExiste = true;
+        Navigator.of(context).pop();
+        usuarioBuscar(context);
+      });
     }
 
   }

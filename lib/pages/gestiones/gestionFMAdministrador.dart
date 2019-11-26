@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/gestiones/gestionCliente.dart';
 import 'package:illapa/pages/gestiones/gestionSocios.dart';
 import 'package:illapa/widgets.dart';
@@ -201,11 +202,11 @@ class _GestionFMAdministradorPageState extends State<GestionFMAdministradorPage>
                               ),
                               Text(
                                 '$numeroDocumentos registros por ${moneyType.format(double.parse(sumaImporteDocumentos))}', 
-                                style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 12.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
                                 '$numeroDocumentosVencidos vencidos por ${moneyType.format(double.parse(sumaImportesDocumentosVencidos))}',
-                                style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 12.0, fontFamily: 'illapaMedium'),
                               ),
                             ],
                           ),

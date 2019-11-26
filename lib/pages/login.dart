@@ -4,16 +4,18 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:illapa/behaviors/hiddenScrollBehavior.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/extras/globals/globals.dart';
 import 'package:illapa/pages/confirmacion.dart';
-import 'package:illapa/pages/gestiones/gestion.dart';
 import 'package:illapa/pages/gestiones/gestionClientes.dart';
 import 'package:illapa/pages/gestiones/gestionEmpresa/gestionEmpresa.dart';
 import 'package:illapa/pages/gestiones/gestionFree/gfreeClientes.dart';
 import 'package:illapa/pages/gestiones/gestionSectorista/gestionSectores.dart';
 import 'package:illapa/pages/gestiones/gestionSocios.dart';
 import 'package:illapa/pages/recuperar.dart';
+import 'package:illapa/pages/register.dart';
 import 'package:illapa/widgets.dart';
 
 import 'package:http/http.dart' as http;
@@ -24,7 +26,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
-
+import 'package:illapa/widgets/modals.dart';
 
 class LoginPage extends StatefulWidget {
   final String apitoken;
@@ -36,6 +38,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
+  bool ocultarContrasena = true;
   _register() async{  
   
     _scaffoldKey.currentState.showSnackBar(SnackBar(
@@ -88,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                   borderRadius: BorderRadius.circular(10.0)),
               child: Container(
                 height: 310.0,
-                color: Color(0xFF070D59),
+                color: AppTheme.primary,
                 padding: EdgeInsets.all(10.0),
                   child: ListView(
                     children: <Widget>[
@@ -179,7 +182,7 @@ class _LoginPageState extends State<LoginPage> {
                                 children: <Widget>[
                                   Expanded(
                                     child: RaisedButton(
-                                          color: Color(0xfff7b633),
+                                          color: AppTheme.naranja,
                                           padding: EdgeInsets.all(10.0),
                                           child: Text('Aceptar', style: TextStyle(color: Colors.white,)),
                                           onPressed: (){
@@ -480,10 +483,10 @@ class _LoginPageState extends State<LoginPage> {
         "$urlGlobal/api/loginApi";
 
       var response = await http.post(url, body: {
-                      "email": email,//miomio
+                      "email": email,
                       "pass": _password,
                     });
-
+      print(response.body);
       if (response.statusCode == 200) {
         final directory   = await getApplicationDocumentsDirectory();
         final fileApi     = File('${directory.path}/api.txt');
@@ -500,13 +503,15 @@ class _LoginPageState extends State<LoginPage> {
         final nombreLogeado = map["nombreLogeado"];
         final imagenLogeado = map["imagenLogeado"];
         final verificado    = map["verificado"];
-
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('nombre', "$nombreLogeado");
+        
         await fileApi.writeAsString(apiToken);
         await fileTipo.writeAsString("$usuarioTipo");
         await fileId.writeAsString("$idUsuario");
         await fileNombre.writeAsString("$nombreLogeado");
         await fileImagen.writeAsString("$imagenLogeado");
-
+        globalNombre = "$nombreLogeado";
         if(verificado){
           switch (usuarioTipo) {
             case 1: Navigator.push(
@@ -628,6 +633,16 @@ class _LoginPageState extends State<LoginPage> {
       key: _scaffoldKey,
       body: WillPopScope(
         onWillPop: (){
+          modalMensaje.modalOpcion(
+            context, 
+            "Estas apunto de cerrar la aplicación", 
+            (){
+              exit(0);
+            }, 
+            AppTheme.primary
+            
+          );
+          
         },
         child: Container(
           padding: EdgeInsets.all(30.0),
@@ -649,7 +664,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   LogoImg(),
                   Container(
-                    padding: EdgeInsets.only(top: 70),
+                    padding: EdgeInsets.only(top: 40),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -660,41 +675,91 @@ class _LoginPageState extends State<LoginPage> {
                             fontFamily: 'illapaBold'
                             ),
                         ),
-                        Container(
-                          height: 33.0,
-                          child: TextFormField(
-                              decoration: InputDecoration(
-                                fillColor: Colors.white,
-                                filled: true,
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: 5.0, bottom: 10.0, ),
+                            child: Container(
+                              height: 37,
+                              padding: EdgeInsets.only(left:10.0, right: 10.0, ),
+                              color: Colors.white,
+                              child: TextFormField(
+                                onSaved: (val){
+                                  setState((){
+                                    _email = val;
+                                  });
+                                },
+                              // obscureText: ocultarContrasena,
+                              style: TextStyle(
+                                fontFamily: AppTheme.fontName,
+                                fontSize: 16.0,
+                                color: Colors.black
                               ),
-                              onSaved: (val){
-                                setState((){
-                                  _email = val;
-                                });
-                              },
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "",
+                                hintStyle: TextStyle(
+                                    fontFamily: AppTheme.fontName, 
+                                    fontSize: 16.0
+                                ),
+                              ),
                             ),
+                          )
+                        ),
+                        Text(
+                          'Contraseña',  
+                          style: TextStyle(
+                            color: Colors.white, 
+                            fontFamily: 'illapaBold',
+                          ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(top: 5.0),
-                        ),
-                        Text('Contraseña',  style: TextStyle(color: Colors.white, fontFamily: 'illapaBold',),),
-                        Container(
-                          height: 33.0,
-                          child: TextFormField(
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              fillColor: Colors.white,
-                              filled: true,
-                              // hintText: "**********",
-                              // labelText: "Contraseña",
+                          padding: EdgeInsets.only(
+                              top: 5.0, bottom: 5.0, ),
+                            child: Container(
+                              height: 37,
+                              padding: EdgeInsets.only(left:10.0,  ),
+                              color: Colors.white,
+                              child: TextFormField(
+                                onSaved: (val){
+                                  setState(() {
+                                      _password = val;
+                                  });
+                                },
+                              obscureText: ocultarContrasena,
+                              style: TextStyle(
+                                fontFamily: AppTheme.fontName,
+                                fontSize: 16.0,
+                                color: Colors.black
+                              ),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "",
+                                hintStyle: TextStyle(
+                                    fontFamily: AppTheme.fontName, 
+                                    fontSize: 16.0
+                                ),
+                                suffixIcon: IconButton(
+                                  onPressed: (){
+                                    setState(() {
+                                      if(ocultarContrasena){
+                                        ocultarContrasena = false;
+                                      }else{
+                                        ocultarContrasena = true;
+                                      }
+                                    });
+                                  },
+                                  icon: Icon(
+                                      ocultarContrasena
+                                        ? FontAwesomeIcons.eye
+                                        : FontAwesomeIcons.eyeSlash,
+                                    size: 15.0,
+                                    color: Colors.black,
+                                  ),
+                                )
+                              ),
                             ),
-                            onSaved: (val){
-                              setState(() {
-                                  _password = val;
-                              });
-                            },
-                          ),
-                        )
+                          )
+                        ),
                       ],
                     ),
                   ),
@@ -702,8 +767,14 @@ class _LoginPageState extends State<LoginPage> {
                     padding: EdgeInsets.only(top: 60.0),
                   ),
                   new RaisedButton(
-                    child: new Text("Iniciar sesión"),
-                    color: Color(0xffF7B633), 
+                    child: new Text(
+                      "Iniciar sesión",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'illapaBold',
+                      ),
+                    ),
+                    color: AppTheme.naranja, 
                     onPressed: (){
                       _login();
                     },
@@ -712,21 +783,21 @@ class _LoginPageState extends State<LoginPage> {
                     height: 25.0,
                     child: Row(
                       children: <Widget>[
-                        Expanded(
-                          child: GoogleSignInButton(
-                            text: '',
-                            onPressed: () => _loginGoogle()
-                            ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(right: 5.0),
-                        ),
-                        Expanded(
-                          child: FacebookSignInButton(
-                              text: '',
-                              onPressed: () =>_loginConFb(),
-                            ),
-                        )
+                        // Expanded(
+                        //   child: GoogleSignInButton(
+                        //     text: '',
+                        //     onPressed: () => _loginGoogle()
+                        //     ),
+                        // ),
+                        // Padding(
+                        //   padding: EdgeInsets.only(right: 5.0),
+                        // ),
+                        // Expanded(
+                        //   child: FacebookSignInButton(
+                        //       text: '',
+                        //       onPressed: () =>_loginConFb(),
+                        //     ),
+                        // )
                       ],
                     ),
                   ),
@@ -775,8 +846,14 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         GestureDetector(
                           onTap: (){
-                            Navigator.of(context).pushReplacementNamed('/register');
-                            print('registrate');
+                            Navigator.push(
+                              context, 
+                              MaterialPageRoute(
+                                builder: (BuildContext context ) => RegisterPage(
+                                  
+                                )
+                              )
+                            );
                           },
                           child: Text(
                             '¿No tienes cuenta? ¿Regístrate!', 
@@ -786,6 +863,22 @@ class _LoginPageState extends State<LoginPage> {
                               )
                             ),
                         ),
+                        Container(
+                          padding: EdgeInsets.only(top: 15.0),
+                          child: GestureDetector(
+                            onTap: (){
+                              exit(0);
+                            },
+                            child: Text(
+                              'Salir', 
+                              style: new TextStyle(
+                                fontFamily: 'illapaBold', 
+                                color: Colors.white, 
+                                )
+                              ),
+                          ),
+                        )
+                        
                       ],
                     ),
                   )
@@ -796,14 +889,21 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
       bottomNavigationBar: Container(
-        color: Colors.black,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/img/fondo.jpeg"),
+              fit: BoxFit.cover
+            ),
+          ),
         child: Text(
-          'V40.6', 
+          // 'V2.3p',
+          globalVersion,
           style: new TextStyle(
             fontFamily: 'illapaBold', 
             color: Colors.white, 
-            )
           ),
+          textAlign: TextAlign.end,
+        ),
       )
     );
   }

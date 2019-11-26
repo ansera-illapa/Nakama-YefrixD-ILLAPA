@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/extras/appTema.dart';
+import 'package:illapa/extras/globals/variablesGlobales.dart';
 import 'package:illapa/pages/datos/datosClientes.dart';
 import 'package:illapa/widgets.dart';
 
@@ -166,6 +168,17 @@ Widget buidEstListSocios(String imagen,
         }else{
           cantSocios = 0;
         }
+
+        // VARIABLES GLOBALES PARA PINTAR DATOS
+        // pagDatDatSocDatosGlobal               = listSocios;
+        // pagDatDatSocNombEmpGlobal             =  ;
+        // pagDatDatSocTipoIdentificadorGlobal   =  ;
+        // pagDatDatSocIdentificadorGlobal       =  ;
+        // pagDatDatSocEmailGlobal               =  ;
+
+        
+        
+
       });
     }
   }
@@ -188,8 +201,23 @@ Widget buidEstListSocios(String imagen,
               );
     
   }
+  
   @override
   void initState() {
+
+    setState(() {
+      // VARIABLES GLOBALES PARA PINTAR DATOS
+        data                = pagDatDatSocDatosGlobal;
+        cantSocios          = pagDatDatSocDatosGlobal.length;
+        // nombreEmpresa       = pagDatDatSocNombEmpGlobal;
+        // tipoidentificador   = pagDatDatSocTipoIdentificadorGlobal;
+        // identificador       = pagDatDatSocIdentificadorGlobal;
+        // email               = pagDatDatSocEmailGlobal;
+
+        if(cantSocios > 0){
+          _isLoading = true;
+        }
+    });
     // TODO: implement initState
     if(widget.nombre != null){
       nombreEmpresa = widget.nombre;
@@ -304,15 +332,15 @@ Widget buidEstListSocios(String imagen,
                               ),
                               Text(
                                 '$tipoidentificador $identificador',
-                                style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 12.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
                                 email,
-                                style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 12.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
                                 'Empresa',
-                                style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 12.0, fontFamily: 'illapaMedium'),
                               ),
                             ],
                           ),

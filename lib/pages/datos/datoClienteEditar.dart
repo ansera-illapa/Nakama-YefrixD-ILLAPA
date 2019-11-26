@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/datos/datosClientes.dart';
 import 'package:illapa/pages/datos/datosMapa.dart';
 
@@ -231,8 +232,9 @@ class _DatoClienteEditarPageState extends State<DatoClienteEditarPage> {
                                             Padding(padding: EdgeInsets.only(top: 5.0),),
                                             y == 2
                                               ?Container(
-                                                height: 30.0,
+                                                // height: 30.0,
                                                 child: TextField(
+                                                  maxLength: 9,
                                                     keyboardType: TextInputType.number,
                                                     onChanged: (text){
                                                       list[x] = text;
@@ -245,7 +247,7 @@ class _DatoClienteEditarPageState extends State<DatoClienteEditarPage> {
                                                 ),
                                               )
                                             :Container(
-                                                height: 30.0,
+                                                // height: 30.0,
                                                 child: TextField(
                                                     onChanged: (text){
                                                       list[x] = text;
@@ -292,7 +294,14 @@ class _DatoClienteEditarPageState extends State<DatoClienteEditarPage> {
                                               }
                                             },
                                           ),
-                                          Text('Agregar Dirección', style: TextStyle( color: Colors.white, fontFamily: 'illapaBold', fontSize: 15.0),),
+                                          Text(
+                                            'Agregar Dirección', 
+                                            style: TextStyle(
+                                              color: Colors.white, 
+                                              fontFamily: 'illapaBold', 
+                                              fontSize: 15.0
+                                            ),
+                                          ),
                                           
                                         ],
                                       ),
@@ -328,7 +337,14 @@ class _DatoClienteEditarPageState extends State<DatoClienteEditarPage> {
                                               }
                                             },
                                           ),
-                                          Text('Agregar Telefono', style: TextStyle( color: Colors.white, fontFamily: 'illapaBold', fontSize: 15.0),),
+                                          Text(
+                                            'Agregar Telefono', 
+                                            style: TextStyle( 
+                                              color: Colors.white, 
+                                              fontFamily: 'illapaBold', 
+                                              fontSize: 15.0
+                                            ),
+                                          ),
                                           
                                         ],
                                       ),
@@ -861,7 +877,7 @@ class _DatoClienteEditarPageState extends State<DatoClienteEditarPage> {
                                 ),
                                 Text(
                                   '${widget.tipodnioruc} ${widget.dnioruc}',
-                                  style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                  style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                                 ),
                                 
                                 
@@ -899,13 +915,17 @@ class _DatoClienteEditarPageState extends State<DatoClienteEditarPage> {
                           
 
                             for(int cont = 0; cont < cantDirecciones; cont++)
+                              // _buildClienteAsociado(
+                              //                         "Ciudad: "+"${listDirecciones[cont]['ciudad']}"+
+                              //                         "("+"${listDirecciones[cont]['codigopostal']}"+")"+
+                              //                         "\nCalle: "+ "${listDirecciones[cont]['calle']}", listDirecciones[cont]['id'], 1),
                               _buildClienteAsociado(
-                                                      "Ciudad: "+"${listDirecciones[cont]['ciudad']}"+
-                                                      "("+"${listDirecciones[cont]['codigopostal']}"+")"+
-                                                      "\nCalle: "+ "${listDirecciones[cont]['calle']}", listDirecciones[cont]['id'], 1),
-                            
+                                                  ""+ "${listDirecciones[cont]['calle']}", listDirecciones[cont]['id'], 1),
                             for(int cont= 0 ; cont < cantDireccionesAgregadas; cont++)
-                              _buildClienteAsociado( ""+ pais[cont]+"\n"+ciudad[cont]+ "("+"${codPostal[cont]}"+")"+ "\n"+calle[cont],9,9 ),
+                              // _buildClienteAsociado( 
+                              //   ""+ pais[cont]+"\n"+ciudad[cont]+ "("+"${codPostal[cont]}"+")"+ "\n"+calle[cont],9,9 ),
+                              _buildClienteAsociado( 
+                                ""+calle[cont],9,9 ),
 
                             _buildDireccion()
                             // _buildListDatosCliente(contDireccion, 'Dirección', 1, direccionesList, 'CIUDAD', 'CODIGO POSTAL', 'CALLE', direccionesCiudad ,direccionesCodigoPostal),
@@ -1533,7 +1553,7 @@ class _DatoClienteEditarPageState extends State<DatoClienteEditarPage> {
     // then get the Prediction selected
     Prediction p = await PlacesAutocomplete.show(
       context: context,
-      apiKey: kGoogleApiKey,
+      apiKey: globalApiMaps,
       // onError: onError,
       mode: _mode,
       language: "es",
@@ -1618,11 +1638,11 @@ class _DatoClienteEditarPageState extends State<DatoClienteEditarPage> {
 
 }
 
-const kGoogleApiKey = "AIzaSyCIP0p6wU1IvM9ioCKjKQIG92dkO6-Dm0M";
+// const kGoogleApiKey = globalApiMaps;
 // final homeScaffoldKey = GlobalKey<ScaffoldState>();
 // final searchScaffoldKey = GlobalKey<ScaffoldState>();
 
-GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
+GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: globalApiMaps);
 Mode _mode = Mode.overlay;
 
 

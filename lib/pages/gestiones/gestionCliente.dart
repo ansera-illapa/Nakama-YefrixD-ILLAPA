@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:illapa/behaviors/hiddenScrollBehavior.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/gestiones/gestionClienteAccion.dart';
 import 'package:illapa/widgets.dart';
 
@@ -209,11 +210,11 @@ class _GestionClientePageState extends State<GestionClientePage> {
                               numeroIdentificacion == null
                               ?Text(
                                 '$tipoIden -',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               )
                               :Text(
                                 '$tipoIden $numeroIdentificacion',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               )
                               
                             ],
@@ -586,11 +587,11 @@ class _GestionClientePageState extends State<GestionClientePage> {
                                             switch (tipo) {
                                               case 1: url = ''; 
                                                 break;
-                                              case 2: url = 'sms:+${dataTelefonos[cont]['numero']}?body=Estimado '+nombreCliente+': A la fecha tiene '+'${widget.numeroDocumentosVencidos}'+' documento(s) vencidos por ${moneyType.format(double.parse(widget.sumaImportesVencidos))}! .Agradeceremos regularizar su situación';
+                                              case 2: url = 'sms:${dataTelefonos[cont]['prefijo']} ${dataTelefonos[cont]['numero']}?body=Estimado '+nombreCliente+': A la fecha tiene '+'${widget.numeroDocumentosVencidos}'+' documento(s) vencidos por ${moneyType.format(double.parse(widget.sumaImportesVencidos))}! .Agradeceremos regularizar su situación';
                                                 break;
-                                              case 3: url = 'tel://${dataTelefonos[cont]['numero']}';
+                                              case 3: url = 'tel://${dataTelefonos[cont]['prefijo']} ${dataTelefonos[cont]['numero']}';
                                                 break;
-                                              case 4: url = 'whatsapp://send?phone=51 ${dataTelefonos[cont]['numero']}&text=Estimado '+nombreCliente+': A la fecha tiene '+'${widget.numeroDocumentosVencidos}'+' documento(s) vencidos por ${moneyType.format(double.parse(widget.sumaImportesVencidos))}! .Agradeceremos regularizar su situación';
+                                              case 4: url = 'whatsapp://send?phone= ${dataTelefonos[cont]['prefijo']} ${dataTelefonos[cont]['numero']}&text=Estimado '+nombreCliente+': A la fecha tiene '+'${widget.numeroDocumentosVencidos}'+' documento(s) vencidos por ${moneyType.format(double.parse(widget.sumaImportesVencidos))}! .Agradeceremos regularizar su situación';
                                                 break;
 
                                               default:
@@ -830,6 +831,7 @@ class _GestionClientePageState extends State<GestionClientePage> {
   
   Widget _buildAcciones(String fechaHora, String tipoAccion, String descripcionAccion, String compromisoPago, String prorroga, String alerta){
     fechaHora = '$fechaHora'.replaceAll(new RegExp('null'), '-');
+    fechaHora = '$fechaHora'.replaceAll(new RegExp(' '), ' - ');
     tipoAccion = '$tipoAccion'.replaceAll(new RegExp('null'), '-');
     descripcionAccion = '$descripcionAccion'.replaceAll(new RegExp('null'), '-');
     compromisoPago = '$compromisoPago'.replaceAll(new RegExp('null'), '-');
@@ -860,33 +862,93 @@ class _GestionClientePageState extends State<GestionClientePage> {
                                     Padding(padding: EdgeInsets.only(bottom: 5.0),),
                                     Row(
                                       children: <Widget>[
-                                        Icon(FontAwesomeIcons.handshake, size: 20, color: Colors.white),
+                                        Icon(
+                                          FontAwesomeIcons.handshake, 
+                                          size: 15, 
+                                          color: Colors.white
+                                        ),
                                         Padding(
                                           padding: EdgeInsets.only(left: 15.0)
                                         ),
-                                        Text("$compromisoPago", style: TextStyle( fontFamily: 'illapaBold', color: Colors.white ),),
-                                      ],
-                                    ),
-                                    Padding(padding: EdgeInsets.only(bottom: 5.0),),
-                                    Row(
-                                      children: <Widget>[
-                                        Icon(FontAwesomeIcons.calendarAlt, size: 20, color: Colors.white),
+                                        Text(
+                                          "$compromisoPago", 
+                                          style: TextStyle(
+                                            fontFamily: 'illapaBold', 
+                                            color: Colors.white 
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                            left: 15.0,
+                                            
+                                          )
+                                        ),
+
+                                        Icon(
+                                          FontAwesomeIcons.calendarAlt, 
+                                          size: 15, 
+                                          color: Colors.white
+                                        ),
                                         Padding(
                                           padding: EdgeInsets.only(left: 15.0)
                                         ),
-                                        Text('$prorroga', style: TextStyle( fontFamily: 'illapaBold', color: Colors.white ),),
-                                      ],
-                                    ),
-                                    Padding(padding: EdgeInsets.only(bottom: 5.0),),
-                                    Row(
-                                      children: <Widget>[
-                                        Icon(FontAwesomeIcons.clock, size: 20, color: Colors.white),
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 15.0)
+                                        Text(
+                                          '$prorroga', 
+                                          style: TextStyle(
+                                            fontFamily: 'illapaMedium', 
+                                            color: Colors.white,
+                                            fontSize: 15
+                                          ),
                                         ),
-                                        Text('$alerta', style: TextStyle( fontFamily: 'illapaBold', color: Colors.white ),),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                            left: 15.0,
+                                            
+                                          )
+                                        ),
+
+
+                                        Icon(
+                                          FontAwesomeIcons.clock, 
+                                          size: 15, 
+                                          color: Colors.white),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                            left: 15.0,
+                                            
+                                          )
+                                        ),
+                                        Text(
+                                          '$alerta', 
+                                          style: TextStyle(
+                                            fontFamily: 'illapaBold', 
+                                            color: Colors.white,
+                                            fontSize: 10
+                                          ),
+                                        ),
+
                                       ],
                                     ),
+                                    // Padding(padding: EdgeInsets.only(bottom: 5.0),),
+                                    // Row(
+                                    //   children: <Widget>[
+                                    //     Icon(FontAwesomeIcons.calendarAlt, size: 20, color: Colors.white),
+                                    //     Padding(
+                                    //       padding: EdgeInsets.only(left: 15.0)
+                                    //     ),
+                                    //     Text('$prorroga', style: TextStyle( fontFamily: 'illapaBold', color: Colors.white ),),
+                                    //   ],
+                                    // ),
+                                    // Padding(padding: EdgeInsets.only(bottom: 5.0),),
+                                    // Row(
+                                    //   children: <Widget>[
+                                    //     Icon(FontAwesomeIcons.clock, size: 20, color: Colors.white),
+                                    //     Padding(
+                                    //       padding: EdgeInsets.only(left: 15.0)
+                                    //     ),
+                                    //     Text('$alerta', style: TextStyle( fontFamily: 'illapaBold', color: Colors.white ),),
+                                    //   ],
+                                    // ),
                                     Padding(padding: EdgeInsets.only(bottom: 5.0),),
                                     Text(
                                       descripcionAccion,

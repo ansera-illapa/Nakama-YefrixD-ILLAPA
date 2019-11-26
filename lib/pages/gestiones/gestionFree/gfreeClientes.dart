@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/gestiones/gestionCliente.dart';
 import 'package:illapa/pages/gestiones/gestionFree/gfreeFiltroMayor.dart';
 import 'package:illapa/widgets.dart';
@@ -135,6 +136,7 @@ class _GfreeClientesPageState extends State<GfreeClientesPage> {
         "$urlGestionFree/clientesTodos/${widget.value}?api_token="+apiToken;
     print(url);
     final response = await http.get(url);
+    print(response.body);
     if (response.statusCode == 200) {
       final map = json.decode(response.body);
       final code = map["code"];
@@ -252,8 +254,8 @@ class _GfreeClientesPageState extends State<GfreeClientesPage> {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
         
-        setState(() {
-          nombreUsuario = prefs.getString('nombre');
+      setState(() {
+        nombreUsuario = prefs.getString('nombre');
       });
       final directory = await getApplicationDocumentsDirectory();
       final tipoUsuarioFile = File('${directory.path}/tipo.txt');
@@ -273,134 +275,135 @@ class _GfreeClientesPageState extends State<GfreeClientesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        centerTitle: true,
-        title: new Text('Gestión'),
+    return GestureDetector(
+      child: Scaffold(
+        appBar: new AppBar(
+          centerTitle: true,
+          title: new Text('Gestión'),
+          backgroundColor: Color(0xFF070D59),
+        ),
         backgroundColor: Color(0xFF070D59),
-      ),
-      backgroundColor: Color(0xFF070D59),
-      drawer: Theme(
-        data: Theme.of(context).copyWith(
-          canvasColor: Color(0xFF070D59),
-        ),
-        child: Sidebar(
-          tipousuario: tipoUsuario,
-          idusuario: idUsuario,
-          imagenUsuario: imagenUsuario,
-          nombre : nombreUsuario
+        drawer: Theme(
+          data: Theme.of(context).copyWith(
+            canvasColor: Color(0xFF070D59),
+          ),
+          child: Sidebar(
+            tipousuario: tipoUsuario,
+            idusuario: idUsuario,
+            imagenUsuario: imagenUsuario,
+            nombre : nombreUsuario
 
+          ),
         ),
-      ),
-      body: Container(
-        padding: EdgeInsets.all(10.0),
-        child: ListView(
-          children: <Widget>[
+        body: Container(
+          padding: EdgeInsets.all(10.0),
+          child: ListView(
+            children: <Widget>[
 
-            Container(
-              color: Color(0xff1f3c88),
-              // height: 80.0,
-              child: Column(
-                children: <Widget>[
-                  ListTile(
-                    leading: new CircleAvatar(
-                      foregroundColor: Theme.of(context).primaryColor,
-                      backgroundColor: Colors.grey,
-                      backgroundImage: new NetworkImage(imagenGestorFree),
-                    ),
-                    title: new Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        new Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                nombreGestor,
-                                style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, ),
-                              ),
-                              Text(
-                                '$numeroDocumentos registros por $sumaImporteDocumentos',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
-                              ),
-                              Text(
-                                '$numeroDocumentosVencidos vencidos por $sumaImportesDocumentosVencidos',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
-                              ),
-                            ],
+              Container(
+                color: Color(0xff1f3c88),
+                // height: 80.0,
+                child: Column(
+                  children: <Widget>[
+                    ListTile(
+                      leading: new CircleAvatar(
+                        foregroundColor: Theme.of(context).primaryColor,
+                        backgroundColor: Colors.grey,
+                        backgroundImage: new NetworkImage(imagenGestorFree),
+                      ),
+                      title: new Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          new Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  nombreGestor,
+                                  style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, ),
+                                ),
+                                Text(
+                                  '$numeroDocumentos registros por $sumaImporteDocumentos',
+                                  style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                ),
+                                Text(
+                                  '$numeroDocumentosVencidos vencidos por $sumaImportesDocumentosVencidos',
+                                  style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        new IconButton(
-                              icon: Icon(Icons.cloud, color: Colors.white,),
-                              onPressed: () => Navigator.push(
-                                                  context, 
-                                                  MaterialPageRoute(
-                                                    builder: (BuildContext context ) => GfreeFiltroMayorPage(
-                                                      value: widget.value,
-                                                      imagenGestor:imagenGestorFree,
-                                                      nombreGestor: nombreGestor,
-                                                      numeroDocumentos: numeroDocumentos,
-                                                      sumaImportesDocumentos: "$sumaImporteDocumentos",
-                                                      numeroDocumentosVencidos: numeroDocumentosVencidos,
-                                                      sumaImportesDocumentosVencidos: "$sumaImportesDocumentosVencidos"
+                          new IconButton(
+                                icon: Icon(Icons.cloud, color: Colors.white,),
+                                onPressed: () => Navigator.push(
+                                                    context, 
+                                                    MaterialPageRoute(
+                                                      builder: (BuildContext context ) => GfreeFiltroMayorPage(
+                                                        value: widget.value,
+                                                        imagenGestor:imagenGestorFree,
+                                                        nombreGestor: nombreGestor,
+                                                        numeroDocumentos: numeroDocumentos,
+                                                        sumaImportesDocumentos: "$sumaImporteDocumentos",
+                                                        numeroDocumentosVencidos: numeroDocumentosVencidos,
+                                                        sumaImportesDocumentosVencidos: "$sumaImportesDocumentosVencidos"
 
+                                                      )
                                                     )
-                                                  )
-                                                ),
-                            )
-                      ],
+                                                  ),
+                              )
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            if(_buscar)
-              Padding(
-                padding: EdgeInsets.all(5.0),
-                child: Container(
-                  color: Colors.white,
-                  padding: EdgeInsets.all(5.0),
-                  child: TextField(
-                    
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      hintText: 'Buscar'
-                    ),
-                    onChanged: (text) {
-                      print(text);
-                      setState(() {
-                          textoBusqueda = text;
-                          print(textoBusqueda);
-                      });
-                    },
-                    // onChanged: (String filtro){
-                    //   print(filtro);
-                    // },
-                  ),
+                  ],
                 ),
               ),
-            if(!_isLoading)
-              _loading(),
-
-            Container(
-              color: Color(0xfff7b633),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    // padding: EdgeInsets.only(top: 5.0),
-                    width: 5.0,
-                    
-                    color: Color(0xfff7b633),
-                    
-                  
+              if(_buscar)
+                Padding(
+                  padding: EdgeInsets.all(5.0),
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(5.0),
+                    child: TextField(
+                      
+                      decoration: InputDecoration(
+                        fillColor: Colors.white,
+                        hintText: 'Buscar'
+                      ),
+                      onChanged: (text) {
+                        print(text);
+                        setState(() {
+                            textoBusqueda = text;
+                            print(textoBusqueda);
+                        });
+                      },
+                      // onChanged: (String filtro){
+                      //   print(filtro);
+                      // },
+                    ),
                   ),
-                  Expanded(
-                    child: Container(
-                      // color: Colors.black,
-                      color: Color(0xff070D59),
-                      child: Column(
-                        children: <Widget>[
+                ),
+              if(!_isLoading)
+                _loading(),
+
+              Container(
+                color: Color(0xfff7b633),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      // padding: EdgeInsets.only(top: 5.0),
+                      width: 5.0,
+                      
+                      color: Color(0xfff7b633),
+                      
+                    
+                    ),
+                    Expanded(
+                      child: Container(
+                        // color: Colors.black,
+                        color: Color(0xff070D59),
+                        child: Column(
+                          children: <Widget>[
                             if(todosClientes == false)
                               for(var cont =0; cont<cantClientes; cont++ )
                                 if(data[cont]['numeroDocumentosVencidos'] > 0)
@@ -414,7 +417,6 @@ class _GfreeClientesPageState extends State<GfreeClientesPage> {
                                                         data[cont]['clienteId']),  
                                   if(todosClientes == true)
                                     for(var cont =0; cont<todosCantClientes; cont++ )
-                                      
                                         if(dataClientesTodos[cont]['personaNombre'].indexOf(textoBusqueda.toUpperCase()) != -1 || dataClientesTodos[cont]['personaNombre'].indexOf(textoBusqueda.toLowerCase()) != -1  )
                                           _buildListClientes(dataClientesTodos[cont]['personaImagen'], 
                                                               dataClientesTodos[cont]['personaNombre'], 
@@ -423,98 +425,86 @@ class _GfreeClientesPageState extends State<GfreeClientesPage> {
                                                               dataClientesTodos[cont]['numeroDocumentosVencidos'], 
                                                               dataClientesTodos[cont]['sumaImportesDocumentosVencidos'], 
                                                               dataClientesTodos[cont]['clienteId']),  
-                              
-                              
-
-                          // if(_buscar == true)
-                          //   for(var cont =0; cont<cantClientes; cont++ )
-                          //     if(x != -1)
-                          //       _buildListClientes(data[cont]['personaImagen'], data[cont]['personaNombre'], data[cont]['numeroDocumentos'], data[cont]['sumaImportesDocumentos'], data[cont]['numeroDocumentosVencidos'], data[cont]['sumaImportesDocumentosVencidos'], data[cont]['clienteId']),
-                          
-                          // if(_buscar == false)
-                          //   for(var cont =0; cont<cantClientes; cont++ )
-                          //     _buildListClientes(data[cont]['personaImagen'], data[cont]['personaNombre'], data[cont]['numeroDocumentos'], data[cont]['sumaImportesDocumentos'], data[cont]['numeroDocumentosVencidos'], data[cont]['sumaImportesDocumentosVencidos'], data[cont]['clienteId'])                    
-
-
-                        ],
+                          ],
+                        ),
+                        
                       ),
-                      
-                    ),
-                  )
-                ],
-              )
-            ),
-          ],
-        ),
-      ),
-        
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: _buscar
-      //   ? (){
-      //       setState(() {
-      //               _buscar = false;
-      //             });
-      //     }
-      //   : (){
-      //       setState(() {
-      //               _buscar = true;
-      //             });
-      //     },
-
-      //   tooltip: '',
-
-      //   child: 
-      //     _buscar
-      //       ?Icon(FontAwesomeIcons.timesCircle)
-      //       :Icon(FontAwesomeIcons.search)
-      // ),
-
-
-      
-      bottomNavigationBar: BottomAppBar(
-          color: Color(0xff1f3c88),
-          shape: CircularNotchedRectangle(),
-          notchMargin: 4.0,
-          child: new Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              _buscar
-              ?IconButton(icon: Icon(FontAwesomeIcons.timesCircle, color: Colors.white,), onPressed: () {
-                  
-                  setState(() {
-                    _buscar = false;  
-                  });
-                  
-                },)
-              :IconButton(icon: Icon(FontAwesomeIcons.search, color: Colors.white,), onPressed: () {
-                  setState(() {
-                    _buscar = true; 
-                  });
-                },),
-
-              IconButton(icon: Icon(FontAwesomeIcons.ellipsisH, color: Colors.white,), onPressed: () {
-                setState(() {
-                  if(importarCLientes == false){
-                    _getTodosClientes();
-                    _isLoading = false;
-                    importarCLientes = true;
-                  }
-                  if(todosClientes == false){
-                    
-                    todosClientes = true; 
-                  }else{
-                    todosClientes = false; 
-                  }
-                 
-                });
-              },),
+                    )
+                  ],
+                )
+              ),
             ],
           ),
         ),
-      
+          
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: _buscar
+        //   ? (){
+        //       setState(() {
+        //               _buscar = false;
+        //             });
+        //     }
+        //   : (){
+        //       setState(() {
+        //               _buscar = true;
+        //             });
+        //     },
+
+        //   tooltip: '',
+
+        //   child: 
+        //     _buscar
+        //       ?Icon(FontAwesomeIcons.timesCircle)
+        //       :Icon(FontAwesomeIcons.search)
+        // ),
+
+
         
+        bottomNavigationBar: BottomAppBar(
+            color: Color(0xff1f3c88),
+            shape: CircularNotchedRectangle(),
+            notchMargin: 4.0,
+            child: new Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                _buscar
+                ?IconButton(icon: Icon(FontAwesomeIcons.timesCircle, color: Colors.white,), onPressed: () {
+                    
+                    setState(() {
+                      _buscar = false;  
+                    });
+                    
+                  },)
+                :IconButton(icon: Icon(FontAwesomeIcons.search, color: Colors.white,), onPressed: () {
+                    setState(() {
+                      _buscar = true; 
+                    });
+                  },),
+
+                IconButton(icon: Icon(FontAwesomeIcons.ellipsisH, color: Colors.white,), onPressed: () {
+                  setState(() {
+                    if(importarCLientes == false){
+                      _getTodosClientes();
+                      _isLoading = false;
+                      importarCLientes = true;
+                    }
+                    if(todosClientes == false){
+                      
+                      todosClientes = true; 
+                    }else{
+                      todosClientes = false; 
+                    }
+                  
+                  });
+                },),
+              ],
+            ),
+          ),
         
+          
+          
+      )
     );
     
   }

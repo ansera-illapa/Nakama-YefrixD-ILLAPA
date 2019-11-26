@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/extras/appTema.dart';
+import 'package:illapa/extras/globals/variablesGlobales.dart';
 import 'package:illapa/pages/datos/datosClientes.dart';
 import 'package:illapa/pages/datos/datosSocios.dart';
 import 'package:illapa/widgets.dart';
@@ -139,18 +141,18 @@ Widget _buildListEmpresas(String imagen,
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final map = json.decode(response.body);
-      final users = map["result"];
-      final load = map["load"];
-      final code = map["code"];
-      final numeroDocumentos = map["numeroDocumentos"];
-      final sumaImporteDocumentos = map["sumaImportesDocumentos"];
-      final numeroDocumentosVencidos = map["numeroDocumentosVencidos"];
-      final sumaImportesDocumentosVencidos = map["sumaImportesDocumentosVencidos"];
+      final users                           = map["result"];
+      final load                            = map["load"];
+      final code                            = map["code"];
+      final numeroDocumentos                = map["numeroDocumentos"];
+      final sumaImporteDocumentos           = map["sumaImportesDocumentos"];
+      final numeroDocumentosVencidos        = map["numeroDocumentosVencidos"];
+      final sumaImportesDocumentosVencidos  = map["sumaImportesDocumentosVencidos"];
 
       setState(() {
-        this.numeroDocumentos = numeroDocumentos;
-        this.sumaImporteDocumentos = sumaImporteDocumentos;
-        this.numeroDocumentosVencidos = numeroDocumentosVencidos;
+        this.numeroDocumentos               = numeroDocumentos;
+        this.sumaImporteDocumentos          = sumaImporteDocumentos;
+        this.numeroDocumentosVencidos       = numeroDocumentosVencidos;
         this.sumaImportesDocumentosVencidos = sumaImportesDocumentosVencidos;
         _isLoading = load;
         this.data = users;
@@ -158,6 +160,14 @@ Widget _buildListEmpresas(String imagen,
         if(code){
           cantEmpresas = this.data.length;
         }
+
+        // VARIABLES GLOBALES PARA PINTAR DATOS
+        pagesDatosDatoGlobal = users;
+        numeroDocumentosGlobal                = numeroDocumentos;
+        sumaImporteDocumentosGlobal           = sumaImporteDocumentos;   
+        numeroDocumentosVencidosGlobal        = numeroDocumentosVencidos;       
+        sumaImportesDocumentosVencidosGlobal  = sumaImportesDocumentosVencidos;          
+
         
       });
     }
@@ -194,6 +204,22 @@ Widget _buildListEmpresas(String imagen,
 
   @override
   void initState() {
+    setState(() {
+        // VARIABLES GLOBALES PARA PINTAR DATOS
+        data                            = pagesDatosDatoGlobal;
+        cantEmpresas                    = pagesDatosDatoGlobal.length;
+        numeroDocumentos                = numeroDocumentosGlobal;
+        sumaImporteDocumentos           = sumaImporteDocumentosGlobal;
+        numeroDocumentosVencidos        = numeroDocumentosVencidosGlobal;
+        sumaImportesDocumentosVencidos  = sumaImportesDocumentosVencidosGlobal;
+
+        if(cantEmpresas > 0){
+          _isLoading = true;
+        }
+
+
+    });
+
     // TODO: implement initState
     super.initState();
     _getDato();
@@ -278,15 +304,15 @@ Widget _buildListEmpresas(String imagen,
                               ),
                               Text(
                                 '$numeroDocumentos registros por ${moneyType.format(double.parse(sumaImporteDocumentos))}',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
                                 '$numeroDocumentosVencidos vencidos por ${moneyType.format(double.parse(sumaImportesDocumentosVencidos))}',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
                                 'Administrador',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                             ],
                           ),

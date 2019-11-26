@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/datos/datosClientes.dart';
 import 'package:illapa/pages/usuarios/usuariosSocios.dart';
 import 'package:illapa/widgets.dart';
@@ -348,30 +349,17 @@ Widget _buildListGestionEmpresas(String imagen,
                                 'Illapa',
                                 style: new TextStyle(fontFamily: 'illapaBold', color: Colors.white, ),
                               ),
-                              // Text(
-                              //   'RUC ',
-                              //   style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
-                              // ),
                               Text(
                                 'illpa@hotmail.com',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
                                 "Administrador",
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                             ],
                           ),
                         ),
-                        // new IconButton(
-                        //       icon: Icon(Icons.ac_unit, color: Colors.white,),
-                        //       onPressed: () => Navigator.push(
-                        //                           context, 
-                        //                           MaterialPageRoute(
-                        //                             builder: (BuildContext context ) => DatoClientesPage()
-                        //                           )
-                        //                         ),
-                        //     )
                       ],
                     ),
                   ),

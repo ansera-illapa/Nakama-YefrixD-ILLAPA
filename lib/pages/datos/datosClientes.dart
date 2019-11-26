@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/datos/datoClienteEditar.dart';
 import 'package:illapa/pages/datos/datoDocumento.dart';
 import 'package:illapa/pages/datos/datoNuevo.dart';
@@ -31,6 +32,9 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
   String textoBusqueda = '';
   bool ordenAZ = true;
   bool ordenZA = false;
+
+  double tamanoModalBuscarClienteHeight = 320;
+  double tamanoModalBuscaClienteWidth = 290.0;
 
   var moneyType = new NumberFormat("#,##0.00", "en_US");
 
@@ -102,16 +106,12 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
                                     '$tipo $identif',
                                     style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                   ),
-                                  Text(
-                                    '$correo',
-                                    style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
-                                  ),
+                                  // Text(
+                                  //   '$correo',
+                                  //   style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                  // ),
                                   Text(
                                     '$usuario',
-                                    style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
-                                  ),
-                                  Text(
-                                    'Cliente',
                                     style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
                                   ),
                                 ],
@@ -346,15 +346,15 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
                               ),
                               Text(
                                 '$numeroDocumentos registros por ${moneyType.format(double.parse(sumaImportesDocumentos))}',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
                                 '$numeroDocumentosVencidos vencidos por ${moneyType.format(double.parse(sumaImportesDocumentosVencidos))}',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
                                 'Socio',
-                                style: new TextStyle(color: Colors.black, fontSize: 15.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 15.0, fontFamily: 'illapaMedium'),
                               ),
                             ],
                           ),
@@ -534,7 +534,9 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
   
   String clienteExiste = "";
   _buscarCliente() async{
-    
+    setState(() {
+      dniExiste = false;
+    });
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/api.txt');
     String apiToken = await file.readAsString();
@@ -550,7 +552,7 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
                     "idSocioSeleccionado": "${widget.value}" ,
                   });
 
-    print(response);
+    print(response.body);
     if (response.statusCode == 200) {
       final map = json.decode(response.body);  
       final exis = map["existente"];
@@ -564,18 +566,15 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
       final imagen = map["image"];
       final tipoDocumentoIdentidad = map["tipoDocumentoIdentidad"];
       
-      print(load);
-      print(exis);
+
       setState(() {
         loadBuscadorDni = load;
       });
 
-      
-
       if(exis){
         if(code){
               setState(() {
-                dniExiste = load;
+                // dniExiste = load;
                 Navigator.of(context).pop();
               });
               Navigator.push(
@@ -594,7 +593,7 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
               );
           }else{
             setState(() {
-              dniExiste = load;
+              // dniExiste = load;
               Navigator.of(context).pop();
             });
             Navigator.push(
@@ -642,6 +641,14 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
     print(tipoIdentidad);
     setState(() {
       identidadSeleccionada = tipoIdentidad;
+      if(tipoIdentidad == "1" || tipoIdentidad == "2"){
+        tamanoModalBuscarClienteHeight = 280;
+        tamanoModalBuscaClienteWidth = 200;
+      }else{
+        tamanoModalBuscarClienteHeight = 320;
+        tamanoModalBuscaClienteWidth = 290;
+      }
+
     });
     usuarioBuscar(context);
     
@@ -655,17 +662,19 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
       builder: (BuildContext context) {
         return Dialog(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0)),
+              borderRadius: BorderRadius.circular(
+                10.0
+              )
+            ),
             child: Container(
                 color: Color(0xFF070D59),
-                height: 280.0,
-                width: 200.0,
+                height: tamanoModalBuscarClienteHeight,
+                width: tamanoModalBuscaClienteWidth,
                 padding: EdgeInsets.all(10.0),
                 // decoration:
                 //     BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
                 child: ListView(
                   children: <Widget>[
-                    
                     SizedBox(height: 20.0),
                     Padding(
                         padding: EdgeInsets.only(bottom: 1.0),
@@ -729,13 +738,16 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
                                 ),
                             ),
                             if(identidadSeleccionada != "1" && identidadSeleccionada != "2")
-                            Text( 
-                              'Nombre completo del cliente:', 
-                              style: TextStyle(
-                                  color: Colors.white, 
-                                  fontFamily: 'illapaBold', 
-                                  fontSize: 15.0, 
-                                  ), textAlign: TextAlign.left,
+                            Container(
+                              padding: EdgeInsets.only(top: 10.0),
+                              child: Text( 
+                                'Nombre completo del cliente:', 
+                                style: TextStyle(
+                                    color: Colors.white, 
+                                    fontFamily: 'illapaBold', 
+                                    fontSize: 15.0, 
+                                    ), textAlign: TextAlign.left,
+                              ),
                             ),
                             if(identidadSeleccionada != "1" && identidadSeleccionada != "2")
                             Container(
@@ -754,7 +766,7 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
                             dniExiste == false
                             ?Text('')
                             :Text(
-                              'Este DNI no existe',
+                              'Este numero de identificación no existe',
                               style: TextStyle(
                                 fontFamily: 'illapaBold',
                                 fontSize: 12.0,
@@ -765,7 +777,7 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
                           ],
                         )
                     ),
-                    SizedBox(height: 15.0),
+                    // SizedBox(height: 15.0),
                     !loadBuscadorDni
                     ?_loading()
                     :Row(

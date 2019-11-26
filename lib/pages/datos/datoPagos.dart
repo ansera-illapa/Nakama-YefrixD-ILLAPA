@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/datos/datoDocumento.dart';
 import 'package:illapa/widgets.dart';
 
@@ -232,7 +233,7 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0)),
               child: Container(
-                height: 400.0,
+                height: 450.0,
                 color: Color(0xFF070D59),
                 padding: EdgeInsets.all(10.0),
                 
@@ -270,7 +271,7 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.all(2.0),
+                                      padding: EdgeInsets.only(top: 15.0),
                                     ),
                                     Text('Numero del documento', 
                                                 style: 
@@ -280,19 +281,15 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
                                                     fontSize: 16.0, 
                                                   ), textAlign: TextAlign.center,),
                                     Container(              
-                                      height: 45,
+                                      // height: 45,
                                       child: TextField(
                                               controller: numeroFacturaEditDoc,
-                                              keyboardType: TextInputType.number,
+                                              maxLength: 15,
                                               decoration: InputDecoration(
                                                 fillColor: Colors.white,
                                                 filled: true,
                                               ),
                                             ),
-                                    ),
-                                    
-                                    Padding(
-                                      padding: EdgeInsets.all(2.0),
                                     ),
                                     
                                     Row(
@@ -868,7 +865,7 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
   String nombreCliente = '';
 
   String tipoDocumento = "";
-  int numeroDocumento = 0;
+  String numeroDocumento = "0";
 
   String nombreDocumento = '';
 
@@ -952,7 +949,7 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
         this.email = clienteSeleccionado['userEmail'];
         
         this.tipoDocumento = documentoSeleccionado['tipo'];
-        this.numeroDocumento = documentoSeleccionado['numero'];
+        this.numeroDocumento = "${documentoSeleccionado['numero']}";
         this.nombreDocumento = "${this.tipoDocumento}"+" "+"${this.numeroDocumento}";
         this.vencimientoDocumento = documentoSeleccionado['fechavencimiento'];
         this.importeDocumento = documentoSeleccionado['importe'];
@@ -1156,7 +1153,7 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0)),
               child: Container(
-                height: 400.0,
+                height: 450.0,
                 color: Color(0xFF070D59),
                 padding: EdgeInsets.all(10.0),
                 
@@ -1192,7 +1189,7 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.all(2.0),
+                                      padding: EdgeInsets.only(top: 15.0),
                                     ),
                                     Text('Numero del pago', 
                                                 style: 
@@ -1202,10 +1199,11 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
                                                     fontSize: 16.0, 
                                                   ), textAlign: TextAlign.center,),
                                     Container(              
-                                      height: 45,
+                                      // height: 45,
                                       child: TextField(
                                               controller: nombreFactura,
-                                              keyboardType: TextInputType.number,
+                                              // keyboardType: TextInputType.number,
+                                              maxLength: 15,
                                               decoration: InputDecoration(
                                                   
                                                 fillColor: Colors.white,
@@ -1215,9 +1213,7 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
                                             ),
                                     ),
                                     
-                                    Padding(
-                                      padding: EdgeInsets.all(2.0),
-                                    ),
+                                    
                                     
                                     Row(
                                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -1448,7 +1444,7 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.all(2.0),
+                                      padding: EdgeInsets.only(top:15.0),
                                     ),
                                     Text('Numero del pago', 
                                                 style: 
@@ -1458,10 +1454,11 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
                                                     fontSize: 16.0, 
                                                   ), textAlign: TextAlign.center,),
                                     Container(              
-                                      height: 45,
+                                      // height: 45,
                                       child: TextField(
                                               controller: numeroPagoEditar,
-                                              keyboardType: TextInputType.number,
+                                              maxLength: 15,
+                                              // keyboardType: TextInputType.number,
                                               decoration: InputDecoration(
                                                   
                                                 fillColor: Colors.white,
@@ -1470,11 +1467,6 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
                                               ),
                                             ),
                                     ),
-                                    
-                                    Padding(
-                                      padding: EdgeInsets.all(2.0),
-                                    ),
-                                    
                                     Row(
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       // textDirection: TextDirection.ltr,
@@ -1759,11 +1751,11 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
                           ),
                           Text(
                             '$identificacion',
-                            style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                            style: new TextStyle(color: AppTheme.naranja, fontSize: 12.0, fontFamily: 'illapaMedium'),
                           ),
                           Text(
                             'CLIENTE',
-                            style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                            style: new TextStyle(color: AppTheme.naranja, fontSize: 12.0, fontFamily: 'illapaMedium'),
                           ),
                         ],
                       ),

@@ -91,7 +91,13 @@ class _RecuperarContrasenaPageState extends State<RecuperarContrasenaPage> {
                     children: <Widget>[
                       Expanded(
                         child: new RaisedButton(
-                          child: new Text("Recuperar contraseña"),
+                          child: new Text(
+                            "Recuperar",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'illapaBold',
+                            ),
+                          ),
                           color: Color(0xffF7B633), 
                           onPressed: (){
                             _forgotPassword();
@@ -148,7 +154,7 @@ class _RecuperarContrasenaPageState extends State<RecuperarContrasenaPage> {
       String email = _email.replaceAll(" ", "");
       // RECUPERAR CONTRASEÑA 
 
-      String url ="$urlGlobal/recuperar/email/"+email;
+      String url ="$urlGlobalMails/recuperar/email/"+email;
 
       final response = await http.get(url);
 

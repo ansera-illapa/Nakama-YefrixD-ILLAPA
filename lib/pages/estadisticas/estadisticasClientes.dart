@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/estadisticas/estadisticaEsp.dart';
 import 'package:illapa/pages/estadisticas/estadisticasFMSocio.dart';
 import 'package:illapa/widgets.dart';
@@ -311,15 +312,15 @@ class _EstadisticasClientesPageState extends State<EstadisticasClientesPage> {
                               ),
                               Text(
                                 '$tipoidentificador $identificador',
-                                style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 12.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
                                 email,
-                                style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 12.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
                                 'Socio',
-                                style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 12.0, fontFamily: 'illapaMedium'),
                               ),
                             ],
                           ),

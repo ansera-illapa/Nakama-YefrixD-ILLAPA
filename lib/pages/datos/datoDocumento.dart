@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/datos/datoPagos.dart';
 import 'package:illapa/pages/datos/datosClientes.dart';
 import 'package:illapa/widgets.dart';
@@ -325,7 +326,7 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0)),
               child: Container(
-                height: 400.0,
+                height: 450.0,
                 color: Color(0xFF070D59),
                 padding: EdgeInsets.all(10.0),
                 
@@ -378,7 +379,7 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
                                     //   )
                                     // ),
                                     Padding(
-                                      padding: EdgeInsets.all(2.0),
+                                      padding: EdgeInsets.only(top:15.0),
                                     ),
                                     Text('Numero del documento', 
                                                 style: 
@@ -388,12 +389,13 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
                                                     fontSize: 16.0, 
                                                   ), textAlign: TextAlign.center,),
                                     Container(              
-                                      height: 45,
+                                      // height: 45,
                                       child: TextField(
                                               controller: nombreFactura,
-                                              keyboardType: TextInputType.number,
+                                              // keyboardType: TextInputType.number,
+                                              maxLength: 15,
                                               decoration: InputDecoration(
-                                                  
+                                                
                                                 fillColor: Colors.white,
                                                 filled: true,
                                                 // hintText: "FAC Nº 00000099",
@@ -1047,11 +1049,11 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
                           ),
                           Text(
                             '$identificacion',
-                            style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                            style: new TextStyle(color: AppTheme.naranja, fontSize: 12.0, fontFamily: 'illapaMedium'),
                           ),
                           Text(
                             'CLIENTE',
-                            style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                            style: new TextStyle(color: AppTheme.naranja, fontSize: 12.0, fontFamily: 'illapaMedium'),
                           ),
                         ],
                       ),

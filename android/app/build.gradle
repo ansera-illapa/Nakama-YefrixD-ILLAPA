@@ -13,12 +13,12 @@ if (flutterRoot == null) {
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
-    flutterVersionCode = '36'
+    flutterVersionCode = '56'
 }
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
-    flutterVersionName = '1.0'
+    flutterVersionName = '2.0'
 }
 
 apply plugin: 'com.android.application'
@@ -45,7 +45,7 @@ android {
         applicationId "illapa.cobranza"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 36
+        versionCode 56
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true

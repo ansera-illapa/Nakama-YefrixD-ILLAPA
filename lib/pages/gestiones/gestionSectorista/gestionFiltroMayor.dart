@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/pages/gestiones/gestionCliente.dart';
 import 'package:illapa/pages/gestiones/gestionSocios.dart';
 import 'package:illapa/widgets.dart';
@@ -197,11 +198,11 @@ class _GestionFMSecPageState extends State<GestionFMSecPage> {
                               ),
                               Text(
                                 '${widget.numeroDocumentos} registros por ${moneyType.format(double.parse(widget.sumaImportesDocumentos))}', 
-                                style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 12.0, fontFamily: 'illapaMedium'),
                               ),
                               Text(
                                 '${widget.numeroDocumentosVencidos} vencidos por ${moneyType.format(double.parse(widget.sumaImportesDocumentosVencidos))}',
-                                style: new TextStyle(color: Colors.black, fontSize: 12.0, fontFamily: 'illapaMedium'),
+                                style: new TextStyle(color: AppTheme.naranja, fontSize: 12.0, fontFamily: 'illapaMedium'),
                               ),
                             ],
                           ),

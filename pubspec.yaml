@@ -25,7 +25,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   path_provider: ^1.1.0
   shared_preferences: ^0.5.3+1
-  firebase_auth: 
+  # firebase_auth: 
   flutter_auth_buttons: ^0.3.1
   http: any
   image_picker: ^0.6.0+15
@@ -89,9 +89,30 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
+    # - family: illapaBold
+    #   fonts:
+    #     - asset: fonts/Quicksand-Bold.ttf
+    #       weight: 700
+
+    # - family: illapaLight
+    #   fonts:
+    #     - asset: fonts/Quicksand-Light.ttf
+    #       weight: 300
+
+    # - family: illapaMedium
+    #   fonts:
+    #     - asset: fonts/Quicksand-Medium.ttf
+    #       weight: 500
+
+    # - family: illapaRegular
+    #   fonts:
+    #     - asset: fonts/Quicksand-Regular.ttf
+    #       weight: 400
+    
+
     - family: illapaBold
       fonts:
-        - asset: fonts/Quicksand-Bold.ttf
+        - asset: fonts/roboto/Roboto-Bold.ttf
           weight: 700
 
     - family: illapaLight
@@ -101,13 +122,15 @@ flutter:
 
     - family: illapaMedium
       fonts:
-        - asset: fonts/Quicksand-Medium.ttf
+        - asset: fonts/roboto/Roboto-Medium.ttf
           weight: 500
 
     - family: illapaRegular
       fonts:
-        - asset: fonts/Quicksand-Regular.ttf
+        - asset: fonts/roboto/Roboto-Regular.ttf
           weight: 400
-  #
+
+
+
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
