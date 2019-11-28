@@ -144,42 +144,11 @@ Widget buidEstListSocios(String imagen,
     print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final empresaSeleccionada = map["empresa"];
-      final listSocios = map["result"];
-      final load = map["load"];
-      // print(empresaSeleccionada['nombre']);
-      print(code);
-      setState(() {
-        _isLoading = load;
-        this.nombreEmpresa = empresaSeleccionada['empresaNombre'];
-        this.imagenEmpresa = empresaSeleccionada['personaImagen'];
-        
-        this.tipoidentificador = empresaSeleccionada['tipoDocumentoIdentidad'];
+      final directory = await getApplicationDocumentsDirectory();
+      final fileData = File('${directory.path}/pagDatosDatosSocios${widget.value}.json');
+      await fileData.writeAsString("${response.body}");
+      _getVariables();
 
-        this.identificador = "${empresaSeleccionada['personaNumeroIdentificacion']}";
-        this.email = empresaSeleccionada['userEmail'];
-        
-        this.data = listSocios;
-        this.codes = code;
-        if(codes){
-          cantSocios = this.data.length;
-        }else{
-          cantSocios = 0;
-        }
-
-        // VARIABLES GLOBALES PARA PINTAR DATOS
-        // pagDatDatSocDatosGlobal               = listSocios;
-        // pagDatDatSocNombEmpGlobal             =  ;
-        // pagDatDatSocTipoIdentificadorGlobal   =  ;
-        // pagDatDatSocIdentificadorGlobal       =  ;
-        // pagDatDatSocEmailGlobal               =  ;
-
-        
-        
-
-      });
     }
   }
 
@@ -207,16 +176,20 @@ Widget buidEstListSocios(String imagen,
 
     setState(() {
       // VARIABLES GLOBALES PARA PINTAR DATOS
-        data                = pagDatDatSocDatosGlobal;
-        cantSocios          = pagDatDatSocDatosGlobal.length;
+        if(pagDatDatSocDatosGlobal[0]['${widget.value}'] != null ){
+          data                = pagDatDatSocDatosGlobal[0]['${widget.value}'];
+          cantSocios          = data.length;
+          if(cantSocios > 0){
+            _isLoading = true;
+          }
+        }
+        
         // nombreEmpresa       = pagDatDatSocNombEmpGlobal;
         // tipoidentificador   = pagDatDatSocTipoIdentificadorGlobal;
         // identificador       = pagDatDatSocIdentificadorGlobal;
         // email               = pagDatDatSocEmailGlobal;
 
-        if(cantSocios > 0){
-          _isLoading = true;
-        }
+        
     });
     // TODO: implement initState
     if(widget.nombre != null){
@@ -239,27 +212,45 @@ Widget buidEstListSocios(String imagen,
 
   _getVariables() async {
       
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-        
-        setState(() {
-          nombreUsuario = prefs.getString('nombre');
-        }); 
-        
       final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+      final fileData = File('${directory.path}/pagDatosDatosSocios${widget.value}.json');
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
+      // GET SOCIOS
+      try{
+        print(await fileData.readAsString());
+        final map = json.decode(await fileData.readAsString());
+        final code = map["code"];
+        final empresaSeleccionada = map["empresa"];
+        final listSocios = map["result"];
+        final load = map["load"];
+        // print(empresaSeleccionada['nombre']);
+        print(code);
+        setState(() {
+          _isLoading = load;
+          this.nombreEmpresa = empresaSeleccionada['empresaNombre'];
+          this.imagenEmpresa = empresaSeleccionada['personaImagen'];
+          
+          this.tipoidentificador = empresaSeleccionada['tipoDocumentoIdentidad'];
 
+          this.identificador = "${empresaSeleccionada['personaNumeroIdentificacion']}";
+          this.email = empresaSeleccionada['userEmail'];
+          
+          this.data = listSocios;
+          this.codes = code;
+          if(codes){
+            cantSocios = this.data.length;
+            
+            // VARIABLES GLOBALES PARA PINTAR DATOS
+            pagDatDatSocDatosGlobal[0]['${widget.value}'] = listSocios;
+          }else{
+            cantSocios = 0;
+          }
+        });
+          
+      }catch(error){
+        print(error);
+      
+      }
   }
   
 
@@ -294,10 +285,7 @@ Widget buidEstListSocios(String imagen,
             canvasColor: Color(0xFF070D59),
           ),
           child: Sidebar(
-            tipousuario: tipoUsuario,
-            idusuario: idUsuario,
-            imagenUsuario: imagenUsuario,
-            nombre : nombreUsuario
+            
           )
         ),
       body: Container(

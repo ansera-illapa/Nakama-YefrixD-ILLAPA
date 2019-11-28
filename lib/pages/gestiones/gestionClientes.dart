@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:illapa/extras/appTema.dart';
+import 'package:illapa/extras/globals/variablesGlobales.dart';
 import 'package:illapa/pages/gestiones/gestionCliente.dart';
 import 'package:illapa/widgets.dart';
 
@@ -385,44 +386,10 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final socioSeleccionado = map["socio"];
-      final socioVencido = map["socioVencido"];
-      final listClientes = map["result"];
-      final load = map["load"];
-      // print(socioSeleccionado['nombre']);
-      print(code);
-      setState(() {
-        _isLoading = load;
-        this.nombreSocio = socioSeleccionado['personaNombre'];
-        this.imagenSocio = socioSeleccionado['personaImagen'];
-        this.numeroDocumentos = socioSeleccionado['numeroDocumentos'];
-        this.sumaImportesDocumentos = socioSeleccionado['sumaImportesDocumentos'];
-
-        this.numeroDocumentosVencidos = socioVencido['numeroDocumentosVencidos'];
-        this.sumaImportesDocumentosVencidos = socioVencido['sumaImportesDocumentosVencidos'];
-        
-        if(data == null){
-          this.data = listClientes;
-        }else{
-          if(listClientes == null){
-            print("Ya no hay mas");
-          }else{
-            this.data += listClientes;
-          }
-          
-        }
-        
-
-        this.codes = code;
-        if(codes){
-          cantClientes = this.data.length;
-        }else{
-          print("no hay datos");
-        }
-        
-      });
+      final directory = await getApplicationDocumentsDirectory();
+      final fileData = File('${directory.path}/pagGestGestionClientesData${widget.value}.json');
+      await fileData.writeAsString("${response.body}");
+      _getVariables();
     }
   }
 
@@ -492,6 +459,17 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
 
   @override
   void initState() {
+    setState(() {
+      // VARIABLES GLOBALES PARA PINTAR DATOS
+      if(pagGestGestClientesDataGlobal[0]['${widget.value}'] != null ){
+        data                = pagGestGestClientesDataGlobal[0]['${widget.value}'];
+        cantClientes          = data.length;
+        if(cantClientes > 0){
+          _isLoading = true;
+        }
+      }
+    });
+
     scrollController.addListener(() {
       if (scrollController.position.maxScrollExtent ==
           scrollController.offset) {
@@ -527,27 +505,56 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
   String nombreUsuario;
   
   _getVariables() async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      
-      setState(() {
-        nombreUsuario = prefs.getString('nombre');
-      }); 
-
-
       final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+      final fileData = File('${directory.path}/pagGestGestionClientesData${widget.value}.json');
+      try{
+        print(await fileData.readAsString());
+        final map = json.decode(await fileData.readAsString());
+        final code = map["code"];
+        final socioSeleccionado = map["socio"];
+        final socioVencido = map["socioVencido"];
+        final listClientes = map["result"];
+        final load = map["load"];
+        // print(socioSeleccionado['nombre']);
+        print(code);
+        setState(() {
+          _isLoading = load;
+          this.nombreSocio = socioSeleccionado['personaNombre'];
+          this.imagenSocio = socioSeleccionado['personaImagen'];
+          this.numeroDocumentos = socioSeleccionado['numeroDocumentos'];
+          this.sumaImportesDocumentos = socioSeleccionado['sumaImportesDocumentos'];
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
+          this.numeroDocumentosVencidos = socioVencido['numeroDocumentosVencidos'];
+          this.sumaImportesDocumentosVencidos = socioVencido['sumaImportesDocumentosVencidos'];
+          
+          if(data == null){
+            this.data = listClientes;
+          }else{
+            if(listClientes == null){
+              print("Ya no hay mas");
+            }else{
+              this.data += listClientes;
+            }
+            
+          }
+          
+
+          this.codes = code;
+          if(codes){
+            cantClientes = this.data.length;
+            // VARIABLES GLOBALES PARA PINTAR DATOS
+            pagGestGestClientesDataGlobal[0]['${widget.value}'] = this.data;
+          }else{
+            print("no hay datos");
+          }
+          
+        });
+
+
+        
+      }catch(error){
+        print(error);
+      }
 
   }
 
@@ -585,10 +592,7 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
             canvasColor: Color(0xFF070D59),
           ),
           child: Sidebar(
-            tipousuario: tipoUsuario,
-            idusuario: idUsuario,
-            imagenUsuario: imagenUsuario,
-            nombre : nombreUsuario
+            
           ),
         ),
         body: Container(

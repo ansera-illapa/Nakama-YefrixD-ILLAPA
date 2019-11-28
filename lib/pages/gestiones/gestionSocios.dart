@@ -11,6 +11,7 @@ import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'package:illapa/extras/globals/variablesGlobales.dart';
 
 class GestionSociosPage extends StatefulWidget {
   final int value;
@@ -153,33 +154,11 @@ class _GestionSociosPageState extends State<GestionSociosPage> {
     print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final empresaSeleccionada = map["empresa"];
-      final empresaSeleccionadaVencidos= map["empresaVencida"];
-      final listSocios = map["result"];
-      final load = map["load"];
+      final directory = await getApplicationDocumentsDirectory();
+      final fileData = File('${directory.path}/pagGestGestioSociosData${widget.value}.json');
+      await fileData.writeAsString("${response.body}");
+      _getVariables();
       
-      print(code);
-      setState(() {
-
-        _isLoading = load;
-        this.nombreEmpresa = empresaSeleccionada['nombre'];
-        this.imagenEmpresa = empresaSeleccionada['personaImagen'];
-        this.numeroDocumentos = empresaSeleccionada['numeroDocumentos'];
-        this.sumaImportesDocumentos = empresaSeleccionada['sumaImportesDocumentos'];
-        this.numeroDocumentosVencidos = empresaSeleccionadaVencidos['numeroDocumentosVencidos'];
-        this.sumaImportesDocumentosVencidos = empresaSeleccionadaVencidos['sumaImportesDocumentosVencidos'];
-        
-        this.data = listSocios;
-        
-        if(code){
-          cantSocios = this.data.length;
-          
-        }else{
-          cantSocios = 0;
-        }
-      });
     }
   }
 
@@ -215,6 +194,19 @@ class _GestionSociosPageState extends State<GestionSociosPage> {
 
   @override
   void initState() {
+
+    setState(() {
+      // VARIABLES GLOBALES PARA PINTAR DATOS
+        if(pagGestGestSocDataGlobal[0]['${widget.value}'] != null ){
+          data                = pagGestGestSocDataGlobal[0]['${widget.value}'];
+          cantSocios          = data.length;
+          if(cantSocios > 0){
+            _isLoading = true;
+          }
+        }
+        
+    });
+
     if(widget.nombre != null){
       nombreEmpresa = widget.nombre;
       imagenEmpresa = widget.imagen;
@@ -238,28 +230,43 @@ class _GestionSociosPageState extends State<GestionSociosPage> {
   String nombreUsuario;
 
   _getVariables() async {
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      
-      setState(() {
-        nombreUsuario = prefs.getString('nombre');
-      });
-
       final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+      final fileData = File('${directory.path}/pagGestGestioSociosData${widget.value}.json');
+    try{
+      print(await fileData.readAsString());
+      final map = json.decode(await fileData.readAsString());
+      final code = map["code"];
+      final empresaSeleccionada = map["empresa"];
+      final empresaSeleccionadaVencidos= map["empresaVencida"];
+      final listSocios = map["result"];
+      final load = map["load"];
+      
+      print(code);
+      setState(() {
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
-
+        _isLoading = load;
+        this.nombreEmpresa = empresaSeleccionada['nombre'];
+        this.imagenEmpresa = empresaSeleccionada['personaImagen'];
+        this.numeroDocumentos = empresaSeleccionada['numeroDocumentos'];
+        this.sumaImportesDocumentos = empresaSeleccionada['sumaImportesDocumentos'];
+        this.numeroDocumentosVencidos = empresaSeleccionadaVencidos['numeroDocumentosVencidos'];
+        this.sumaImportesDocumentosVencidos = empresaSeleccionadaVencidos['sumaImportesDocumentosVencidos'];
+        
+        this.data = listSocios;
+        
+        if(code){
+          cantSocios = this.data.length;
+          // VARIABLES GLOBALES PARA PINTAR DATOS
+          pagGestGestSocDataGlobal[0]['${widget.value}'] = listSocios;
+          
+        }else{
+          cantSocios = 0;
+        }
+      });
+    }catch(error){
+      print(error);
+    }
+    
   }
 
   @override
@@ -297,10 +304,7 @@ class _GestionSociosPageState extends State<GestionSociosPage> {
             canvasColor: Color(0xFF070D59),
           ),
           child: Sidebar(
-            tipousuario: tipoUsuario,
-            idusuario: idUsuario,
-            imagenUsuario: imagenUsuario,
-            nombre : nombreUsuario
+            
           ),
         ),
         body: Container(

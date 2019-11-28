@@ -825,10 +825,7 @@ class _DatoClienteEditarPageState extends State<DatoClienteEditarPage> {
             canvasColor: Color(0xFF070D59),
           ),
           child: Sidebar(
-            tipousuario: tipoUsuario,
-            idusuario: idUsuario,
-            imagenUsuario: imagenUsuario,
-            nombre : nombreUsuario
+            
           )
         ),
       body:  WillPopScope(

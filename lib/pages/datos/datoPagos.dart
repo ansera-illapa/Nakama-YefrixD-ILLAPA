@@ -5,6 +5,7 @@ import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:illapa/extras/appTema.dart';
+import 'package:illapa/extras/globals/variablesGlobales.dart';
 import 'package:illapa/pages/datos/datoDocumento.dart';
 import 'package:illapa/widgets.dart';
 
@@ -503,6 +504,17 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
  @override
   void initState() {
 
+    setState(() {
+      // VARIABLES GLOBALES PARA PINTAR DATOS
+      if(pagDatDatPagosGlobal[0]['${widget.value}'] != null ){
+        data                = pagDatDatPagosGlobal[0]['${widget.value}'];
+        cantPagos          = data.length;
+        if(cantPagos > 0){
+          _isLoading = true;
+        }
+      }
+    });
+
     if(widget.nombre != null){
       nombreCliente = widget.nombre;
       imagenCliente = widget.imagen;
@@ -538,27 +550,100 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
   String nombreUsuario;
 
   _getVariables() async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      
-      setState(() {
-        nombreUsuario = prefs.getString('nombre');
-      }); 
-
-
       final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+      final fileData = File('${directory.path}/pagDatosDatoPagos${widget.value}.json');
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuarioSelect = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuarioSelect");
+      // GET SOCIOS
+      try{
+        print(await fileData.readAsString());
+        final map = json.decode(await fileData.readAsString());
+        final code = map["code"];
+        final clienteSeleccionado = map["cliente"];
+        final documentoSeleccionado = map["documento"];
+        final listTiposPagos = map["tipoPagos"];
+        final listPagos = map["result"];
+
+        final load = map["load"];
+        
+        final tipos = map["tipos"];
+        final tiposDocumentos = map["tiposDocumentos"];
+        
+        setState(() {
+          _isLoading = load;
+          this.nombreCliente = clienteSeleccionado['personaNombre'];
+          this.imagenCliente = urlImagenes+clienteSeleccionado['personaImagen'];
+          
+          this.tipoidentificador = clienteSeleccionado['personatipoDocumentoIdentidad_id'];
+          
+          if(estadoAgregar == true){
+            for(int cont = 0; cont < listTiposPagos.length ; cont++){
+              listTiposPagosMostar.add(new DropdownMenuItem(
+                  value: listTiposPagos[cont]['id'].toString(),
+                  child: new Text(" "+listTiposPagos[cont]['nombre'])
+              ));
+            }
+          }
+
+          if(estadoAgregar == true){
+            for(int cont = 0; cont < tipos.length ; cont++){
+              listTipos.add(new DropdownMenuItem(
+                  value: tipos[cont]['id'].toString(),
+                  child: new Text(" "+tipos[cont]['nombre'])
+              ));
+            }
+          } 
+          
+          if(estadoAgregar == true){
+            for(int cont = 0; cont < tiposDocumentos.length ; cont++){
+              listTiposDocumento.add(new DropdownMenuItem(
+                  value: tiposDocumentos[cont]['id'].toString(),
+                  child: new Text(" "+tiposDocumentos[cont]['nombre'])
+              ));
+            }
+          }
+
+
+
+
+          
+          this.identificador = clienteSeleccionado['personaNumeroIdentificacion'];
+          identificacion ="${this.tipoidentificador}" +" " +"${this.identificador}";
+          this.email = clienteSeleccionado['userEmail'];
+          
+          this.tipoDocumento = documentoSeleccionado['tipo'];
+          this.numeroDocumento = "${documentoSeleccionado['numero']}";
+          this.nombreDocumento = "${this.tipoDocumento}"+" "+"${this.numeroDocumento}";
+          this.vencimientoDocumento = documentoSeleccionado['fechavencimiento'];
+          this.importeDocumento = documentoSeleccionado['importe'];
+          this.saldoDocumento = documentoSeleccionado['saldo'];
+          this.partesSaldo[2] = "${moneyType.format(double.parse(saldoDocumento))}"; 
+          DateTime today = new DateTime.now();
+          List fechaVencSeparada = vencimientoDocumento.split("-");
+          
+          var ano = int.parse(fechaVencSeparada[0]);
+          var mes = int.parse(fechaVencSeparada[1]);
+          var dia = int.parse(fechaVencSeparada[2]);
+
+          this.data = listPagos;
+          this.codes = code;
+          if(codes){
+            cantPagos = this.data.length;
+            // VARIABLES GLOBALES PARA PINTAR DATOS
+            pagDatDatPagosGlobal[0]['${widget.value}'] = listPagos;
+          }else{
+            cantPagos = 0;
+          }
+          
+          var fechaVencida = new DateTime.utc(ano,mes, dia+1);
+          Duration difference = today.difference(fechaVencida);
+          vencida = difference.inDays;        
+        
+        });
+          
+      }catch(error){
+        print(error);
+      
+      }
 
   }
 
@@ -894,89 +979,10 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
     final response = await http.get(url);
     if (response.statusCode == 200) {
 
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final clienteSeleccionado = map["cliente"];
-      final documentoSeleccionado = map["documento"];
-      final listTiposPagos = map["tipoPagos"];
-      final listPagos = map["result"];
-
-      final load = map["load"];
-      
-      final tipos = map["tipos"];
-      final tiposDocumentos = map["tiposDocumentos"];
-      
-      setState(() {
-        _isLoading = load;
-        this.nombreCliente = clienteSeleccionado['personaNombre'];
-        this.imagenCliente = urlImagenes+clienteSeleccionado['personaImagen'];
-        
-        this.tipoidentificador = clienteSeleccionado['personatipoDocumentoIdentidad_id'];
-        
-        if(estadoAgregar == true){
-          for(int cont = 0; cont < listTiposPagos.length ; cont++){
-            listTiposPagosMostar.add(new DropdownMenuItem(
-                value: listTiposPagos[cont]['id'].toString(),
-                child: new Text(" "+listTiposPagos[cont]['nombre'])
-            ));
-          }
-        }
-
-        if(estadoAgregar == true){
-          for(int cont = 0; cont < tipos.length ; cont++){
-            listTipos.add(new DropdownMenuItem(
-                value: tipos[cont]['id'].toString(),
-                child: new Text(" "+tipos[cont]['nombre'])
-            ));
-          }
-        } 
-        
-        if(estadoAgregar == true){
-          for(int cont = 0; cont < tiposDocumentos.length ; cont++){
-            listTiposDocumento.add(new DropdownMenuItem(
-                value: tiposDocumentos[cont]['id'].toString(),
-                child: new Text(" "+tiposDocumentos[cont]['nombre'])
-            ));
-          }
-        }
-
-
-
-
-        
-        this.identificador = clienteSeleccionado['personaNumeroIdentificacion'];
-        identificacion ="${this.tipoidentificador}" +" " +"${this.identificador}";
-        this.email = clienteSeleccionado['userEmail'];
-        
-        this.tipoDocumento = documentoSeleccionado['tipo'];
-        this.numeroDocumento = "${documentoSeleccionado['numero']}";
-        this.nombreDocumento = "${this.tipoDocumento}"+" "+"${this.numeroDocumento}";
-        this.vencimientoDocumento = documentoSeleccionado['fechavencimiento'];
-        this.importeDocumento = documentoSeleccionado['importe'];
-        this.saldoDocumento = documentoSeleccionado['saldo'];
-        this.partesSaldo[2] = "${moneyType.format(double.parse(saldoDocumento))}"; 
-        DateTime today = new DateTime.now();
-        List fechaVencSeparada = vencimientoDocumento.split("-");
-        
-        var ano = int.parse(fechaVencSeparada[0]);
-        var mes = int.parse(fechaVencSeparada[1]);
-        var dia = int.parse(fechaVencSeparada[2]);
-
-        this.data = listPagos;
-        this.codes = code;
-        if(codes){
-          cantPagos = this.data.length;
-        }else{
-          cantPagos = 0;
-        }
-        
-        var fechaVencida = new DateTime.utc(ano,mes, dia+1);
-        Duration difference = today.difference(fechaVencida);
-        vencida = difference.inDays;
-
-        
-        
-      });
+      final directory = await getApplicationDocumentsDirectory();
+      final fileData = File('${directory.path}/pagDatosDatoPagos${widget.value}.json');
+      await fileData.writeAsString("${response.body}");
+       _getVariables();
     }
   }
 
@@ -1718,10 +1724,7 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
           canvasColor: Color(0xFF070D59),
         ),
         child: Sidebar(
-            tipousuario: tipoUsuario,
-            idusuario: idUsuario,
-            imagenUsuario: imagenUsuarioSelect,
-            nombre : nombreUsuario
+            
         ),
       ),
       body: Container(

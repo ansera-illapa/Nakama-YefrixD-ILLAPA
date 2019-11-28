@@ -5,6 +5,7 @@ import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:illapa/extras/appTema.dart';
+import 'package:illapa/extras/globals/variablesGlobales.dart';
 import 'package:illapa/pages/datos/datoPagos.dart';
 import 'package:illapa/pages/datos/datosClientes.dart';
 import 'package:illapa/widgets.dart';
@@ -40,16 +41,20 @@ class _DatoDocumentoPageState extends State<DatoDocumentoPage> {
  DateTime _dateEmision;
  DateTime now = new DateTime.now();
 var moneyType = new NumberFormat("#,##0.00", "en_US");
-//  @override
-//   void initState() {
-//     // TODO: implement initState
-//     super.initState();
-//     _getCliente();
-//   }
 
 
  @override
   void initState() {
+    setState(() {
+        // VARIABLES GLOBALES PARA PINTAR DATOS
+      if(pagDatDatDocumentGlobal[0]['${widget.value}'] != null ){
+        data                = pagDatDatDocumentGlobal[0]['${widget.value}'];
+        cantDocumentos          = data.length;
+        if(cantDocumentos > 0){
+          _isLoading = true;
+        }
+      }
+    });
     
     if(widget.nombre != null){
       nombreCliente = widget.nombre;
@@ -71,27 +76,71 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
   String nombreUsuario;
 
   _getVariables() async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
       
-      setState(() {
-        nombreUsuario = prefs.getString('nombre');
-      }); 
-
-
       final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+      final fileData = File('${directory.path}/pagDatosDatoDocumento${widget.value}.json');
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
+      // GET SOCIOS
+      try{
+        print(await fileData.readAsString());
+        final map = json.decode(await fileData.readAsString());
+        final code = map["code"];
+        final clienteSeleccionado = map["cliente"];
+        final listDocumentos = map["result"];
+        final load = map["load"];
+        final tipos = map["tipos"];
+        final tiposDocumentos = map["tiposDocumentos"];
+
+        // print(clienteSeleccionado['nombre']);
+        print(code);
+        setState(() {
+          _isLoading = load;
+          
+          this.nombreCliente = clienteSeleccionado['personaNombre'];
+          this.imagenCliente = urlImagenes+clienteSeleccionado['personaImagen'];
+    
+          this.tipoidentificador = clienteSeleccionado['tipoDocumentoIdentidad'];
+          
+          this.data = listDocumentos;
+          
+          this.codes = code;
+          if(codes){
+            cantDocumentos = this.data.length;
+            // VARIABLES GLOBALES PARA PINTAR DATOS
+            pagDatDatDocumentGlobal[0]['${widget.value}'] = listDocumentos;
+          }else{
+            cantDocumentos = 0;
+          }
+
+          this.identificador = clienteSeleccionado['personaNumeroIdentificacion'];
+          this.identificacion = this.tipoidentificador+" "+"${this.identificador}";
+          this.email = clienteSeleccionado['userEmail'];
+          if(estadoAgregar == true){
+            for(int cont = 0; cont < tipos.length ; cont++){
+              listTipos.add(new DropdownMenuItem(
+                  value: tipos[cont]['id'].toString(),
+                  child: new Text(" "+tipos[cont]['nombre'])
+              ));
+            }
+          } 
+          
+          if(estadoAgregar == true){
+            for(int cont = 0; cont < tiposDocumentos.length ; cont++){
+              listTiposDocumento.add(new DropdownMenuItem(
+                  value: tiposDocumentos[cont]['id'].toString(),
+                  child: new Text(" "+tiposDocumentos[cont]['nombre'])
+              ));
+            }
+          }
+
+          
+        
+      });
+          
+      }catch(error){
+        print(error);
+      
+      }
 
   }
  
@@ -884,58 +933,12 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
     print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final clienteSeleccionado = map["cliente"];
-      final listDocumentos = map["result"];
-      final load = map["load"];
-      final tipos = map["tipos"];
-      final tiposDocumentos = map["tiposDocumentos"];
+      final directory = await getApplicationDocumentsDirectory();
+      final fileData = File('${directory.path}/pagDatosDatoDocumento${widget.value}.json');
+      await fileData.writeAsString("${response.body}");
+       _getVariables();
 
-      // print(clienteSeleccionado['nombre']);
-      print(code);
-      setState(() {
-        _isLoading = load;
-        
-        this.nombreCliente = clienteSeleccionado['personaNombre'];
-        this.imagenCliente = urlImagenes+clienteSeleccionado['personaImagen'];
-  
-        this.tipoidentificador = clienteSeleccionado['tipoDocumentoIdentidad'];
-        
-        this.data = listDocumentos;
-        
-        this.codes = code;
-        if(codes){
-          cantDocumentos = this.data.length;
-        }else{
-          cantDocumentos = 0;
-        }
-
-        this.identificador = clienteSeleccionado['personaNumeroIdentificacion'];
-        this.identificacion = this.tipoidentificador+" "+"${this.identificador}";
-        this.email = clienteSeleccionado['userEmail'];
-        if(estadoAgregar == true){
-          for(int cont = 0; cont < tipos.length ; cont++){
-            listTipos.add(new DropdownMenuItem(
-                value: tipos[cont]['id'].toString(),
-                child: new Text(" "+tipos[cont]['nombre'])
-            ));
-          }
-        } 
-        
-        if(estadoAgregar == true){
-          for(int cont = 0; cont < tiposDocumentos.length ; cont++){
-            listTiposDocumento.add(new DropdownMenuItem(
-                value: tiposDocumentos[cont]['id'].toString(),
-                child: new Text(" "+tiposDocumentos[cont]['nombre'])
-            ));
-          }
-        }
-        
-
-          
-        
-      });
+      
     }
   }
 
@@ -1016,10 +1019,7 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
           canvasColor: Color(0xFF070D59),
         ),
         child: Sidebar(
-            tipousuario: tipoUsuario,
-            idusuario: idUsuario,
-            imagenUsuario: imagenUsuario,
-            nombre : nombreUsuario
+            
         ),
       ),
       body: Container(
@@ -1086,7 +1086,7 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
                       child: Column(
                         children: <Widget>[
                           
-                        for(var cont =0; cont<cantDocumentos; cont++ )
+                        for(int cont =0; cont<cantDocumentos; cont++ )
 
                           _buildListDocumentos( "${data[cont]['idTipoDocumento']}",
                                                 "${data[cont]['tipo']}", 

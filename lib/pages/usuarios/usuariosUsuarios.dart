@@ -206,43 +206,10 @@ Widget _buildListUsuarios(String imagen,
     print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final socioSeleccionado = map["socio"];
-      final listSectoristas = map["resultSectorista"];
-      final listGestores= map["resultGestores"];
-      final load = map["load"];
-      print(code);
-      setState(() {
-        _isLoading = load;
-        this.nombreSocio = socioSeleccionado['personaNombre'];
-        this.imagenSocio = socioSeleccionado['personaImagen'];
-        this.tipoidentificador = socioSeleccionado['personaTipoIdentificacion'];
-        this.identificador ="${socioSeleccionado['personaNumeroIdentificacion']}";
-        this.email = socioSeleccionado['userEmail'];
-
-        this.dataSectoristas = listSectoristas;
-        this.dataGestores = listGestores;
-
-        this.codes = code;
-        if(codes){
-          if(dataSectoristas != null){
-            cantSectoristas = this.dataSectoristas.length;
-          }else{
-            cantSectoristas = 0;
-          }
-          if(dataGestores != null){
-            cantGestores = this.dataGestores.length;
-          }else{
-            cantGestores = 0;
-          } 
-          
-        }else{
-          cantSectoristas = 0;
-          cantGestores = 0;
-        }
-        
-      });
+        final directory = await getApplicationDocumentsDirectory();
+        final fileData = File('${directory.path}/usuarios/usuariosUsuarios${widget.value}.json');
+        await fileData.writeAsString("${response.body}");
+        _getVariables();
     }
   }
 
@@ -296,24 +263,54 @@ Widget _buildListUsuarios(String imagen,
 
   _getVariables() async {
       
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-        
-        setState(() {
-          nombreUsuario = prefs.getString('nombre');
-        }); 
       final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+      final fileData = File('${directory.path}/usuarios/usuariosUsuarios${widget.value}.json');
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString();
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
+      // GET SOCIOS
+      try{
+        print(await fileData.readAsString());
+        final map = json.decode(await fileData.readAsString());
+        final code = map["code"];
+        final socioSeleccionado = map["socio"];
+        final listSectoristas = map["resultSectorista"];
+        final listGestores= map["resultGestores"];
+        final load = map["load"];
+        print(code);
+        setState(() {
+          _isLoading = load;
+          this.nombreSocio = socioSeleccionado['personaNombre'];
+          this.imagenSocio = socioSeleccionado['personaImagen'];
+          this.tipoidentificador = socioSeleccionado['personaTipoIdentificacion'];
+          this.identificador ="${socioSeleccionado['personaNumeroIdentificacion']}";
+          this.email = socioSeleccionado['userEmail'];
+
+          this.dataSectoristas = listSectoristas;
+          this.dataGestores = listGestores;
+
+          this.codes = code;
+          if(codes){
+            if(dataSectoristas != null){
+              cantSectoristas = this.dataSectoristas.length;
+            }else{
+              cantSectoristas = 0;
+            }
+            if(dataGestores != null){
+              cantGestores = this.dataGestores.length;
+            }else{
+              cantGestores = 0;
+            } 
+            
+          }else{
+            cantSectoristas = 0;
+            cantGestores = 0;
+          }
+          
+        });
+          
+      }catch(error){
+        print(error);
+      
+      }
 
   }
 
@@ -349,10 +346,7 @@ Widget _buildListUsuarios(String imagen,
             canvasColor: Color(0xFF070D59),
           ),
           child: Sidebar(
-            tipousuario: tipoUsuario,
-            idusuario: idUsuario,
-            imagenUsuario: imagenUsuario,
-            nombre : nombreUsuario
+            
           )
         ),
       body: Container(

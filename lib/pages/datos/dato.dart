@@ -140,36 +140,12 @@ Widget _buildListEmpresas(String imagen,
     print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      final users                           = map["result"];
-      final load                            = map["load"];
-      final code                            = map["code"];
-      final numeroDocumentos                = map["numeroDocumentos"];
-      final sumaImporteDocumentos           = map["sumaImportesDocumentos"];
-      final numeroDocumentosVencidos        = map["numeroDocumentosVencidos"];
-      final sumaImportesDocumentosVencidos  = map["sumaImportesDocumentosVencidos"];
+      final directory = await getApplicationDocumentsDirectory();
+      final fileData = File('${directory.path}/pagDatDatoData.json');
+      await fileData.writeAsString("${response.body}");
 
-      setState(() {
-        this.numeroDocumentos               = numeroDocumentos;
-        this.sumaImporteDocumentos          = sumaImporteDocumentos;
-        this.numeroDocumentosVencidos       = numeroDocumentosVencidos;
-        this.sumaImportesDocumentosVencidos = sumaImportesDocumentosVencidos;
-        _isLoading = load;
-        this.data = users;
-        
-        if(code){
-          cantEmpresas = this.data.length;
-        }
-
-        // VARIABLES GLOBALES PARA PINTAR DATOS
-        pagesDatosDatoGlobal = users;
-        numeroDocumentosGlobal                = numeroDocumentos;
-        sumaImporteDocumentosGlobal           = sumaImporteDocumentos;   
-        numeroDocumentosVencidosGlobal        = numeroDocumentosVencidos;       
-        sumaImportesDocumentosVencidosGlobal  = sumaImportesDocumentosVencidos;          
-
-        
-      });
+      _getVariables();
+      
     }
   }
   int orderAZ(var a,var b){
@@ -232,26 +208,50 @@ Widget _buildListEmpresas(String imagen,
   String nombreUsuario;
 
   _getVariables() async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      
-      setState(() {
-        nombreUsuario = prefs.getString('nombre');
-      }); 
-
       final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+      final fileData = File('${directory.path}/pagDatDatoData.json');
+      
+      // GET SOCIOS
+      try{
+        print(await fileData.readAsString());
+        final map = json.decode(await fileData.readAsString());
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
+        final users                           = map["result"];
+        final load                            = map["load"];
+        final code                            = map["code"];
+        final numeroDocumentos                = map["numeroDocumentos"];
+        final sumaImporteDocumentos           = map["sumaImportesDocumentos"];
+        final numeroDocumentosVencidos        = map["numeroDocumentosVencidos"];
+        final sumaImportesDocumentosVencidos  = map["sumaImportesDocumentosVencidos"];
+
+        setState(() {
+          this.numeroDocumentos               = numeroDocumentos;
+          this.sumaImporteDocumentos          = sumaImporteDocumentos;
+          this.numeroDocumentosVencidos       = numeroDocumentosVencidos;
+          this.sumaImportesDocumentosVencidos = sumaImportesDocumentosVencidos;
+          _isLoading = load;
+          this.data = users;
+          
+          if(code){
+            cantEmpresas = this.data.length;
+          }
+
+          // VARIABLES GLOBALES PARA PINTAR DATOS
+          pagesDatosDatoGlobal = users;
+          numeroDocumentosGlobal                = numeroDocumentos;
+          sumaImporteDocumentosGlobal           = sumaImporteDocumentos;   
+          numeroDocumentosVencidosGlobal        = numeroDocumentosVencidos;       
+          sumaImportesDocumentosVencidosGlobal  = sumaImportesDocumentosVencidos;          
+
+          
+        });
+
+          
+      }catch(error){
+        print(error);
+      
+      }
+      
 
   }
 
@@ -269,10 +269,7 @@ Widget _buildListEmpresas(String imagen,
             canvasColor: Color(0xFF070D59),
           ),
           child: Sidebar(
-            tipousuario: tipoUsuario,
-            idusuario: idUsuario,
-            imagenUsuario: imagenUsuario,
-            nombre : nombreUsuario
+            
           )
         ),
       body: Container(
@@ -422,15 +419,16 @@ Widget _buildListEmpresas(String imagen,
                     });
                   },)
                 :IconButton(
-                  icon: Icon(
-                    Icons.search, 
-                    color: Colors.white,
-                    ), 
-                  onPressed: () {
-                    setState(() {
-                      _buscar = true;
-                    });
-                  },),
+                    icon: Icon(
+                      Icons.search, 
+                      color: Colors.white,
+                      ), 
+                    onPressed: () {
+                      setState(() {
+                        _buscar = true;
+                      });
+                    },
+                  ),
               if(ordenAZ)
                 IconButton(
                   icon: Icon(

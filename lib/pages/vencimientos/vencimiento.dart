@@ -143,10 +143,6 @@ class _VencimientoPageState extends State<VencimientoPage> {
             canvasColor: Color(0xFF070D59),
           ),
           child: Sidebar(
-            tipousuario: tipoUsuario,
-            idusuario: idUsuario,
-            imagenUsuario: imagenUsuario,
-            nombre : nombreUsuario
           )
         ),
       body: 

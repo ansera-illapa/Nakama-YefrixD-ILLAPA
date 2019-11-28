@@ -168,51 +168,11 @@ class _DatFreeClientesPageState extends State<DatFreeClientesPage> {
     print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final sectoristaSeleccionado = map["sectorista"];
-      final listClientes = map["result"];
-      final numeroDocumentos = map["numeroDocumentos"];
-      final sumaImporteDocumentos = map["sumaImporteDocumentos"];
-      final numeroDocumentosVencidos = map["numeroDocumentosVencidos"];
-      final sumaImportesDocumentosVencidos = map["sumaImportesDocumentosVencidos"];
-      final tipos = map["tipos"];
-      final load = map["load"];
-      // print(sectoristaSeleccionado['nombre']);
-      print(code);
-      setState(() {
-        _isLoading = load;
-        this.nombreSocio = sectoristaSeleccionado['personaNombre'];
-        if(sectoristaSeleccionado['personaTipoIdentificacion'] == 1){
-          this.tipoidentificador = "DNI";
-        }else{
-          this.tipoidentificador = "RUC";
-        }
+        final directory = await getApplicationDocumentsDirectory();
+        final fileData = File('${directory.path}/pag/datos/datosFree/datFreeClientes${widget.value}.json');
+        await fileData.writeAsString("${response.body}");
+        _getVariables();
 
-        this.identificador = sectoristaSeleccionado['personaNumeroIdentificacion'];
-        this.email = sectoristaSeleccionado['userEmail'];
-
-        this.data = listClientes;
-        this.numeroDocumentos = numeroDocumentos;
-        this.sumaImporteDocumentos = sumaImporteDocumentos;
-        this.numeroDocumentosVencidos = numeroDocumentosVencidos;
-        this.sumaImportesDocumentosVencidos = sumaImportesDocumentosVencidos;
-
-        this.codes = code;
-        if(codes){
-          cantClientes = this.data.length;
-        }else{
-          cantClientes = 0;
-        }
-        
-        for(int cont = 0; cont < tipos.length ; cont++){
-            listTipos.add(new DropdownMenuItem(
-                value: tipos[cont]['id'].toString(),
-                child: new Text(" "+tipos[cont]['nombre'])
-            ));
-          }
-
-      });
     }
   }
 
@@ -249,26 +209,62 @@ class _DatFreeClientesPageState extends State<DatFreeClientesPage> {
 
   _getVariables() async {
       
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-        
-        setState(() {
-          nombreUsuario = prefs.getString('nombre');
-        }); 
       final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+      final fileData = File('${directory.path}/pag/datos/datosFree/datFreeClientes${widget.value}.json');
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
+      // GET SOCIOS
+      try{
+        print(await fileData.readAsString());
+        final map = json.decode(await fileData.readAsString());
+        final code = map["code"];
+        final sectoristaSeleccionado = map["sectorista"];
+        final listClientes = map["result"];
+        final numeroDocumentos = map["numeroDocumentos"];
+        final sumaImporteDocumentos = map["sumaImporteDocumentos"];
+        final numeroDocumentosVencidos = map["numeroDocumentosVencidos"];
+        final sumaImportesDocumentosVencidos = map["sumaImportesDocumentosVencidos"];
+        final tipos = map["tipos"];
+        final load = map["load"];
+        // print(sectoristaSeleccionado['nombre']);
+        print(code);
+        setState(() {
+          _isLoading = load;
+          this.nombreSocio = sectoristaSeleccionado['personaNombre'];
+          if(sectoristaSeleccionado['personaTipoIdentificacion'] == 1){
+            this.tipoidentificador = "DNI";
+          }else{
+            this.tipoidentificador = "RUC";
+          }
+
+          this.identificador = sectoristaSeleccionado['personaNumeroIdentificacion'];
+          this.email = sectoristaSeleccionado['userEmail'];
+
+          this.data = listClientes;
+          this.numeroDocumentos = numeroDocumentos;
+          this.sumaImporteDocumentos = sumaImporteDocumentos;
+          this.numeroDocumentosVencidos = numeroDocumentosVencidos;
+          this.sumaImportesDocumentosVencidos = sumaImportesDocumentosVencidos;
+
+          this.codes = code;
+          if(codes){
+            cantClientes = this.data.length;
+          }else{
+            cantClientes = 0;
+          }
+          
+          for(int cont = 0; cont < tipos.length ; cont++){
+              listTipos.add(new DropdownMenuItem(
+                  value: tipos[cont]['id'].toString(),
+                  child: new Text(" "+tipos[cont]['nombre'])
+              ));
+            }
+
+        });
+          
+      }catch(error){
+        print(error);
       
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
+      }
 
   }
 
@@ -288,10 +284,7 @@ class _DatFreeClientesPageState extends State<DatFreeClientesPage> {
             canvasColor: Color(0xFF070D59),
           ),
           child: Sidebar(
-            tipousuario: tipoUsuario,
-            idusuario: idUsuario,
-            imagenUsuario: imagenUsuario,
-            nombre : nombreUsuario
+            
           )
         ),
       body: Container(

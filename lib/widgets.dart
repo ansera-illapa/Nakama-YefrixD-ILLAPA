@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:illapa/extras/globals/variablesSidebar.dart';
 import 'package:illapa/extras/google_places/buscarLugares.dart';
 import 'package:illapa/pages/configuraciones/configuracion.dart';
 import 'package:illapa/pages/datos/dato.dart';
@@ -68,29 +69,17 @@ class LogoImg extends StatelessWidget {
 
 
 class Sidebar extends StatelessWidget {
-  final int tipousuario; 
-  final int idusuario; 
-  final String imagenUsuario; 
-  final String nombre; 
-  Sidebar({Key key ,this.tipousuario, this.idusuario, this.imagenUsuario, this.nombre}) : super(key: key );
+  
+  Sidebar({Key key}) : super(key: key );
 
   @override
   Widget build(BuildContext context) {
     
-    
-
     _logout() async{
-      final directory = await getApplicationDocumentsDirectory();
-      final fileApi = File('${directory.path}/api.txt');
-      await fileApi.writeAsString('ApiEliminada');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('apiTokenPref', "ApiEliminada");
+      await prefs.setString('idUsuarioPref', "null");
 
-      final fileId = File('${directory.path}/id.txt');
-      await fileId.writeAsString("null");
-
-      
-      final file = File('${directory.path}/api.txt');
-      String apiToken = await file.readAsString();
-      print(apiToken);
       exit(0);
       // Navigator.push(
       // context,
@@ -100,30 +89,30 @@ class Sidebar extends StatelessWidget {
 
     _rutaGestion(){
       _ruta(){
-        if(tipousuario == 1){
+        if(tipousuarioGlobal == 1){
           return new GestionSociosPage(
-            value: idusuario
+            value: idusuarioGlobal
           );
          
-        }else if(tipousuario == 2){
+        }else if(tipousuarioGlobal == 2){
           return new GestionClientesPage(
-            value: idusuario
+            value: idusuarioGlobal
           );
-        }else if(tipousuario == 3){
+        }else if(tipousuarioGlobal == 3){
           return new GestionSectoresPage(
-            value: idusuario
+            value: idusuarioGlobal
           );
-        }else if(tipousuario == 4){
+        }else if(tipousuarioGlobal == 4){
           return new GestionEmpresaPage(
-            value: idusuario
+            value: idusuarioGlobal
           );
          
-        }else if(tipousuario == 5){
+        }else if(tipousuarioGlobal == 5){
           return new GfreeClientesPage(
-            value: idusuario
+            value: idusuarioGlobal
           );
          
-        }else if(tipousuario == 99){
+        }else if(tipousuarioGlobal == 99){
           return new GestionPage(
           );
         }
@@ -137,37 +126,37 @@ class Sidebar extends StatelessWidget {
 
     _rutaVencimiento(){
       _ruta(){
-        if(tipousuario == 1){
+        if(tipousuarioGlobal == 1){
           return new VencimientoPage(
-            id: idusuario,
+            id: idusuarioGlobal,
             url: 'empresa',
           );
          
-        }else if(tipousuario == 2){
+        }else if(tipousuarioGlobal == 2){
           return new VencimientoPage(
-            id: idusuario,
+            id: idusuarioGlobal,
             url: 'socio',
           );
-        }else if(tipousuario == 3){
+        }else if(tipousuarioGlobal == 3){
           return new VencimientoPage(
-            id: idusuario,
+            id: idusuarioGlobal,
             url: 'sectorista',
           );
-        }else if(tipousuario == 4){
+        }else if(tipousuarioGlobal == 4){
           return new VencimientoPage(
-            id: idusuario,
+            id: idusuarioGlobal,
             url: 'gestor',
           );
          
-        }else if(tipousuario == 5){
+        }else if(tipousuarioGlobal == 5){
           return new VencimientoPage(
-            id: idusuario,
+            id: idusuarioGlobal,
             url: 'free',
           );
          
-        }else if(tipousuario == 99){
+        }else if(tipousuarioGlobal == 99){
           return new VencimientoPage(
-            id: idusuario,
+            id: idusuarioGlobal,
             url: 'admin',
           );
          
@@ -183,30 +172,30 @@ class Sidebar extends StatelessWidget {
 
     _rutaEstadisticas(){
       _ruta(){
-        if(tipousuario == 1){
+        if(tipousuarioGlobal == 1){
           return new EstadisticasSociosPage(
-            value: idusuario
+            value: idusuarioGlobal
           );
          
-        }else if(tipousuario == 2){
+        }else if(tipousuarioGlobal == 2){
           return new EstadisticasClientesPage(
-            value: idusuario
+            value: idusuarioGlobal
           );
-        }else if(tipousuario == 3){
+        }else if(tipousuarioGlobal == 3){
           return new EstadisticaSectoresPage(
-            value: idusuario
+            value: idusuarioGlobal
           );
-        }else if(tipousuario == 4){
+        }else if(tipousuarioGlobal == 4){
           return new EstadisticaGestorPage(
-            value: idusuario
+            value: idusuarioGlobal
           );
          
-        }else if(tipousuario == 5){
+        }else if(tipousuarioGlobal == 5){
           return new EstFreeClientesPage(
-            value: idusuario
+            value: idusuarioGlobal
           );
          
-        }else if(tipousuario == 99){
+        }else if(tipousuarioGlobal == 99){
           return new EstadisticaPage(
             
           );
@@ -222,21 +211,21 @@ class Sidebar extends StatelessWidget {
 
     _rutaDatos(){
 
-      if(tipousuario == 1){
+      if(tipousuarioGlobal == 1){
           return Navigator.push(
             context,
             new MaterialPageRoute(
                 builder: (BuildContext context) => DatoSociosPage(
-                  value: idusuario      
+                  value: idusuarioGlobal      
                 )));
-        }else if(tipousuario == 2){
+        }else if(tipousuarioGlobal == 2){
           return Navigator.push(
             context,
             new MaterialPageRoute(
                 builder: (BuildContext context) => DatoClientesPage(
-                  value: idusuario      
+                  value: idusuarioGlobal      
                 )));
-        }else if(tipousuario == 3){
+        }else if(tipousuarioGlobal == 3){
           return Navigator.push(
             context,
             new MaterialPageRoute(
@@ -244,7 +233,7 @@ class Sidebar extends StatelessWidget {
                 )));
 
           
-        }else if(tipousuario == 4){
+        }else if(tipousuarioGlobal == 4){
           return Navigator.push(
             context,
             new MaterialPageRoute(
@@ -252,16 +241,16 @@ class Sidebar extends StatelessWidget {
                 )));
          
          
-        }else if(tipousuario == 5){
+        }else if(tipousuarioGlobal == 5){
           return Navigator.push(
             context,
             new MaterialPageRoute(
                 builder: (BuildContext context) => DatFreeClientesPage(
-                  value: idusuario      
+                  value: idusuarioGlobal      
                 )));
 
          
-        }else if(tipousuario == 99){
+        }else if(tipousuarioGlobal == 99){
           return Navigator.push(
             context,
             new MaterialPageRoute(
@@ -275,30 +264,30 @@ class Sidebar extends StatelessWidget {
 
     _rutaUsuarios(){
       // _ruta(){
-        if(tipousuario == 1){
+        if(tipousuarioGlobal == 1){
           return Navigator.push(context, MaterialPageRoute(
             builder: (BuildContext context) => new UsuariosSociosPage(
-              value: idusuario
+              value: idusuarioGlobal
             )
           ));
          
          
-        }else if(tipousuario == 2){
+        }else if(tipousuarioGlobal == 2){
           return Navigator.push(context, MaterialPageRoute(
             builder: (BuildContext context) => new UsuariosUsuariosPage(
-              value: idusuario
+              value: idusuarioGlobal
             )
           ));
           
           // return new UsuariosEmpresasPage();
-        }else if(tipousuario == 3){
+        }else if(tipousuarioGlobal == 3){
           return Navigator.push(
             context,
             new MaterialPageRoute(
                 builder: (BuildContext context) => NoAccesoPage(
                 )));
           
-        }else if(tipousuario == 4){
+        }else if(tipousuarioGlobal == 4){
           return Navigator.push(
             context,
             new MaterialPageRoute(
@@ -306,7 +295,7 @@ class Sidebar extends StatelessWidget {
                 )));
           
          
-        }else if(tipousuario == 5){
+        }else if(tipousuarioGlobal == 5){
           return Navigator.push(
             context,
             new MaterialPageRoute(
@@ -314,7 +303,7 @@ class Sidebar extends StatelessWidget {
                 )));
 
          
-        }else if(tipousuario == 99){
+        }else if(tipousuarioGlobal == 99){
           return Navigator.push(context, MaterialPageRoute(
             builder: (BuildContext context) => new UsuariosEmpresasPage()
           ));
@@ -330,30 +319,30 @@ class Sidebar extends StatelessWidget {
 
     _rutaTramos(){
       // _ruta(){
-        if(tipousuario == 1){
+        if(tipousuarioGlobal == 1){
           return Navigator.push(
                 context,
                 new MaterialPageRoute(
                     builder: (BuildContext context) =>TramosSociosPage(
-                      value: idusuario
+                      value: idusuarioGlobal
                     )));
          
-        }else if(tipousuario == 2){
+        }else if(tipousuarioGlobal == 2){
            return Navigator.push(
                 context,
                 new MaterialPageRoute(
                     builder: (BuildContext context) =>TramosMostrarPage(
-                      value: idusuario
+                      value: idusuarioGlobal
                     )));
           
-        }else if(tipousuario == 3){
+        }else if(tipousuarioGlobal == 3){
           return Navigator.push(
             context,
             new MaterialPageRoute(
                 builder: (BuildContext context) => NoAccesoPage(
                 )));
           
-        }else if(tipousuario == 4){
+        }else if(tipousuarioGlobal == 4){
           return Navigator.push(
             context,
             new MaterialPageRoute(
@@ -361,14 +350,14 @@ class Sidebar extends StatelessWidget {
                 )));
           
          
-        }else if(tipousuario == 5){
+        }else if(tipousuarioGlobal == 5){
           return Navigator.push(
             context,
             new MaterialPageRoute(
                 builder: (BuildContext context) => NoAccesoPage(
                 )));
         }
-        else if(tipousuario == 99){
+        else if(tipousuarioGlobal == 99){
             return Navigator.push(
                 context,
                 new MaterialPageRoute(
@@ -385,7 +374,7 @@ class Sidebar extends StatelessWidget {
     }
 
     String cargo = "";
-    switch (tipousuario) {
+    switch (tipousuarioGlobal) {
       case 1:
         cargo = "Empresa";  
         break;
@@ -408,8 +397,8 @@ class Sidebar extends StatelessWidget {
     }
     
     var imagenSidebar = '';
-    if( imagenUsuario != null ){
-      imagenSidebar = imagenUsuario;
+    if( imagenUsuarioGlobal != null ){
+      imagenSidebar = imagenUsuarioGlobal;
     }
 
     return 
@@ -428,7 +417,7 @@ class Sidebar extends StatelessWidget {
                     
                   ),
                 
-                  accountName: new Text('$nombre', 
+                  accountName: new Text('$nombreGlobal', 
                     style: TextStyle(
                       fontFamily: 'illapaBold',
                     )),

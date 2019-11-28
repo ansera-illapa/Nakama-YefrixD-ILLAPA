@@ -84,26 +84,7 @@ class _GestionClienteAccionPageState extends State<GestionClienteAccionPage> {
   String imagenUsuario;
   String nombreUsuario;
   _getVariables() async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
       
-      setState(() {
-        nombreUsuario = prefs.getString('nombre');
-      });
-
-      final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
-
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
 
   }
 
@@ -192,10 +173,7 @@ class _GestionClienteAccionPageState extends State<GestionClienteAccionPage> {
           canvasColor: Color(0xFF070D59),
         ),
         child: Sidebar(
-          tipousuario: tipoUsuario,
-          idusuario: idUsuario,
-          imagenUsuario: imagenUsuario,
-          nombre : nombreUsuario
+          
         ),
       ),
       body: Container(

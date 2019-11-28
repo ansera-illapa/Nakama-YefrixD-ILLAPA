@@ -166,11 +166,7 @@ class _GestionFMAdministradorPageState extends State<GestionFMAdministradorPage>
           canvasColor: Color(0xFF070D59),
         ),
         child: Sidebar(
-          tipousuario: tipoUsuario,
-          idusuario: value,
-          // imagenUsuario: imagenUsuario,
-          imagenUsuario: imagenAdmin,
-          nombre : nombreUsuario
+          
         ),
       ),
       body: Container(

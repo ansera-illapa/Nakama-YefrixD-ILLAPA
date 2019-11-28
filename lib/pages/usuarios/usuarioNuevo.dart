@@ -662,50 +662,11 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
 
     final response = await http.get(url);
     if (response.statusCode == 200) {
-
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final socioSeleccionado = map["socio"];
-      final empresaSeleccionada = map["empresa"];
-      final load = map["load"];
-      final listSectores = map["sectores"];
-
-
-      print(map);
-      setState(() {
-        //miomio
-        this.nombreEmpresa = empresaSeleccionada['empresaNombre'];
-        this.imagenEmpresa = empresaSeleccionada['personaImagen'];
-        this.identificadorEmpresa = "${empresaSeleccionada['personaNumeroIdentificacion']}";
-        this.emailEmpresa = empresaSeleccionada['userEmail'];
-        this.tipoidentificadorEmpresa = empresaSeleccionada['personaTipoIdentificacion'];
-        this.nombreSocio = socioSeleccionado['personaNombre'];
-        this.imagenSocio = socioSeleccionado['personaImagen'];
-        this.tipoidentificador = socioSeleccionado['personaTipoIdentificacion'];
-        this.identificador = "${socioSeleccionado['personaNumeroIdentificacion']}";
-        this.email = socioSeleccionado['userEmail'];
-  
-        this.dataSectores = listSectores;
-        
-
-        this.codes = code;
-        if(codes){
-          if(dataSectores != null){
-            cantSectores = this.dataSectores.length;
-            
-          }else{
-            cantSectores = 0;
-            
-          }
-           
-          
-        }else{
-          cantSectores = 0;
-          
-        }
-
-        
-      });
+        final directory = await getApplicationDocumentsDirectory();
+        final fileData = File('${directory.path}/usuarios/usuarioNuevo${widget.idSocio}.json');
+        await fileData.writeAsString("${response.body}");
+        _getVariables();
+      
     }
   }
 
@@ -727,26 +688,60 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
 
   _getVariables() async {
       
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-        
-        setState(() {
-          nombreUsuario = prefs.getString('nombre');
-        }); 
-
       final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+      final fileData = File('${directory.path}/usuarios/usuarioNuevo${widget.idSocio}.json');
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
+      // GET SOCIOS
+      try{
+        print(await fileData.readAsString());
+        final map = json.decode(await fileData.readAsString());
+        final code = map["code"];
+        final socioSeleccionado = map["socio"];
+        final empresaSeleccionada = map["empresa"];
+        final load = map["load"];
+        final listSectores = map["sectores"];
+
+
+        print(map);
+        setState(() {
+          //miomio
+          this.nombreEmpresa = empresaSeleccionada['empresaNombre'];
+          this.imagenEmpresa = empresaSeleccionada['personaImagen'];
+          this.identificadorEmpresa = "${empresaSeleccionada['personaNumeroIdentificacion']}";
+          this.emailEmpresa = empresaSeleccionada['userEmail'];
+          this.tipoidentificadorEmpresa = empresaSeleccionada['personaTipoIdentificacion'];
+          this.nombreSocio = socioSeleccionado['personaNombre'];
+          this.imagenSocio = socioSeleccionado['personaImagen'];
+          this.tipoidentificador = socioSeleccionado['personaTipoIdentificacion'];
+          this.identificador = "${socioSeleccionado['personaNumeroIdentificacion']}";
+          this.email = socioSeleccionado['userEmail'];
+    
+          this.dataSectores = listSectores;
+          
+
+          this.codes = code;
+          if(codes){
+            if(dataSectores != null){
+              cantSectores = this.dataSectores.length;
+              
+            }else{
+              cantSectores = 0;
+              
+            }
+            
+            
+          }else{
+            cantSectores = 0;
+            
+          }
+
+          
+        });
+          
+      }catch(error){
+        print(error);
+      
+      }
 
   }
   
@@ -788,10 +783,7 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
           canvasColor: Color(0xFF070D59),
         ),
         child: Sidebar(
-            tipousuario: tipoUsuario,
-            idusuario: idUsuario,
-            imagenUsuario: imagenUsuario,
-            nombre : nombreUsuario
+            
         ),
       ),
       body: Container(

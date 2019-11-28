@@ -226,10 +226,7 @@ Widget _buildListSectores(int id, String descripcion ){
             canvasColor: Color(0xFF070D59),
           ),
           child: Sidebar(
-            tipousuario: tipoUsuario,
-            idusuario: idUsuario,
-            imagenUsuario: imagenUsuario,
-            nombre : nombreUsuario
+           
           )
         ),
       body: Container(

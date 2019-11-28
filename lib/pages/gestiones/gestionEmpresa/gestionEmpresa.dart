@@ -283,10 +283,6 @@ class _GestionEmpresaPageState extends State<GestionEmpresaPage> {
           canvasColor: Color(0xFF070D59),
         ),
         child: Sidebar(
-          tipousuario: tipoUsuario,
-          idusuario: idUsuario,
-          imagenUsuario: imagenUsuario,
-          nombre : nombreUsuario
 
         ),
       ),

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:illapa/extras/appTema.dart';
+import 'package:illapa/extras/globals/variablesGlobales.dart';
 import 'package:illapa/pages/datos/datoClienteEditar.dart';
 import 'package:illapa/pages/datos/datoDocumento.dart';
 import 'package:illapa/pages/datos/datoNuevo.dart';
@@ -170,51 +171,13 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
     print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final socioSeleccionado = map["socio"];
-      final socioVencido = map["socioVencido"];
-      final listClientes = map["result"];
-      final tipos = map["tipos"];
-      final load = map["load"];
-      // print(socioSeleccionado['nombre']);
-      print(code);
-      setState(() {
-        _isLoading = load;
-        this.nombreSocio = socioSeleccionado['personaNombre'];
-        this.imagenSocio = socioSeleccionado['personaImagen'];
-        this.numeroDocumentos = socioSeleccionado['numeroDocumentos'];
-        this.sumaImportesDocumentos = socioSeleccionado['sumaImportesDocumentos'];
-        this.numeroDocumentosVencidos = socioVencido['numeroDocumentosVencidos'];
-        this.sumaImportesDocumentosVencidos = socioVencido['sumaImportesDocumentosVencidos'];
 
-        if(socioSeleccionado['personaTipoIdentificacion'] == 1){
-          this.tipoidentificador = "DNI";
-        }else{
-          this.tipoidentificador = "RUC";
-        }
+      final directory = await getApplicationDocumentsDirectory();
+      final fileData = File('${directory.path}/pagDatosDatosClientes${widget.value}.json');
+      await fileData.writeAsString("${response.body}");
+      _getVariables();
 
-        this.identificador = "${socioSeleccionado['personaNumeroIdentificacion']}";
-        this.email = socioSeleccionado['userEmail'];
-
-        this.data = listClientes;
-        
-        this.codes = code;
-        if(code){
-          cantClientes = this.data.length;
-        }else{
-          cantClientes = 0;
-        }
-        
-        for(int cont = 0; cont < tipos.length ; cont++){
-            listTipos.add(new DropdownMenuItem(
-                value: tipos[cont]['id'].toString(),
-                child: new Text(" "+tipos[cont]['nombre'])
-            ));
-          }
-
-          
-      });
+      
     }
   }
   int orderAZ(var a,var b){
@@ -238,6 +201,17 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
 
   @override
   void initState() {
+    setState(() {
+      // VARIABLES GLOBALES PARA PINTAR DATOS
+      if(pagDatDatClientDataGlobal[0]['${widget.value}'] != null ){
+        data                = pagDatDatClientDataGlobal[0]['${widget.value}'];
+        cantClientes          = data.length;
+        if(cantClientes > 0){
+          _isLoading = true;
+        }
+      }
+    });
+
     if(widget.nombre != null){
       nombreSocio = widget.nombre;
       imagenSocio = widget.imagen;
@@ -257,27 +231,64 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
   String imagenUsuario;
   String nombreUsuario;
   _getVariables() async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      
-      setState(() {
-        nombreUsuario = prefs.getString('nombre');
-      }); 
-
-
       final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+      final fileData = File('${directory.path}/pagDatosDatosClientes${widget.value}.json');
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
+      // GET SOCIOS
+      try{
+        print(await fileData.readAsString());
+        final map = json.decode(await fileData.readAsString());
+        final code = map["code"];
+        final socioSeleccionado = map["socio"];
+        final socioVencido = map["socioVencido"];
+        final listClientes = map["result"];
+        final tipos = map["tipos"];
+        final load = map["load"];
+        // print(socioSeleccionado['nombre']);
+        print(code);
+        setState(() {
+          _isLoading = load;
+          this.nombreSocio = socioSeleccionado['personaNombre'];
+          this.imagenSocio = socioSeleccionado['personaImagen'];
+          this.numeroDocumentos = socioSeleccionado['numeroDocumentos'];
+          this.sumaImportesDocumentos = socioSeleccionado['sumaImportesDocumentos'];
+          this.numeroDocumentosVencidos = socioVencido['numeroDocumentosVencidos'];
+          this.sumaImportesDocumentosVencidos = socioVencido['sumaImportesDocumentosVencidos'];
+
+          if(socioSeleccionado['personaTipoIdentificacion'] == 1){
+            this.tipoidentificador = "DNI";
+          }else{
+            this.tipoidentificador = "RUC";
+          }
+
+          this.identificador = "${socioSeleccionado['personaNumeroIdentificacion']}";
+          this.email = socioSeleccionado['userEmail'];
+
+          this.data = listClientes;
+          
+          this.codes = code;
+          if(code){
+            cantClientes = this.data.length;
+            // VARIABLES GLOBALES PARA PINTAR DATOS
+            pagDatDatClientDataGlobal[0]['${widget.value}'] = listClientes;
+          }else{
+            cantClientes = 0;
+          }
+          
+          for(int cont = 0; cont < tipos.length ; cont++){
+              listTipos.add(new DropdownMenuItem(
+                  value: tipos[cont]['id'].toString(),
+                  child: new Text(" "+tipos[cont]['nombre'])
+              ));
+          }
+
+            
+        });
+          
+      }catch(error){
+        print(error);
+      
+      }
 
   }
 
@@ -311,10 +322,7 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
             canvasColor: Color(0xFF070D59),
           ),
           child: Sidebar(
-            tipousuario: tipoUsuario,
-            idusuario: idUsuario,
-            imagenUsuario: imagenUsuario,
-            nombre : nombreUsuario
+            
           )
         ),
       body: Container(

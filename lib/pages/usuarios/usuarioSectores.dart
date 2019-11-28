@@ -128,34 +128,12 @@ Widget _buidEstListEmpresas( String titulo, int idSector){
 
     if (response.statusCode == 200) {
       
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final sectoresSocio = map["sectores"];
-      final load = map["load"];
-
-      setState(() {
-        
-        _isLoading = load;
-        if(code == true){
-
-          this.dataSectores = sectoresSocio;
-          this.cantSectores = this.dataSectores.length;
-
-          this.dataSectoresSocio = sectoresSocio;
-          this.cantSectoresSocio = this.dataSectoresSocio.length;
-          
-        }else{
-          this.cantSectoresSocio = 0;
-        }
-
-
-      });
-
-
+        final directory = await getApplicationDocumentsDirectory();
+        final fileData = File('${directory.path}/usuarios/usuarioSectores${widget.value}.json');
+        await fileData.writeAsString("${response.body}");
+        _getVariables();
 
     }
-
-    
   }
 
 
@@ -192,25 +170,40 @@ Widget _buidEstListEmpresas( String titulo, int idSector){
   
   _getVariables() async {
       
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-        
+      final directory = await getApplicationDocumentsDirectory();
+      final fileData = File('${directory.path}/usuarios/usuarioSectores${widget.value}.json');
+
+      // GET SOCIOS
+      try{
+        print(await fileData.readAsString());
+        final map = json.decode(await fileData.readAsString());
+        final code = map["code"];
+        final sectoresSocio = map["sectores"];
+        final load = map["load"];
+
         setState(() {
-          nombreUsuario = prefs.getString('nombre');
+          
+          _isLoading = load;
+          if(code == true){
+
+            this.dataSectores = sectoresSocio;
+            this.cantSectores = this.dataSectores.length;
+
+            this.dataSectoresSocio = sectoresSocio;
+            this.cantSectoresSocio = this.dataSectoresSocio.length;
+            
+          }else{
+            this.cantSectoresSocio = 0;
+          }
+
+
         });
 
-      final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
-
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString();
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
+          
+      }catch(error){
+        print(error);
+      
+      }
 
   }
 
@@ -260,10 +253,7 @@ Widget _buidEstListEmpresas( String titulo, int idSector){
             canvasColor: Color(0xFF070D59),
           ),
           child: Sidebar(
-            tipousuario: tipoUsuario,
-            idusuario: idUsuario,
-            imagenUsuario: imagenUsuario,
-            nombre : nombreUsuario
+            
           )
         ),
       body: Container(

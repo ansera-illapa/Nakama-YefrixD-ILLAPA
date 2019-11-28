@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:illapa/behaviors/hiddenScrollBehavior.dart';
 import 'package:illapa/extras/appTema.dart';
 import 'package:illapa/extras/globals/globals.dart';
+import 'package:illapa/extras/globals/variablesSidebar.dart';
 import 'package:illapa/pages/confirmacion.dart';
 import 'package:illapa/pages/gestiones/gestionClientes.dart';
 import 'package:illapa/pages/gestiones/gestionEmpresa/gestionEmpresa.dart';
@@ -260,38 +261,22 @@ class _LoginPageState extends State<LoginPage> {
           modalCampoIdentifiacacion(context);
         }else{
 
-          final directory = await getApplicationDocumentsDirectory();
-          final fileApi = File('${directory.path}/api.txt');
-          final fileTipo = File('${directory.path}/tipo.txt');
-          final fileId = File('${directory.path}/id.txt');
-          final fileNombre = File('${directory.path}/nombre.txt');
-          final fileImagen = File('${directory.path}/imagen.txt');
-
           final apiToken = map["api_token"];
           int usuarioTipo = map["tipoUsuario"];
           final idUsuario = map["id"];
           final nombreLogeado = map["nombreLogeado"];
           final imagenLogeado = map["imagenLogeado"];
 
-          
-          // final api = response.body;
-          // print("Esta:"+api[0]);
-          await fileApi.writeAsString(apiToken);
-          await fileTipo.writeAsString("$usuarioTipo");
-          await fileId.writeAsString("$idUsuario");
-          await fileNombre.writeAsString("$nombreLogeado");
-          await fileImagen.writeAsString("$imagenLogeado");
-
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString('nombre', "$nombreLogeado");
+          await prefs.setString('apiTokenPref', "$apiToken");
+          await prefs.setString('usuarioTipoPref', "$usuarioTipo");
+          await prefs.setString('idUsuarioPref', "$idUsuario");
+          await prefs.setString('nombreLogeadoPref', "$nombreLogeado");
+          await prefs.setString('imagenLogeadoPref', "$imagenLogeado");
 
-          print("api:$apiToken");
-          print("Tipo:$usuarioTipo");
-          print("Usuario:$idUsuario");
-          print("Nombre:$nombreLogeado");
-          print("Imagen:$imagenLogeado");
-
-        
+          final directory = await getApplicationDocumentsDirectory();
+          final fileApi = File('${directory.path}/api.txt');
+          await fileApi.writeAsString('$apiToken');        
 
           switch (usuarioTipo) {
             case 1: Navigator.push(
@@ -488,13 +473,6 @@ class _LoginPageState extends State<LoginPage> {
                     });
       print(response.body);
       if (response.statusCode == 200) {
-        final directory   = await getApplicationDocumentsDirectory();
-        final fileApi     = File('${directory.path}/api.txt');
-        final fileTipo    = File('${directory.path}/tipo.txt');
-        final fileId      = File('${directory.path}/id.txt');
-        final fileNombre  = File('${directory.path}/nombre.txt');
-        final fileImagen  = File('${directory.path}/imagen.txt');
-
         final map = json.decode(response.body);
 
         final apiToken      = map["api_token"];
@@ -503,15 +481,28 @@ class _LoginPageState extends State<LoginPage> {
         final nombreLogeado = map["nombreLogeado"];
         final imagenLogeado = map["imagenLogeado"];
         final verificado    = map["verificado"];
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('nombre', "$nombreLogeado");
-        
-        await fileApi.writeAsString(apiToken);
-        await fileTipo.writeAsString("$usuarioTipo");
-        await fileId.writeAsString("$idUsuario");
-        await fileNombre.writeAsString("$nombreLogeado");
-        await fileImagen.writeAsString("$imagenLogeado");
+
         globalNombre = "$nombreLogeado";
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('apiTokenPref', "$apiToken");
+        await prefs.setString('usuarioTipoPref', "$usuarioTipo");
+        await prefs.setString('idUsuarioPref', "$idUsuario");
+        await prefs.setString('nombreLogeadoPref', "$nombreLogeado");
+        await prefs.setString('imagenLogeadoPref', "$imagenLogeado");
+
+        final directory = await getApplicationDocumentsDirectory();
+        final fileApi = File('${directory.path}/api.txt');
+        await fileApi.writeAsString('$apiToken');
+
+        setState(() {
+          apiTokenGlobal       = prefs.getString('apiTokenPref');
+          tipousuarioGlobal    = int.parse(prefs.getString('usuarioTipoPref'));
+          idusuarioGlobal      = int.parse(prefs.getString('idUsuarioPref'));
+          imagenUsuarioGlobal  = prefs.getString('imagenLogeadoPref');
+          nombreGlobal         = prefs.getString('nombreLogeadoPref');
+        });
+
         if(verificado){
           switch (usuarioTipo) {
             case 1: Navigator.push(

@@ -120,30 +120,11 @@ Widget _buildListSectores(int id, String descripcion ){
     print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final sectoristaSeleccionado = map["sectorista"];
-      final sectores = map["result"];
-      final load = map["load"];
-      // print(empresaSeleccionada['nombre']);
-      print(code);
-      setState(() {
-        _isLoading = load;
-        this.nombreSectorista = sectoristaSeleccionado['personaNombre'];
-        this.imagenSectorista = sectoristaSeleccionado['personaImagen'];
-        this.tipoIdentificacion = sectoristaSeleccionado['personaTipoIdentificacion'];
-        this.identificacion = sectoristaSeleccionado['personaNumeroIdentificacion'];
-        this.email = sectoristaSeleccionado['userEmail'];
-        
-        this.data = sectores;
-        this.codes = code;
-        if(codes){
-          cantSectores = this.data.length;
-        }else{
-          cantSectores = 0;
-        }
-        
-      });
+        final directory = await getApplicationDocumentsDirectory();
+        final fileData = File('${directory.path}/pagEstadisticasEstadisticasSectoristasEstadisticasSectores${widget.value}.json');
+        await fileData.writeAsString("${response.body}");
+        _getVariables();
+
     }
   }
 
@@ -177,26 +158,42 @@ Widget _buildListSectores(int id, String descripcion ){
 
   _getVariables() async {
       
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-        
-        setState(() {
-          nombreUsuario = prefs.getString('nombre');
-        }); 
-
       final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+      final fileData = File('${directory.path}/pagEstadisticasEstadisticasSectoristasEstadisticasSectores${widget.value}.json');
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
+      // GET SOCIOS
+      try{
+        print(await fileData.readAsString());
+        final map = json.decode(await fileData.readAsString());
+        final code = map["code"];
+        final sectoristaSeleccionado = map["sectorista"];
+        final sectores = map["result"];
+        final load = map["load"];
+        // print(empresaSeleccionada['nombre']);
+        print(code);
+        setState(() {
+          _isLoading = load;
+          this.nombreSectorista = sectoristaSeleccionado['personaNombre'];
+          this.imagenSectorista = sectoristaSeleccionado['personaImagen'];
+          this.tipoIdentificacion = sectoristaSeleccionado['personaTipoIdentificacion'];
+          this.identificacion = sectoristaSeleccionado['personaNumeroIdentificacion'];
+          this.email = sectoristaSeleccionado['userEmail'];
+          
+          this.data = sectores;
+          this.codes = code;
+          if(codes){
+            cantSectores = this.data.length;
+          }else{
+            cantSectores = 0;
+          }
+          
+        });
+          
+      }catch(error){
+        print(error);
+      
+      }
+      
 
   }
 
@@ -220,10 +217,7 @@ Widget _buildListSectores(int id, String descripcion ){
             canvasColor: Color(0xFF070D59),
           ),
           child: Sidebar(
-            tipousuario: tipoUsuario,
-            idusuario: idUsuario,
-            imagenUsuario: imagenUsuario,
-            nombre : nombreUsuario
+            
           )
         ),
       body: Container(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:illapa/behaviors/hiddenScrollBehavior.dart';
 import 'package:illapa/extras/appTema.dart';
+import 'package:illapa/extras/globals/variablesGlobales.dart';
 import 'package:illapa/pages/gestiones/gestionClienteAccion.dart';
 import 'package:illapa/widgets.dart';
 
@@ -65,7 +66,48 @@ class _GestionClientePageState extends State<GestionClientePage> {
     print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      final map = json.decode(response.body);
+      final directory = await getApplicationDocumentsDirectory();
+      final fileData = File('${directory.path}/pagGestGestionClienteData${widget.value}.json');
+      await fileData.writeAsString("${response.body}");
+      _getVariables();
+
+    }
+  }
+    @override
+    void initState() {
+      setState(() {
+        // VARIABLES GLOBALES PARA PINTAR DATOS
+
+        if(pagGestGestClienteDataGlobal[0]['${widget.value}'] != null ){
+          listDocumentos    = pagGestGestClienteDataGlobal[0]['${widget.value}'];
+          cantDocumentos    = listDocumentos.length;
+          if(cantDocumentos > 0){
+            _isLoading = true;
+          }
+        }
+    });
+      if(widget.nombreCliente != null){
+        nombreCliente = widget.nombreCliente;
+        imagenCliente = widget.imagenCliente;
+      }
+
+      // TODO: implement initState
+      super.initState();
+      _getVariables();
+      _getSocios();
+      _getDatosCliente();
+    }
+  int tipoUsuario;
+  int idUsuario;
+  String imagenUsuario;
+  String nombreUsuario;
+  _getVariables() async {
+      final directory = await getApplicationDocumentsDirectory();
+      final fileData = File('${directory.path}/pagGestGestionClienteData${widget.value}.json');
+    // GET SOCIOS
+    try{
+      print(await fileData.readAsString());
+      final map = json.decode(await fileData.readAsString());
       final code = map["code"];
       
       final clienteSeleccionado = map["cliente"];
@@ -77,7 +119,7 @@ class _GestionClientePageState extends State<GestionClientePage> {
       print(code);
 
       setState(() {
-        // _isLoading = load;
+        _isLoading = load;
         this.idCliente= widget.value;
         print("idcliente: $idCliente");
         this.nombreCliente = clienteSeleccionado['personaNombre'];
@@ -89,6 +131,8 @@ class _GestionClientePageState extends State<GestionClientePage> {
         if(code == true){
           this.listDocumentos = listDocumentos;
           cantDocumentos = this.listDocumentos.length;
+          // VARIABLES GLOBALES PARA PINTAR DATOS
+          pagGestGestClienteDataGlobal[0]['${widget.value}'] = this.listDocumentos;
 
           this.listDocumentosOrdenados = listDocumentosOrdenados;
 
@@ -98,51 +142,95 @@ class _GestionClientePageState extends State<GestionClientePage> {
         
         
       });
+    }catch(error){
+      print(error);
     }
-  }
-    @override
-    void initState() {
 
-      if(widget.nombreCliente != null){
-        nombreCliente = widget.nombreCliente;
-        imagenCliente = widget.imagenCliente;
-      }
+    // GET DATOS CLIENTE
+    final fileDataAcciones = File('${directory.path}/pagGestGestionClienteDataAcciones${widget.value}.json');
+    try{
+      print(await fileDataAcciones.readAsString());
+      final map = json.decode(await fileDataAcciones.readAsString());
+      final code                      = map["code"];
+      final load                      = map["load"];
+      final codeTelefono              = map["codeTelefono"];
+      final listTelefonos             = map["telefonos"];
+      final codeAcciones              = map["codeAcciones"];
+      final codeNada                  = map["codeNada"];
+      final listAcciones              = map["acciones"];
+      final listDirecciones           = map["direcciones"];
+      final codeTelefonosAcciones     = map["codeTelefonosAcciones"];
+      final codeDireccionesAcciones   = map["codeDireccionesAcciones"];
+      final codeDireccionesTelefonos  = map["codeDireccionesTelefonos"];
 
-      // TODO: implement initState
-      super.initState();
-      _getSocios();
-      _getVariables();
-      _getDatosCliente();
-    }
-  int tipoUsuario;
-  int idUsuario;
-  String imagenUsuario;
-  String nombreUsuario;
-  _getVariables() async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      
+      final codeDirecciones = map["codeDirecciones"];
       setState(() {
-        nombreUsuario = prefs.getString('nombre');
-      }); 
 
+        if(code == true){
+          this.dataTelefonos = listTelefonos;
+          this.cantTelefonos = this.dataTelefonos.length;
 
-      final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+          this.dataAcciones = listAcciones;
+          this.cantAcciones = this.dataAcciones.length;
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
+          this.dataDirecciones = listDirecciones;
+          this.cantDirecciones = this.dataDirecciones.length;
+        }else if(codeTelefonosAcciones == true){
+            this.dataTelefonos = listTelefonos;
+            this.cantTelefonos = this.dataTelefonos.length;
+
+            this.dataAcciones = listAcciones;
+            this.cantAcciones = this.dataAcciones.length;
+        }else if(codeDireccionesAcciones == true){
+            this.dataDirecciones = listDirecciones;
+            this.cantDirecciones = this.dataDirecciones.length;
+
+            this.dataAcciones = listAcciones;
+            this.cantAcciones = this.dataAcciones.length;
+
+        }else if(codeDireccionesTelefonos == true){
+            this.dataDirecciones = listDirecciones;
+            print(dataDirecciones);
+            this.cantDirecciones = this.dataDirecciones.length;
+
+            this.dataTelefonos = listTelefonos;
+            this.cantTelefonos = this.dataTelefonos.length;
+
+        }else if(codeAcciones == true){
+
+          this.dataAcciones = listAcciones;
+          this.cantAcciones = this.dataAcciones.length;
+
+        }else if(codeTelefono == true){
+          this.dataTelefonos = listTelefonos;
+          this.cantTelefonos = this.dataTelefonos.length;
+        }else if(codeDirecciones == true){
+          this.dataDirecciones = listDirecciones;
+          this.cantDirecciones = this.dataDirecciones.length;
+        }
+
+        print("ESTE: $cantTelefonos");
+      });
+        
+    }catch(error){
+      print(error);
+    }
 
   }
 
+  bool _isLoading = false;
+  Widget _loading(){
+      barrierDismissible: true;
+      return Container(
+                padding: EdgeInsets.only(top: 20.0),
+                child: Center(
+                  child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
+                        ),
+                ),
+              );
+    
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -174,10 +262,7 @@ class _GestionClientePageState extends State<GestionClientePage> {
           canvasColor: Color(0xFF070D59),
         ),
         child: Sidebar(
-          tipousuario: tipoUsuario,
-          idusuario: idUsuario,
-          imagenUsuario: imagenUsuario,
-          nombre : nombreUsuario
+          
         ),
       ),
       body: Container(
@@ -228,8 +313,7 @@ class _GestionClientePageState extends State<GestionClientePage> {
               ),
             ),
             
-            // if(!_isLoading)
-            //   _loading(),
+
             Padding(
               padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
               child: 
@@ -365,7 +449,8 @@ class _GestionClientePageState extends State<GestionClientePage> {
                       color: Color(0xff070D59),
                       child: Column(
                         children: <Widget>[
-                          
+                          if(!_isLoading)
+                          _loading(),
                           if(ordenar == false)
                             for(var cont =0; cont < cantDocumentos; cont++ )
                               _buildDocumentos("${listDocumentos[cont]['tipoDocumentoIdentidad']}"+" "+"${listDocumentos[cont]['numero']}", 
@@ -484,71 +569,11 @@ class _GestionClientePageState extends State<GestionClientePage> {
   
     final response = await http.get(url);
     if (response.statusCode == 200) {
-
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final load = map["load"];
-      final codeTelefono = map["codeTelefono"];
-      final listTelefonos = map["telefonos"];
-      final codeAcciones = map["codeAcciones"];
-      final codeNada = map["codeNada"];
-      final listAcciones = map["acciones"];
-      final listDirecciones = map["direcciones"];
-
-
-      final codeTelefonosAcciones = map["codeTelefonosAcciones"];
-      final codeDireccionesAcciones = map["codeDireccionesAcciones"];
-      final codeDireccionesTelefonos = map["codeDireccionesTelefonos"];
-
-      final codeDirecciones = map["codeDirecciones"];
-      setState(() {
-
-        if(code == true){
-          this.dataTelefonos = listTelefonos;
-          this.cantTelefonos = this.dataTelefonos.length;
-
-          this.dataAcciones = listAcciones;
-          this.cantAcciones = this.dataAcciones.length;
-
-          this.dataDirecciones = listDirecciones;
-          this.cantDirecciones = this.dataDirecciones.length;
-        }else if(codeTelefonosAcciones == true){
-            this.dataTelefonos = listTelefonos;
-            this.cantTelefonos = this.dataTelefonos.length;
-
-            this.dataAcciones = listAcciones;
-            this.cantAcciones = this.dataAcciones.length;
-        }else if(codeDireccionesAcciones == true){
-            this.dataDirecciones = listDirecciones;
-            this.cantDirecciones = this.dataDirecciones.length;
-
-            this.dataAcciones = listAcciones;
-            this.cantAcciones = this.dataAcciones.length;
-
-        }else if(codeDireccionesTelefonos == true){
-            this.dataDirecciones = listDirecciones;
-            print(dataDirecciones);
-            this.cantDirecciones = this.dataDirecciones.length;
-
-            this.dataTelefonos = listTelefonos;
-            this.cantTelefonos = this.dataTelefonos.length;
-
-        }else if(codeAcciones == true){
-
-          this.dataAcciones = listAcciones;
-          this.cantAcciones = this.dataAcciones.length;
-
-        }else if(codeTelefono == true){
-          this.dataTelefonos = listTelefonos;
-          this.cantTelefonos = this.dataTelefonos.length;
-        }else if(codeDirecciones == true){
-          this.dataDirecciones = listDirecciones;
-          this.cantDirecciones = this.dataDirecciones.length;
-        }
-
-        print("ESTE: $cantTelefonos");
-      });
-        
+      final directory = await getApplicationDocumentsDirectory();
+      final fileData = File('${directory.path}/pagGestGestionClienteDataAcciones${widget.value}.json');
+      await fileData.writeAsString("${response.body}");
+      _getVariables();
+      
     }
     
   }

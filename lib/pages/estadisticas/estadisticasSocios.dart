@@ -150,30 +150,10 @@ class _EstadisticasSociosPageState extends State<EstadisticasSociosPage> {
     print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final empresaSeleccionada = map["empresa"];
-      final listSocios = map["result"];
-      final load = map["load"];
-      // print(empresaSeleccionada['nombre']);
-      print(code);
-      setState(() {
-        _isLoading = load;
-        this.nombreEmpresa = empresaSeleccionada['empresaNombre'];
-        this.imagenEmpresa = empresaSeleccionada['personaImagen'];
-        this.tipoidentificador = empresaSeleccionada['personaTipoIdentificacion'];
-        
-        this.identificador ="${empresaSeleccionada['personaNumeroIdentificacion']}";
-        this.email = empresaSeleccionada['userEmail'];
-        
-        this.data = listSocios;
-        this.codes = code;
-        if(codes){
-          cantSocios = this.data.length;
-        }else{
-          cantSocios = 0;
-        }
-      });
+      final directory = await getApplicationDocumentsDirectory();
+      final fileData = File('${directory.path}/pagEstadisticasEstadisticasSocios${widget.value}.json');
+      await fileData.writeAsString("${response.body}");
+      _getVariables();
     }
   }
   int orderAZ(var a,var b){
@@ -220,25 +200,41 @@ class _EstadisticasSociosPageState extends State<EstadisticasSociosPage> {
 
   _getVariables() async {
       
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-        
-        setState(() {
-          nombreUsuario = prefs.getString('nombre');
-        }); 
       final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+      final fileData = File('${directory.path}/pagEstadisticasEstadisticasSocios${widget.value}.json');
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
+      // GET SOCIOS
+      try{
+        print(await fileData.readAsString());
+        final map = json.decode(await fileData.readAsString());
+        final code = map["code"];
+        final empresaSeleccionada = map["empresa"];
+        final listSocios = map["result"];
+        final load = map["load"];
+        // print(empresaSeleccionada['nombre']);
+        print(code);
+        setState(() {
+          _isLoading = load;
+          this.nombreEmpresa = empresaSeleccionada['empresaNombre'];
+          this.imagenEmpresa = empresaSeleccionada['personaImagen'];
+          this.tipoidentificador = empresaSeleccionada['personaTipoIdentificacion'];
+          
+          this.identificador ="${empresaSeleccionada['personaNumeroIdentificacion']}";
+          this.email = empresaSeleccionada['userEmail'];
+          
+          this.data = listSocios;
+          this.codes = code;
+          if(codes){
+            cantSocios = this.data.length;
+          }else{
+            cantSocios = 0;
+          }
+        });
+          
+      }catch(error){
+        print(error);
+      
+      }
 
   }
 
@@ -272,10 +268,7 @@ class _EstadisticasSociosPageState extends State<EstadisticasSociosPage> {
             canvasColor: Color(0xFF070D59),
           ),
           child: Sidebar(
-            tipousuario: tipoUsuario,
-            idusuario: idUsuario,
-            imagenUsuario: imagenUsuario,
-            nombre : nombreUsuario
+            
           )
         ),
       body: Container(

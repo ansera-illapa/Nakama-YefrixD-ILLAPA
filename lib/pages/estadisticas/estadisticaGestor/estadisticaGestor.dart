@@ -130,30 +130,11 @@ class _EstadisticaGestorPageState extends State<EstadisticaGestorPage> {
     print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final gestorSeleccionado = map["gestor"];
-      final listClientes = map["result"];
-      final load = map["load"];
-      // print(socioSeleccionado['nombre']);
-      print(code);
-      setState(() {
-        _isLoading = load;
-        this.nombreGestor = gestorSeleccionado['personaNombre'];
-        this.tipoidentificador = gestorSeleccionado['personaTipoIdentificacion'];
-
-        this.identificador = gestorSeleccionado['personaNumeroIdentificacion'];
-        this.email = gestorSeleccionado['userEmail'];
-        this.idSector = gestorSeleccionado['sectorId'];
-        this.data = listClientes;
-        this.codes = code;
-        if(codes){
-          cantClientes = this.data.length;
-        }else{
-          cantClientes = 0;
-        }
-        
-      });
+        final directory = await getApplicationDocumentsDirectory();
+        final fileData = File('${directory.path}/pagEstadisticasEstadisticaGestorEstadisticaGestor${widget.value}.json');
+        await fileData.writeAsString("${response.body}");
+        _getVariables();
+      
     }
   }
 
@@ -185,28 +166,45 @@ class _EstadisticaGestorPageState extends State<EstadisticaGestorPage> {
   String nombreUsuario;
 
   _getVariables() async {
-      
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-        
-        setState(() {
-          nombreUsuario = prefs.getString('nombre');
-        });
-      final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
+      final directory = await getApplicationDocumentsDirectory();
+      final fileData = File('${directory.path}/pagEstadisticasEstadisticaGestorEstadisticaGestor${widget.value}.json');
+
+      // GET SOCIOS
+      try{
+        print(await fileData.readAsString());
+        final map = json.decode(await fileData.readAsString());
+        final code = map["code"];
+        final gestorSeleccionado = map["gestor"];
+        final listClientes = map["result"];
+        final load = map["load"];
+        // print(socioSeleccionado['nombre']);
+        print(code);
+        setState(() {
+          _isLoading = load;
+          this.nombreGestor = gestorSeleccionado['personaNombre'];
+          this.tipoidentificador = gestorSeleccionado['personaTipoIdentificacion'];
+
+          this.identificador = gestorSeleccionado['personaNumeroIdentificacion'];
+          this.email = gestorSeleccionado['userEmail'];
+          this.idSector = gestorSeleccionado['sectorId'];
+          this.data = listClientes;
+          this.codes = code;
+          if(codes){
+            cantClientes = this.data.length;
+          }else{
+            cantClientes = 0;
+          }
+          
+        });
+          
+      }catch(error){
+        print(error);
+      
+      }
 
   }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -237,10 +235,7 @@ class _EstadisticaGestorPageState extends State<EstadisticaGestorPage> {
             canvasColor: Color(0xFF070D59),
           ),
           child: Sidebar(
-            tipousuario: tipoUsuario,
-            idusuario: idUsuario,
-            imagenUsuario: imagenUsuario,
-            nombre : nombreUsuario
+            
           )
         ),
       body: Container(

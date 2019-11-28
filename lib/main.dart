@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:illapa/extras/globals/globals.dart';
+import 'package:illapa/extras/globals/variablesSidebar.dart';
 import 'package:illapa/pages/gestiones/gestion.dart';
 import 'package:illapa/pages/gestiones/gestionClientes.dart';
 import 'package:illapa/pages/gestiones/gestionEmpresa/gestionEmpresa.dart';
@@ -10,10 +11,9 @@ import 'package:illapa/pages/gestiones/gestionFree/gfreeClientes.dart';
 import 'package:illapa/pages/gestiones/gestionSectorista/gestionSectores.dart';
 import 'package:illapa/pages/gestiones/gestionSocios.dart';
 import 'package:illapa/pages/login.dart';
-import 'package:illapa/pages/register.dart';
 import 'package:illapa/routes.dart';
 import 'package:illapa/widgets.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 
@@ -53,12 +53,21 @@ class _TodoAppState extends State<TodoApp>{
 
 
     getRootPage().then((Widget page) async{
-      final directory = await getApplicationDocumentsDirectory();
-      final fileId = File('${directory.path}/id.txt');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      print(prefs.getString('idUsuarioPref'));
+      print("-------------");
       String uId;
       try{
-        uId = await fileId.readAsString();
+        print("UID:");
+        print("-------------");
+        print(prefs.getString('idUsuarioPref'));
+        print("-------------");
+        uId = prefs.getString('idUsuarioPref');
+        print(uId);
       }catch(error){
+        print("-------------");
+        print("ERROR CATCH");
+        print("-------------");
         setState(() {
           _rootPage = page;
         });
@@ -72,13 +81,10 @@ class _TodoAppState extends State<TodoApp>{
         });
       }else{
 
-          
-          final fileTipo = File('${directory.path}/tipo.txt');
-          
-
-          String uTipo = await fileTipo.readAsString();
-          
-          int usuarioTipo = int.parse(uTipo);
+          _getVariables();
+          int usuarioTipo = int.parse(prefs.getString('usuarioTipoPref'));
+          print("-------------");
+          print(usuarioTipo);
           int idUsuario = int.parse(uId);
 
           switch (usuarioTipo) {
@@ -123,7 +129,25 @@ class _TodoAppState extends State<TodoApp>{
       }
     });
   }
-  
+
+  _getVariables() async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      
+      setState(() {
+         apiTokenGlobal       = prefs.getString('apiTokenPref');
+         tipousuarioGlobal    = int.parse(prefs.getString('usuarioTipoPref'));
+         idusuarioGlobal      = int.parse(prefs.getString('idUsuarioPref'));
+         imagenUsuarioGlobal  = prefs.getString('imagenLogeadoPref');
+         nombreGlobal         = prefs.getString('nombreLogeadoPref');
+      });
+
+      print("VARIABLES GLOBALES : ");
+      print(apiTokenGlobal);
+      print(tipousuarioGlobal);
+      print(idusuarioGlobal);
+      print(imagenUsuarioGlobal);
+      print(nombreGlobal);
+  }
   
   Widget _rootPage = LoginPage();
   

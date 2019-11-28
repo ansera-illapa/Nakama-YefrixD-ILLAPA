@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:illapa/extras/appTema.dart';
+import 'package:illapa/extras/globals/variablesGlobales.dart';
+import 'package:illapa/extras/globals/variablesSidebar.dart';
 import 'package:illapa/pages/gestiones/gestionFMAdministrador.dart';
 import 'package:illapa/pages/gestiones/gestionSocios.dart';
 import 'package:illapa/widgets.dart';
@@ -118,7 +120,7 @@ Widget _buildListGestionEmpresas(String imagen,
           );
   }
 
-  var data;
+  List data = [{}];
   int cantEmpresas = 0;
   bool _isLoading = false;
   bool siEmpresas;
@@ -139,29 +141,14 @@ Widget _buildListGestionEmpresas(String imagen,
     print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      final users = map["result"];
-      final code = map["code"];
-      final load = map["load"];
-      final numeroDocumentos = map["numeroDocumentos"];
-      final sumaImporteDocumentos = map["sumaImportesDocumentos"];
-      final numeroDocumentosVencidos = map["numeroDocumentosVencidos"];
-      final sumaImportesDocumentosVencidos = map["sumaImportesDocumentosVencidos"];
+      print("BODY ANTES:");
+      print(response.body);
+      final directory = await getApplicationDocumentsDirectory();
+      final fileData = File('${directory.path}/pagGestGestionData.json');
+      await fileData.writeAsString("${response.body}");
+      _getVariables();
 
 
-      setState(() {
-        this.apiToken = apiToken;
-        this.numeroDocumentos = numeroDocumentos;
-        this.sumaImporteDocumentos = sumaImporteDocumentos;
-        this.numeroDocumentosVencidos = numeroDocumentosVencidos;
-        this.sumaImportesDocumentosVencidos = sumaImportesDocumentosVencidos;
-        _isLoading = load;
-        this.data = users;
-        this.siEmpresas = code;
-        if(siEmpresas){
-          cantEmpresas = this.data.length;
-        }
-      });
     }
   }
 
@@ -202,42 +189,70 @@ Widget _buildListGestionEmpresas(String imagen,
 
   @override
   void initState() {
+    setState(() {
+        // VARIABLES GLOBALES PARA PINTAR DATOS
+        data                            = pagGestGestionGlobal;
+        cantEmpresas                    = pagGestGestionGlobal.length;
+        numeroDocumentos                = numeroDocumentosGlobal;
+        sumaImporteDocumentos           = sumaImporteDocumentosGlobal;
+        numeroDocumentosVencidos        = numeroDocumentosVencidosGlobal;
+        sumaImportesDocumentosVencidos  = sumaImportesDocumentosVencidosGlobal;
+
+        if(cantEmpresas > 0){
+          _isLoading = true;
+        }
+    });
     // TODO: implement initState
-    
     super.initState();
-    _getData();
     _getVariables();
+    _getData();
+
     
   }
 
-  int tipoUsuario;
-  int idUsuario;
-  String imagenUsuario;
-  String nombreUsuario;
+
   _getVariables() async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      
-      setState(() {
-        nombreUsuario = prefs.getString('nombre');
-      }); 
-
-
+    
       final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+      final fileData = File('${directory.path}/pagGestGestionData.json');
+      try{
+          print(await fileData.readAsString());
+          final map = json.decode(await fileData.readAsString());
+          print("BODY DESPUES:");
+          print(map);
+          final users = map["result"];
+          final code = map["code"];
+          final load = map["load"];
+          final numeroDocumentos = map["numeroDocumentos"];
+          final sumaImporteDocumentos = map["sumaImportesDocumentos"];
+          final numeroDocumentosVencidos = map["numeroDocumentosVencidos"];
+          final sumaImportesDocumentosVencidos = map["sumaImportesDocumentosVencidos"];
+          
+          setState(() {
+            this.apiToken = apiToken;
+            this.numeroDocumentos = numeroDocumentos;
+            this.sumaImporteDocumentos = sumaImporteDocumentos;
+            this.numeroDocumentosVencidos = numeroDocumentosVencidos;
+            this.sumaImportesDocumentosVencidos = sumaImportesDocumentosVencidos;
+            _isLoading = load;
+            this.data = users;
+            this.siEmpresas = code;
+            if(siEmpresas){
+              cantEmpresas = this.data.length;
+            }
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
+            // VARIABLES GLOBALES PARA PINTAR DATOS
+            pagGestGestionGlobal = users;
+            numeroDocumentosGlobal                = numeroDocumentos;
+            sumaImporteDocumentosGlobal           = sumaImporteDocumentos;   
+            numeroDocumentosVencidosGlobal        = numeroDocumentosVencidos;       
+            sumaImportesDocumentosVencidosGlobal  = sumaImportesDocumentosVencidos;   
+          });
 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
+      }catch(error){
+        print("NO HAY DATOS");
+        print(error);
+      }
 
   }
 
@@ -260,11 +275,7 @@ Widget _buildListGestionEmpresas(String imagen,
             canvasColor: Color(0xFF070D59),
           ),
           child: Sidebar(
-            tipousuario: tipoUsuario,
-            idusuario: idUsuario,
-            // imagenUsuario: imagenUsuario,
-            imagenUsuario: imagenAdmin,
-            nombre : nombreUsuario
+            
           ),
         ),
         body: Container(
@@ -312,11 +323,11 @@ Widget _buildListGestionEmpresas(String imagen,
                                             context, 
                                             MaterialPageRoute(
                                               builder: (BuildContext context ) => GestionFMAdministradorPage(
-                                                value: idUsuario,
-                                                tipoUsuario: tipoUsuario,
-                                                nombreUsuario: nombreUsuario,
-                                                imagenUsuario: imagenUsuario,
-                                                apiToken: apiToken,
+                                                value         : idusuarioGlobal,
+                                                tipoUsuario   : tipousuarioGlobal,
+                                                nombreUsuario : nombreGlobal,
+                                                imagenUsuario : imagenUsuarioGlobal,
+                                                apiToken      : apiToken,
                                               )
                                             )
                                           );

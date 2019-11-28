@@ -175,59 +175,12 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
     print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final porcentajeDocumentos = map["porcentaje"];
-      final porcentajeImporteDocumentos = map["porcentajeImportes"];
-
-      final tramosSocio = map["tramos"];
-      
-      print(code);
-      setState(() {
-        
-
-        this.porcentajeVencido = porcentajeDocumentos['vencido'];
-        this.porcentajeVigente = porcentajeDocumentos['vigente'];
-        this.porcentajePagado = porcentajeDocumentos['pagado'];
-
-        this.cantPagados = double.parse(porcentajeDocumentos['cantPagados']);
-        this.cantVigente = double.parse(porcentajeDocumentos['cantVigentes']);
-        this.cantVencido = double.parse(porcentajeDocumentos['cantVencidos']);
-        this.cantTotal = double.parse(porcentajeDocumentos['cantTotal']);
-
-        this.importePagados = porcentajeDocumentos['importePagados'];
-
-        this.dporcentajeVencido = double.parse(porcentajeVencido); 
-        this.dporcentajeVigente = double.parse(porcentajeVigente); 
-        this.dporcentajePagado = double.parse(porcentajePagado); 
-
-        this.dimportePagados = double.parse(importePagados); 
-
-
-
-        this.dporcentajeImporteVencido = double.parse(porcentajeImporteDocumentos['vencido']); 
-        this.dporcentajeImporteVigente = double.parse(porcentajeImporteDocumentos['vigente']); 
-        this.dporcentajeImportePagado = double.parse(porcentajeImporteDocumentos['pagado']);
-
-        this.dImporteVencido = double.parse(porcentajeImporteDocumentos['importeVencido']);
-        this.dImporteVigente = double.parse(porcentajeImporteDocumentos['importeVigente']);
-        this.dImportePagado  = double.parse(porcentajeImporteDocumentos['importePagado']);
-
-        this.importeTotal = double.parse(porcentajeImporteDocumentos['importeTotal']);
-
-        this.data = tramosSocio;
-        
-        this.codes = code;
-        if(codes){
-          cantTramos = this.data.length;
-        }else{
-          cantTramos = 0;
-        }
-        
-        
-        
-      });
+        final directory = await getApplicationDocumentsDirectory();
+        final fileData = File('${directory.path}/pag/estadisticas/estadisticasFree/estFreeFiltroMayor${widget.value}.json');
+        await fileData.writeAsString("${response.body}");
+        _getVariables();
     }
+    
   }
 
   @override
@@ -253,25 +206,71 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
 
   _getVariables() async {
       
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-        
-        setState(() {
-          nombreUsuario = prefs.getString('nombre');
-        }); 
       final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+      final fileData = File('${directory.path}/pag/estadisticas/estadisticasFree/estFreeFiltroMayor${widget.value}.json');
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
+      // GET SOCIOS
+      try{
+        print(await fileData.readAsString());
+        final map = json.decode(await fileData.readAsString());
+        final code = map["code"];
+        final porcentajeDocumentos = map["porcentaje"];
+        final porcentajeImporteDocumentos = map["porcentajeImportes"];
+
+        final tramosSocio = map["tramos"];
+        
+        print(code);
+        setState(() {
+          
+
+          this.porcentajeVencido = porcentajeDocumentos['vencido'];
+          this.porcentajeVigente = porcentajeDocumentos['vigente'];
+          this.porcentajePagado = porcentajeDocumentos['pagado'];
+
+          this.cantPagados = double.parse(porcentajeDocumentos['cantPagados']);
+          this.cantVigente = double.parse(porcentajeDocumentos['cantVigentes']);
+          this.cantVencido = double.parse(porcentajeDocumentos['cantVencidos']);
+          this.cantTotal = double.parse(porcentajeDocumentos['cantTotal']);
+
+          this.importePagados = porcentajeDocumentos['importePagados'];
+
+          this.dporcentajeVencido = double.parse(porcentajeVencido); 
+          this.dporcentajeVigente = double.parse(porcentajeVigente); 
+          this.dporcentajePagado = double.parse(porcentajePagado); 
+
+          this.dimportePagados = double.parse(importePagados); 
+
+
+
+          this.dporcentajeImporteVencido = double.parse(porcentajeImporteDocumentos['vencido']); 
+          this.dporcentajeImporteVigente = double.parse(porcentajeImporteDocumentos['vigente']); 
+          this.dporcentajeImportePagado = double.parse(porcentajeImporteDocumentos['pagado']);
+
+          this.dImporteVencido = double.parse(porcentajeImporteDocumentos['importeVencido']);
+          this.dImporteVigente = double.parse(porcentajeImporteDocumentos['importeVigente']);
+          this.dImportePagado  = double.parse(porcentajeImporteDocumentos['importePagado']);
+
+          this.importeTotal = double.parse(porcentajeImporteDocumentos['importeTotal']);
+
+          this.data = tramosSocio;
+          
+          this.codes = code;
+          if(codes){
+            cantTramos = this.data.length;
+          }else{
+            cantTramos = 0;
+          }
+          
+          
+          
+        });
+          
+      }catch(error){
+        print(error);
+      
+      }
+      
+      
 
   }
   
@@ -305,10 +304,7 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
             canvasColor: Color(0xFF070D59),
           ),
           child: Sidebar(
-            tipousuario: tipoUsuario,
-            idusuario: idUsuario,
-            imagenUsuario: imagenUsuario,
-            nombre : nombreUsuario
+            
           )
         ),
       body: Container(

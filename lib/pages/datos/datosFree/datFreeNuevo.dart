@@ -521,26 +521,12 @@ class _DatFreeNuevoPageState extends State<DatFreeNuevoPage> {
     final response = await http.get(url);
     if (response.statusCode == 200) {
 
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final load = map["load"];
-      final listSectores = map["sectores"];
-      final tiposTelefonos = map["tiposTelefonos"];
+        final directory = await getApplicationDocumentsDirectory();
+        final fileData = File('${directory.path}/pag/datos/datosFree/datFreeNuevo${widget.clienteId}.json');
+        await fileData.writeAsString("${response.body}");
+        _getVariables();
 
-      setState(() {
-        this.dataSectores = listSectores;
-        cantSectores = this.dataSectores.length;
-        this.codSectorSeleccionado = dataSectores[0]['id'];
-        
-      });
 
-      listTiposTelefonos = tiposTelefonos;
-        for(int cont = 0; cont < tiposTelefonos.length ; cont++){
-            dropwListTiposTelefonos.add(new DropdownMenuItem(
-                value: tiposTelefonos[cont]['id'].toString(),
-                child: new Text(" "+tiposTelefonos[cont]['nombre'])
-            ));
-          }
 
         
     }
@@ -585,26 +571,37 @@ class _DatFreeNuevoPageState extends State<DatFreeNuevoPage> {
   String nombreUsuario;
   
   _getVariables() async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      
-      setState(() {
-        nombreUsuario = prefs.getString('nombre');
-      });
-
       final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+      final fileData = File('${directory.path}/pag/datos/datosFree/datFreeNuevo${widget.clienteId}.json');
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
+      // GET SOCIOS
+      try{
+        print(await fileData.readAsString());
+        final map = json.decode(await fileData.readAsString());
+        final code = map["code"];
+        final load = map["load"];
+        final listSectores = map["sectores"];
+        final tiposTelefonos = map["tiposTelefonos"];
+
+        setState(() {
+          this.dataSectores = listSectores;
+          cantSectores = this.dataSectores.length;
+          this.codSectorSeleccionado = dataSectores[0]['id'];
+          
+        });
+
+        listTiposTelefonos = tiposTelefonos;
+          for(int cont = 0; cont < tiposTelefonos.length ; cont++){
+              dropwListTiposTelefonos.add(new DropdownMenuItem(
+                  value: tiposTelefonos[cont]['id'].toString(),
+                  child: new Text(" "+tiposTelefonos[cont]['nombre'])
+              ));
+            }
+          
+      }catch(error){
+        print(error);
+      
+      }  
 
   }
 
@@ -724,10 +721,7 @@ class _DatFreeNuevoPageState extends State<DatFreeNuevoPage> {
             canvasColor: Color(0xFF070D59),
           ),
           child: Sidebar(
-            tipousuario: tipoUsuario,
-            idusuario: idUsuario,
-            imagenUsuario: imagenUsuario,
-            nombre : nombreUsuario
+            
           )
         ),
       body: Container(
