@@ -14,7 +14,7 @@ import 'package:illapa/extras/globals/globals.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
-
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EstadisticaFMSectoresPage extends StatefulWidget {
@@ -37,7 +37,13 @@ class EstadisticaFMSectoresPage extends StatefulWidget {
 
 class _EstadisticaFMSectoresPageState extends State<EstadisticaFMSectoresPage> {
   
+  var moneyType = new NumberFormat("#,##0.00", "en_US");
+
   Widget _buildListTramos(int cont, int desde, int hasta, int documentos, String importes ){
+
+    double doc = double.parse("$importes");
+    var docFormat = "${moneyType.format(doc)}";
+
     if(documentos == null){
       setState(() {
        documentos = 0; 
@@ -73,12 +79,10 @@ class _EstadisticaFMSectoresPageState extends State<EstadisticaFMSectoresPage> {
               ),
             ),
             Expanded(
-              child: Center(
-                child:  
-                  Text(
-                    '$importes', 
-                    style: TextStyle(fontFamily: 'illapaBold', fontSize: 15.0, color: Colors.white),
-                  ),
+              child: Text(
+                '$docFormat', 
+                style: TextStyle(fontFamily: 'illapaBold', fontSize: 15.0, color: Colors.white),
+                textAlign: TextAlign.right,
               ),
             ),
           ],

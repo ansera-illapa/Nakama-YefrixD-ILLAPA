@@ -45,6 +45,8 @@ dependencies:
   flutter_google_places: ^0.2.3
   country_code_picker: ^1.1.7
   flutter_facebook_login: ^2.0.1
+  location_permissions: ^2.0.4+1
+  geolocator:
 
   
 dev_dependencies:

@@ -341,7 +341,7 @@ class _TramosMostrarPageState extends State<TramosMostrarPage> {
     if (response.statusCode == 200) {
 
         final directory = await getApplicationDocumentsDirectory();
-        final fileData = File('${directory.path}/pag/tramos/tramosMostrar${widget.value}.json');
+        final fileData = File('${directory.path}/pag-tramos-tramosMostrar${widget.value}.json');
         await fileData.writeAsString("${response.body}");
         _getVariables();
 
@@ -399,7 +399,7 @@ class _TramosMostrarPageState extends State<TramosMostrarPage> {
   _getVariables() async {
     
       final directory = await getApplicationDocumentsDirectory();
-      final fileData = File('${directory.path}/pag/tramos/tramosMostrar${widget.value}.json');
+      final fileData = File('${directory.path}/pag-tramos-tramosMostrar${widget.value}.json');
       
       // GET SOCIOS
       try{

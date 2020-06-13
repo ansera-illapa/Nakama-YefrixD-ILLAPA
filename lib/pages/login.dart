@@ -424,10 +424,8 @@ class _LoginPageState extends State<LoginPage> {
     _getTiposDocumentoIdentidad();
   }
 
-  // Future<SharedPreferences> _apiToken = SharedPreferences.getInstance();
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
 
   String _nombre;
   String _apellidos;
@@ -442,7 +440,7 @@ class _LoginPageState extends State<LoginPage> {
     if(_isLoggingIn) return;
 
     setState(() {
-     _isLoggingIn = true; 
+     _isLoggingIn = true;
     });
 
     _scaffoldKey.currentState.showSnackBar(SnackBar(
@@ -500,6 +498,7 @@ class _LoginPageState extends State<LoginPage> {
           tipousuarioGlobal    = int.parse(prefs.getString('usuarioTipoPref'));
           idusuarioGlobal      = int.parse(prefs.getString('idUsuarioPref'));
           imagenUsuarioGlobal  = prefs.getString('imagenLogeadoPref');
+          imagenUsuarioGlobalJunto  = urlImagenes+imagenUsuarioGlobal;
           nombreGlobal         = prefs.getString('nombreLogeadoPref');
         });
 

@@ -119,7 +119,7 @@ Widget _buidEstListEmpresas(String imagen,
     final response = await http.get(url);
     if (response.statusCode == 200) {
         final directory = await getApplicationDocumentsDirectory();
-        final fileData = File('${directory.path}/tramos/tramosEmpresas.json');
+        final fileData = File('${directory.path}/tramos-tramosEmpresas.json');
         await fileData.writeAsString("${response.body}");
         _getVariables();
 
@@ -165,7 +165,7 @@ Widget _buidEstListEmpresas(String imagen,
   _getVariables() async {
       
       final directory = await getApplicationDocumentsDirectory();
-      final fileData = File('${directory.path}/tramos/tramosEmpresas.json');
+      final fileData = File('${directory.path}/tramos-tramosEmpresas.json');
 
       // GET SOCIOS
       try{

@@ -663,7 +663,7 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
     final response = await http.get(url);
     if (response.statusCode == 200) {
         final directory = await getApplicationDocumentsDirectory();
-        final fileData = File('${directory.path}/usuarios/usuarioNuevo${widget.idSocio}.json');
+        final fileData = File('${directory.path}/usuarios-usuarioNuevo${widget.idSocio}.json');
         await fileData.writeAsString("${response.body}");
         _getVariables();
       
@@ -689,7 +689,7 @@ class _UsuarioNuevoPageState extends State<UsuarioNuevoPage> {
   _getVariables() async {
       
       final directory = await getApplicationDocumentsDirectory();
-      final fileData = File('${directory.path}/usuarios/usuarioNuevo${widget.idSocio}.json');
+      final fileData = File('${directory.path}/usuarios-usuarioNuevo${widget.idSocio}.json');
 
       // GET SOCIOS
       try{

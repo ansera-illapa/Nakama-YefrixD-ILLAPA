@@ -504,28 +504,12 @@ class _DatoNuevoPageState extends State<DatoNuevoPage> {
 
     final response = await http.get(url);
     if (response.statusCode == 200) {
-
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final load = map["load"];
-      final listSectores = map["sectores"];
-      final tiposTelefonos = map["tiposTelefonos"];
-
-      setState(() {
-        this.dataSectores = listSectores;
-        cantSectores = this.dataSectores.length;
-      });
-
-      listTiposTelefonos = tiposTelefonos;
-        for(int cont = 0; cont < tiposTelefonos.length ; cont++){
-            dropwListTiposTelefonos.add(new DropdownMenuItem(
-                value: tiposTelefonos[cont]['id'].toString(),
-                child: new Text(" "+tiposTelefonos[cont]['nombre'])
-            ));
-          }
-        
+          final directory = await getApplicationDocumentsDirectory();
+          final fileData = File('${directory.path}/pag-datos-datoNuevo${widget.clienteId}.json');
+          await fileData.writeAsString("${response.body}");
+          _getVariables();
+   
     }
-    
   }
 
   
@@ -555,7 +539,7 @@ class _DatoNuevoPageState extends State<DatoNuevoPage> {
     }
     super.initState();
     _getSectores();
-    _getVariables();
+    // _getVariables();
   }
   int tipoUsuario;
   int idUsuario;
@@ -563,26 +547,35 @@ class _DatoNuevoPageState extends State<DatoNuevoPage> {
   String nombreUsuario;
   
   _getVariables() async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
       
-      setState(() {
-        nombreUsuario = prefs.getString('nombre');
-      });
-
       final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+      final fileData = File('${directory.path}/pag-datos-datoNuevo${widget.clienteId}.json');
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
+      // GET SOCIOS
+      try{
+        final map = json.decode(await fileData.readAsString());
+        final code = map["code"];
+        final load = map["load"];
+        final listSectores = map["sectores"];
+        final tiposTelefonos = map["tiposTelefonos"];
+
+        setState(() {
+          this.dataSectores = listSectores;
+          cantSectores = this.dataSectores.length;
+        });
+
+        listTiposTelefonos = tiposTelefonos;
+          for(int cont = 0; cont < tiposTelefonos.length ; cont++){
+              dropwListTiposTelefonos.add(new DropdownMenuItem(
+                  value: tiposTelefonos[cont]['id'].toString(),
+                  child: new Text(" "+tiposTelefonos[cont]['nombre'])
+              ));
+            }
+          
+      }catch(error){
+        print(error);
+      
+      }
 
   }
 
@@ -776,10 +769,11 @@ class _DatoNuevoPageState extends State<DatoNuevoPage> {
                           
                           
                           for(int cont= 0 ; cont < cantDirecciones; cont++)
-                            _buildClienteAsociado( ""+ pais[cont]+
-                                                      "\n"+ciudad[cont]+ 
-                                                      "("+"${codPostal[cont]}"+")"+ 
-                                                      "\n"+calle[cont]),
+                            // _buildClienteAsociado( ""+ pais[cont]+
+                            //                           "\n"+ciudad[cont]+ 
+                            //                           "("+"${codPostal[cont]}"+")"+ 
+                            //                           "\n"+calle[cont]),
+                          _buildClienteAsociado(calle[cont]),
                           _buildDireccion()
                         ],
                       ),

@@ -39,7 +39,8 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
 
   var moneyType = new NumberFormat("#,##0.00", "en_US");
 
-  Widget _buildListClientes(String imagen, String nombre, String tipo, String identif, String correo, String usuario, int idCliente, int userId){
+  Widget _buildListClientes(String imagen, String nombre, String tipo, String identif, String correo, String usuario, int idCliente, int userId, int cont){
+
     if(correo == null){
       correo = "-";
     }
@@ -180,6 +181,10 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
       
     }
   }
+
+  
+
+
   int orderAZ(var a,var b){
     return a.compareTo(b);
   }
@@ -198,9 +203,23 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
     
   }
 
-
+  final scrollController = ScrollController();
   @override
   void initState() {
+    scrollController.addListener(() {
+      if (scrollController.position.maxScrollExtent == scrollController.offset) {
+            print("jalaa");
+            if(limitarBucle < cantClientes ){
+              print("jalaa if");
+              setState(() {
+                
+                limitarBucle = limitarBucle + 20;
+                // _isLoading = false;
+              });
+              
+            }
+      }
+    });
     setState(() {
       // VARIABLES GLOBALES PARA PINTAR DATOS
       if(pagDatDatClientDataGlobal[0]['${widget.value}'] != null ){
@@ -274,15 +293,13 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
           }else{
             cantClientes = 0;
           }
-          
+          listTipos = new List();
           for(int cont = 0; cont < tipos.length ; cont++){
               listTipos.add(new DropdownMenuItem(
                   value: tipos[cont]['id'].toString(),
                   child: new Text(" "+tipos[cont]['nombre'])
               ));
-          }
-
-            
+          } 
         });
           
       }catch(error){
@@ -291,6 +308,8 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
       }
 
   }
+
+  int limitarBucle = 20;
 
   @override
   Widget build(BuildContext context) {
@@ -328,6 +347,7 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
       body: Container(
         padding: EdgeInsets.all(10.0),
         child: ListView(
+          controller: scrollController,
           children: <Widget>[
 
             Container(
@@ -421,13 +441,14 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
                   ),
                   Expanded(
                     child: Container(
-                      // color: Colors.black,
                       color: Color(0xff070D59),
                       child: Column(
-                        children: <Widget>[
-
-                          for(var cont =0; cont<cantClientes; cont++ )
+                        children: <Widget>[                          
+                          // for(int cont =0; cont < cantClientes; cont++ )
+                          for(int cont =0; cont < cantClientes; cont++ )
+                            
                             if(data[cont]['personaNombre'].indexOf(textoBusqueda.toUpperCase()) != -1 || data[cont]['personaNombre'].indexOf(textoBusqueda.toLowerCase()) != -1  )
+                            if(cont < limitarBucle)
                             _buildListClientes(data[cont]['personaImagen'], 
                                                   data[cont]['personaNombre'], 
                                                   data[cont]['tipoDocumentoIdentidad'], 
@@ -435,7 +456,10 @@ class _DatoClientesPageState extends State<DatoClientesPage> {
                                                   data[cont]['userEmail'], 
                                                   'Cliente', 
                                                   data[cont]['clienteId'],
-                                                  data[cont]['userId'] ),
+                                                  data[cont]['userId'],
+                                                  limitarBucle 
+                                                )
+                            
                         ],
                       ),
                       

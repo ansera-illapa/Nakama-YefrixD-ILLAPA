@@ -129,7 +129,7 @@ class _EstFreeClientesPageState extends State<EstFreeClientesPage> {
     final response = await http.get(url);
     if (response.statusCode == 200) {
         final directory = await getApplicationDocumentsDirectory();
-        final fileData = File('${directory.path}/pag/estadisticas/estadisticasFree/estFreeClientes${widget.value}.json');
+        final fileData = File('${directory.path}/pag-estadisticas-estadisticasFree-estFreeClientes${widget.value}.json');
         await fileData.writeAsString("${response.body}");
         _getVariables();
     }
@@ -165,7 +165,7 @@ class _EstFreeClientesPageState extends State<EstFreeClientesPage> {
   _getVariables() async {
       
       final directory = await getApplicationDocumentsDirectory();
-      final fileData = File('${directory.path}/pag/estadisticas/estadisticasFree/estFreeClientes${widget.value}.json');
+      final fileData = File('${directory.path}/pag-estadisticas-estadisticasFree-estFreeClientes${widget.value}.json');
 
       // GET SOCIOS
       try{

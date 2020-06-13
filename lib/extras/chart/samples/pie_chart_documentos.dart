@@ -70,7 +70,7 @@ class PieChartDocumentos extends StatelessWidget {
                       sections: [
 
                         PieChartSectionData(
-                          color: Color(0xfff5893d4),
+                          color: Color(0xff1f3c88),
                           value: porcentajeVigente,
                           title: "$porcentajeVigente% ($vigente)",
                           radius: 20,
@@ -84,7 +84,7 @@ class PieChartDocumentos extends StatelessWidget {
                           titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xffffffff)),
                         ),
                         PieChartSectionData(
-                          color: Color(0xff1f3c88),
+                          color: Color(0xfff5893d4),
                           value: porcentajeVencido,
                           title: "$porcentajeVencido% ($vencido)",
                           radius: 20,

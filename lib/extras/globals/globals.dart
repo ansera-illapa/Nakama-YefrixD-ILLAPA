@@ -15,10 +15,10 @@ String urlSubirImagen = urlImagenes+'api/datoFree';
 String urlGlobal = "http://produccion.ansera.pe";
 String urlGlobalMails = "http://produccion.ansera.pe";
 
-// GLOBALS DEV
-// String urlImagenes = 'http://192.168.1.6:8000/';
+// GLOBALS DEV 
+// String urlImagenes = 'http://192.168.1.16:8000/';
 // String urlSubirImagen = urlImagenes+'api/datoFree';
-// String urlGlobal =  'http://192.168.1.6:8000';
+// String urlGlobal =  'http://192.168.1.16:8000';
 // String urlGlobalMails = urlGlobal;
 
 String urlGestion =  urlGlobal+'/api/gestion';
@@ -53,7 +53,7 @@ String api = 'UIaHiJNxZBCDQrazgEVFn2MxqT6beW85FDdvT03Xj4h4wLFIsYaelhT4vBjd';
 
 String globalNombre = null;
 String globalApiMaps = "AIzaSyDaWP3UZl2Dj-VlbK3ubZ6GJ_TBVgXdRC4";
-String globalVersion = "V4.2p";
+String globalVersion = "V5.3p";
 
 // GLOABALS PRODUCCION 
 // String urlImagenes = 'http://produccion.ansera.pe/';

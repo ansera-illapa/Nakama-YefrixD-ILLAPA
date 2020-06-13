@@ -42,9 +42,10 @@ class _DatoDocumentoPageState extends State<DatoDocumentoPage> {
  DateTime now = new DateTime.now();
 var moneyType = new NumberFormat("#,##0.00", "en_US");
 
-
+  DateTime today;
  @override
   void initState() {
+    today = new DateTime.now();
     setState(() {
         // VARIABLES GLOBALES PARA PINTAR DATOS
       if(pagDatDatDocumentGlobal[0]['${widget.value}'] != null ){
@@ -115,6 +116,10 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
           this.identificador = clienteSeleccionado['personaNumeroIdentificacion'];
           this.identificacion = this.tipoidentificador+" "+"${this.identificador}";
           this.email = clienteSeleccionado['userEmail'];
+
+          listTipos = new List();
+          listTiposDocumento = new List();
+
           if(estadoAgregar == true){
             for(int cont = 0; cont < tipos.length ; cont++){
               listTipos.add(new DropdownMenuItem(
@@ -751,7 +756,7 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
                                 String idTipoMoneda,
                                 String moneda){
 
-    DateTime today = new DateTime.now();
+    
     List fechaVencSeparada = fechaVenc.split("-");
     
     var ano = int.parse(fechaVencSeparada[0]);
@@ -761,9 +766,6 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
     var fechaVencida = new DateTime.utc(ano,mes, dia+1);
     Duration difference = today.difference(fechaVencida);
     
-    print(today);
-    print(fechaVencida);
-    print(difference.inDays);
     vencida = difference.inDays;
 
     String vencidaPagadaVigente = 'S';
@@ -773,7 +775,7 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
       saldoTotal = "PAGADO: "+ "$moneda ${moneyType.format(double.parse(saldo))}";
 
     }
-    if(vencida > 0){
+    if(nuevaVencida >= 0){
       vencidaPagadaVigente = "VENCIDA: ";
     }else{
       vencidaPagadaVigente = "VIGENTE: ";
@@ -852,7 +854,7 @@ var moneyType = new NumberFormat("#,##0.00", "en_US");
                                     Container(
                                       child: Row(
                                         children: <Widget>[
-                                          vencida <= 0
+                                          vencida <= -1
                                           ?Text(
                                             '$moneda ${moneyType.format(double.parse(importe))}',
                                             style: new TextStyle(color: Colors.black, fontSize: 16.0, fontFamily: 'illapaBold'),

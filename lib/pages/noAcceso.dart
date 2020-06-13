@@ -1,18 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:illapa/pages/datos/datosClientes.dart';
-import 'package:illapa/pages/usuarios/usuariosSocios.dart';
+import 'package:illapa/extras/globals/variablesSidebar.dart';
 import 'package:illapa/widgets.dart';
-
-
-import 'package:illapa/extras/globals/globals.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:path_provider/path_provider.dart';
-
-import 'package:shared_preferences/shared_preferences.dart';
 
 class NoAccesoPage extends StatefulWidget {
   @override
@@ -37,30 +27,15 @@ class _NoAccesoPageState extends State<NoAccesoPage> {
 
   _getVariables() async {
       
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-        
-        setState(() {
-          nombreUsuario = prefs.getString('nombre');
-        }); 
-      final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
-
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
+      
 
       setState(() {
-          tipoUsuario = int.parse(tipoUsuarioInt);
-          idUsuario = int.parse(idUsuarioInt);
-          imagenUsuario = imagenUsuarioString;
+          tipoUsuario = tipousuarioGlobal;
+          idUsuario = idusuarioGlobal;
+          imagenUsuario = imagenUsuarioGlobal;
 
       });
       
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-
   }
   
   @override

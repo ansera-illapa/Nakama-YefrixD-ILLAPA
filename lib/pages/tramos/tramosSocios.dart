@@ -140,7 +140,7 @@ Widget _buildListSocios(String imagen,
     final response = await http.get(url);
     if (response.statusCode == 200) {
         final directory = await getApplicationDocumentsDirectory();
-        final fileData = File('${directory.path}/pag/tramos/tramosSocios${widget.value}.json');
+        final fileData = File('${directory.path}/pag-tramos-tramosSocios${widget.value}.json');
         await fileData.writeAsString("${response.body}");
         _getVariables();
     }
@@ -189,7 +189,7 @@ Widget _buildListSocios(String imagen,
   _getVariables() async {
       
         final directory = await getApplicationDocumentsDirectory();
-        final fileData = File('${directory.path}/pag/tramos/tramosSocios${widget.value}.json');
+        final fileData = File('${directory.path}/pag-tramos-tramosSocios${widget.value}.json');
 
         // GET SOCIOS
         try{

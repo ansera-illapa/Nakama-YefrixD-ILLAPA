@@ -164,7 +164,7 @@ class _UsuariosSociosPageState extends State<UsuariosSociosPage> {
     final response = await http.get(url);
     if (response.statusCode == 200) {
         final directory = await getApplicationDocumentsDirectory();
-        final fileData = File('${directory.path}/usuarios/usuariosSocios${widget.value}.json');
+        final fileData = File('${directory.path}/usuarios-usuariosSocios${widget.value}.json');
         await fileData.writeAsString("${response.body}");
         _getVariables();
     }
@@ -237,7 +237,7 @@ class _UsuariosSociosPageState extends State<UsuariosSociosPage> {
   _getVariables() async {
       
       final directory = await getApplicationDocumentsDirectory();
-      final fileData = File('${directory.path}/usuarios/usuariosSocios${widget.value}.json');
+      final fileData = File('${directory.path}/usuarios-usuariosSocios${widget.value}.json');
 
       // GET SOCIOS
       try{

@@ -557,54 +557,11 @@ class _DatoClienteEditarPageState extends State<DatoClienteEditarPage> {
     print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      final codeTelefonos = map["codeTelefonos"];
-      final telefonos = map["telefonos"];
-      final codeDirecciones = map["codeDirecciones"];
-      final direcciones = map["direcciones"];
-      final codeCorreos = map["codeCorreos"];
-      final correos = map["correos"];
-      final codeSectores = map["codeSectores"];
-      final listSectores = map["sectores"];
-      final tiposTelefonos = map["tiposTelefonos"];
-      final sector = map["sector"];
-
-      setState(() {
-        //miomio
-        sectorSeleccionado = sector['id'];
-        sectorNombre = sector['descripcion'];
-        codSectorSeleccionado = sector['id'];
-
-
-        if(codeSectores == true ){
-          this.dataSectores = listSectores;
-          cantSectores = this.dataSectores.length;
-        }
-        
-
-        if(codeTelefonos == true){
-          this.listTelefonos = telefonos;
-          this.cantTelefonos = this.listTelefonos.length;
-        }
-        if(codeCorreos == true){
-          this.listCorreos = correos;
-          this.cantCorreos = this.listCorreos.length;
-        }
-        if(codeDirecciones == true){
-          this.listDirecciones = direcciones;
-          this.cantDirecciones = this.listDirecciones.length;
-        }
-
-        listTiposTelefonos = tiposTelefonos;
-        for(int cont = 0; cont < tiposTelefonos.length ; cont++){
-            dropwListTiposTelefonos.add(new DropdownMenuItem(
-                value: tiposTelefonos[cont]['id'].toString(),
-                child: new Text(" "+tiposTelefonos[cont]['nombre'])
-            ));
-          }
-
-
-      });
+      
+        final directory = await getApplicationDocumentsDirectory();
+        final fileData = File('${directory.path}/pag-datos-datoClienteEditar${widget.clienteId}.json');
+        await fileData.writeAsString("${response.body}");
+        _getVariables();
 
 
 
@@ -663,27 +620,67 @@ class _DatoClienteEditarPageState extends State<DatoClienteEditarPage> {
   String nombreUsuario;
   
   _getVariables() async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
       
-      setState(() {
-        nombreUsuario = prefs.getString('nombre');
-      });
-
       final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+      final fileData = File('${directory.path}/pag-datos-datoClienteEditar${widget.clienteId}.json');
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
+      // GET SOCIOS
+      try{
+        print(await fileData.readAsString());
+        final map = json.decode(await fileData.readAsString());
+        final codeTelefonos = map["codeTelefonos"];
+        final telefonos = map["telefonos"];
+        final codeDirecciones = map["codeDirecciones"];
+        final direcciones = map["direcciones"];
+        final codeCorreos = map["codeCorreos"];
+        final correos = map["correos"];
+        final codeSectores = map["codeSectores"];
+        final listSectores = map["sectores"];
+        final tiposTelefonos = map["tiposTelefonos"];
+        final sector = map["sector"];
 
+        setState(() {
+          //miomio
+          sectorSeleccionado = sector['id'];
+          sectorNombre = sector['descripcion'];
+          codSectorSeleccionado = sector['id'];
+
+
+          if(codeSectores == true ){
+            this.dataSectores = listSectores;
+            cantSectores = this.dataSectores.length;
+          }
+          
+
+          if(codeTelefonos == true){
+            this.listTelefonos = telefonos;
+            this.cantTelefonos = this.listTelefonos.length;
+          }
+          if(codeCorreos == true){
+            this.listCorreos = correos;
+            this.cantCorreos = this.listCorreos.length;
+          }
+          if(codeDirecciones == true){
+            this.listDirecciones = direcciones;
+            this.cantDirecciones = this.listDirecciones.length;
+          }
+
+          listTiposTelefonos = tiposTelefonos;
+          for(int cont = 0; cont < tiposTelefonos.length ; cont++){
+              dropwListTiposTelefonos.add(new DropdownMenuItem(
+                  value: tiposTelefonos[cont]['id'].toString(),
+                  child: new Text(" "+tiposTelefonos[cont]['nombre'])
+              ));
+            }
+
+
+        });
+          
+      }catch(error){
+        print(error);
+      
+      }
+     
   }
 
 

@@ -575,6 +575,11 @@ class _DatoPagosPageState extends State<DatoPagosPage> {
           
           this.tipoidentificador = clienteSeleccionado['personatipoDocumentoIdentidad_id'];
           
+          listTiposPagosMostar = new List();
+          listTiposDocumento = new List();
+          listTipos = new List();
+
+
           if(estadoAgregar == true){
             for(int cont = 0; cont < listTiposPagos.length ; cont++){
               listTiposPagosMostar.add(new DropdownMenuItem(

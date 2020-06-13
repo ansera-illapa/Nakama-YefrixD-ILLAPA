@@ -9,7 +9,7 @@ import 'package:illapa/extras/chart/samples/pie_chart_sample2.dart';
 import 'package:illapa/pages/estadisticas/estadisticas.dart';
 import 'package:illapa/widgets.dart';
 
-
+import 'package:intl/intl.dart';
 import 'package:illapa/extras/globals/globals.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -35,7 +35,20 @@ class EstadisticaEspPage extends StatefulWidget {
 
 class _EstadisticaEspPageState extends State<EstadisticaEspPage> {
   
+  var moneyType = new NumberFormat("#,##0.00", "en_US");
+
   Widget _buildListTramos(int cont, int desde, int hasta, int documentos, int importes ){
+    
+    if(documentos == null){
+      documentos = 0;
+    }
+
+    if(importes == null){
+      importes = 0;
+    }
+
+    double doc = double.parse("$importes");
+    var docFormat = "${moneyType.format(doc)}";
 
     return 
     
@@ -61,12 +74,14 @@ class _EstadisticaEspPageState extends State<EstadisticaEspPage> {
               ),
             ),
             Expanded(
-              child: Center(
-                child:  
-                  Text(
-                    '$importes', 
-                    style: TextStyle(fontFamily: 'illapaBold', fontSize: 15.0, color: Colors.white),
-                  ),
+              child: Text(
+                '$docFormat', 
+                style: TextStyle(
+                  fontFamily: 'illapaBold', 
+                  fontSize: 15.0, 
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.right,
               ),
             ),
           ],
@@ -395,9 +410,18 @@ class _EstadisticaEspPageState extends State<EstadisticaEspPage> {
 
                     for(var cont =0; cont<cantTramos; cont++ ) //miomio
 
-                    _buildListTramos(cont+1, data[cont]['desde'],data[cont]['hasta'], data[cont]['documentos'], data[cont]['importe']),
+                    _buildListTramos(
+                      cont+1, 
+                      data[cont]['desde'],
+                      data[cont]['hasta'], 
+                      data[cont]['documentos'], 
+                      data[cont]['importe']
+                    ),
                     
-                    _buildTotalTramos(cantPagados.round(), importePagados),
+                    _buildTotalTramos(
+                      cantPagados.round(), 
+                      importePagados
+                    ),
                   ],
                 ),
               )

@@ -14,7 +14,7 @@ import 'package:illapa/extras/globals/globals.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
-
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EstadisticasEspFiltroMayorPage extends StatefulWidget {
@@ -37,7 +37,13 @@ class EstadisticasEspFiltroMayorPage extends StatefulWidget {
 
 class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMayorPage> {
   
+  var moneyType = new NumberFormat("#,##0.00", "en_US");
+
   Widget _buildListTramos(int cont, int desde, int hasta, int documentos, String importes ){
+
+    double doc = double.parse("$importes");
+    var docFormat = "${moneyType.format(doc)}";
+
     if(documentos == null){
       setState(() {
        documentos = 0; 
@@ -73,12 +79,10 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
               ),
             ),
             Expanded(
-              child: Center(
-                child:  
-                  Text(
-                    '$importes', 
-                    style: TextStyle(fontFamily: 'illapaBold', fontSize: 15.0, color: Colors.white),
-                  ),
+              child: Text(
+                '$docFormat', 
+                style: TextStyle(fontFamily: 'illapaBold', fontSize: 15.0, color: Colors.white),
+                textAlign: TextAlign.right,
               ),
             ),
           ],
@@ -176,7 +180,7 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
     final response = await http.get(url);
     if (response.statusCode == 200) {
         final directory = await getApplicationDocumentsDirectory();
-        final fileData = File('${directory.path}/pag/estadisticas/estadisticasFree/estFreeFiltroMayor${widget.value}.json');
+        final fileData = File('${directory.path}/pag-estadisticas-estadisticasFree-estFreeFiltroMayor${widget.value}.json');
         await fileData.writeAsString("${response.body}");
         _getVariables();
     }
@@ -207,7 +211,7 @@ class _EstadisticasEspFiltroMayorPageState extends State<EstadisticasEspFiltroMa
   _getVariables() async {
       
       final directory = await getApplicationDocumentsDirectory();
-      final fileData = File('${directory.path}/pag/estadisticas/estadisticasFree/estFreeFiltroMayor${widget.value}.json');
+      final fileData = File('${directory.path}/pag-estadisticas-estadisticasFree-estFreeFiltroMayor${widget.value}.json');
 
       // GET SOCIOS
       try{

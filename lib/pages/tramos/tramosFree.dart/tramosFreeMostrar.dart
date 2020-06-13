@@ -242,7 +242,7 @@ class _TramosFreeMostrarPageState extends State<TramosFreeMostrarPage> {
     final response = await http.get(url);
     if (response.statusCode == 200) {
         final directory = await getApplicationDocumentsDirectory();
-        final fileData = File('${directory.path}/pag/tramos/tramosFree/tramosFreeMostrar${widget.value}.json');
+        final fileData = File('${directory.path}/pag-tramos-tramosFree-tramosFreeMostrar${widget.value}.json');
         await fileData.writeAsString("${response.body}");
         _getVariables();
 
@@ -279,7 +279,7 @@ class _TramosFreeMostrarPageState extends State<TramosFreeMostrarPage> {
   _getVariables() async {
       
       final directory = await getApplicationDocumentsDirectory();
-      final fileData = File('${directory.path}/pag/tramos/tramosFree/tramosFreeMostrar${widget.value}.json');
+      final fileData = File('${directory.path}/pag-tramos-tramosFree-tramosFreeMostrar${widget.value}.json');
 
       // GET SOCIOS
       try{

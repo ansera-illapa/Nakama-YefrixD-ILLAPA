@@ -169,7 +169,7 @@ class _DatFreeClientesPageState extends State<DatFreeClientesPage> {
     final response = await http.get(url);
     if (response.statusCode == 200) {
         final directory = await getApplicationDocumentsDirectory();
-        final fileData = File('${directory.path}/pag/datos/datosFree/datFreeClientes${widget.value}.json');
+        final fileData = File('${directory.path}/pag-datos-datosFree-datFreeClientes${widget.value}.json');
         await fileData.writeAsString("${response.body}");
         _getVariables();
 
@@ -210,7 +210,7 @@ class _DatFreeClientesPageState extends State<DatFreeClientesPage> {
   _getVariables() async {
       
       final directory = await getApplicationDocumentsDirectory();
-      final fileData = File('${directory.path}/pag/datos/datosFree/datFreeClientes${widget.value}.json');
+      final fileData = File('${directory.path}/pag-datos-datosFree-datFreeClientes${widget.value}.json');
 
       // GET SOCIOS
       try{

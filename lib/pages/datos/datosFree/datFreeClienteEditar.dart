@@ -581,7 +581,7 @@ class _DatFreeClienteEditarPageState extends State<DatFreeClienteEditarPage> {
     final response = await http.get(url);
     if (response.statusCode == 200) {
         final directory = await getApplicationDocumentsDirectory();
-        final fileData = File('${directory.path}/pag/datos/datosFree/datFreeClienteEditar${widget.clienteId}.json');
+        final fileData = File('${directory.path}/pag-datos-datosFree-datFreeClienteEditar${widget.clienteId}.json');
         await fileData.writeAsString("${response.body}");
         _getVariables();
     }
@@ -638,7 +638,7 @@ class _DatFreeClienteEditarPageState extends State<DatFreeClienteEditarPage> {
 
 
       final directory = await getApplicationDocumentsDirectory();
-      final fileData = File('${directory.path}/pag/datos/datosFree/datFreeClienteEditar${widget.clienteId}.json');
+      final fileData = File('${directory.path}/pag-datos-datosFree-datFreeClienteEditar${widget.clienteId}.json');
 
       // GET SOCIOS
       try{

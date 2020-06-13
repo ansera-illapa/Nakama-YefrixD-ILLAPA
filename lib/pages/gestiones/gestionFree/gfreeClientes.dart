@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:illapa/extras/appTema.dart';
+import 'package:illapa/extras/globals/variablesSidebar.dart';
 import 'package:illapa/pages/gestiones/gestionCliente.dart';
 import 'package:illapa/pages/gestiones/gestionFree/gfreeFiltroMayor.dart';
 import 'package:illapa/widgets.dart';
@@ -138,38 +139,11 @@ class _GfreeClientesPageState extends State<GfreeClientesPage> {
     final response = await http.get(url);
     print(response.body);
     if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final listClientes = map["result"];
-      final sectoristaFreeSeleccionado = map["sectorista"];
-      final numeroDocumentos = map["numeroDocumentos"];
-      final sumaImporteDocumentos = map["sumaImporteDocumentos"];
-      final numeroDocumentosVencidos = map["numeroDocumentosVencidos"];
-      final sumaImportesDocumentosVencidos = map["sumaImportesDocumentosVencidos"];
-      
-      
-      final load = map["load"];
-      
-      print(code);
-      setState(() {
-        _isLoading = load;
-        this.nombreGestor = sectoristaFreeSeleccionado['personaNombre'];
-        this.imagenGestorFree = sectoristaFreeSeleccionado['personaImagen'];
-        this.data = listClientes;
+        final directory = await getApplicationDocumentsDirectory();
+        final fileData = File('${directory.path}/pag-gestiones-gestionFree-gfreeClientes${widget.value}.json');
+        await fileData.writeAsString("${response.body}");
+        _getVariables();
 
-        this.numeroDocumentos = numeroDocumentos;
-        this.sumaImporteDocumentos = sumaImporteDocumentos;
-        this.numeroDocumentosVencidos = numeroDocumentosVencidos;
-        this.sumaImportesDocumentosVencidos = sumaImportesDocumentosVencidos;
-
-        this.codes = code;
-        if(codes){
-          cantClientes = this.data.length;
-        }else{
-          cantClientes = 0;
-        }
-        
-      });
     }
   }
 
@@ -237,6 +211,7 @@ class _GfreeClientesPageState extends State<GfreeClientesPage> {
   @override
   void initState() {
     // TODO: implement initState
+    print(urlImagenes+imagenUsuarioGlobalJunto);
     super.initState();
     _getSocios();
     _getVariables();
@@ -252,25 +227,51 @@ class _GfreeClientesPageState extends State<GfreeClientesPage> {
   
   _getVariables() async {
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-        
-      setState(() {
-        nombreUsuario = prefs.getString('nombre');
-      });
       final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+      final fileData = File('${directory.path}/pag-gestiones-gestionFree-gfreeClientes${widget.value}.json');
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
+      try{
+        print(await fileData.readAsString());
+        final map = json.decode(await fileData.readAsString());
+        final code = map["code"];
+        final listClientes = map["result"];
+        final sectoristaFreeSeleccionado = map["sectorista"];
+        final numeroDocumentos = map["numeroDocumentos"];
+        final sumaImporteDocumentos = map["sumaImporteDocumentos"];
+        final numeroDocumentosVencidos = map["numeroDocumentosVencidos"];
+        final sumaImportesDocumentosVencidos = map["sumaImportesDocumentosVencidos"];
+        
+        
+        final load = map["load"];
+        
+        print(code);
+        setState(() {
+          _isLoading = load;
+          this.nombreGestor = sectoristaFreeSeleccionado['personaNombre'];
+          this.imagenGestorFree = sectoristaFreeSeleccionado['personaImagen'];
+          this.data = listClientes;
 
+          this.numeroDocumentos = numeroDocumentos;
+          this.sumaImporteDocumentos = sumaImporteDocumentos;
+          this.numeroDocumentosVencidos = numeroDocumentosVencidos;
+          this.sumaImportesDocumentosVencidos = sumaImportesDocumentosVencidos;
+
+          this.codes = code;
+          if(codes){
+            cantClientes = this.data.length;
+          }else{
+            cantClientes = 0;
+          }
+          
+        });
+          
+      }catch(error){
+        print(error);
+      
+      }
+        
+
+      
   }
 
   @override
@@ -306,7 +307,7 @@ class _GfreeClientesPageState extends State<GfreeClientesPage> {
                       leading: new CircleAvatar(
                         foregroundColor: Theme.of(context).primaryColor,
                         backgroundColor: Colors.grey,
-                        backgroundImage: new NetworkImage(imagenGestorFree),
+                        backgroundImage: new NetworkImage(imagenUsuarioGlobalJunto),
                       ),
                       title: new Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -337,7 +338,7 @@ class _GfreeClientesPageState extends State<GfreeClientesPage> {
                                                     MaterialPageRoute(
                                                       builder: (BuildContext context ) => GfreeFiltroMayorPage(
                                                         value: widget.value,
-                                                        imagenGestor:imagenGestorFree,
+                                                        imagenGestor:imagenUsuarioGlobalJunto,
                                                         nombreGestor: nombreGestor,
                                                         numeroDocumentos: numeroDocumentos,
                                                         sumaImportesDocumentos: "$sumaImporteDocumentos",

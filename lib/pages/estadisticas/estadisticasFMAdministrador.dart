@@ -16,6 +16,7 @@ import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 class EstadisticasFMAdministradorPage extends StatefulWidget {
   final int value;
@@ -37,7 +38,20 @@ class EstadisticasFMAdministradorPage extends StatefulWidget {
 
 class _EstadisticasFMAdministradorPageState extends State<EstadisticasFMAdministradorPage> {
   
+  var moneyType = new NumberFormat("#,##0.00", "en_US");
+
   Widget _buildListTramos(int cont, int desde, int hasta, int documentos, String importes ){
+
+    if(documentos == null){
+      documentos = 0;
+    }
+
+    if(importes == null){
+      importes = "0";
+    }
+
+    double doc = double.parse(importes);
+    var docFormat = "${moneyType.format(doc)}";
 
     if(documentos == null){
       setState(() {
@@ -73,12 +87,10 @@ class _EstadisticasFMAdministradorPageState extends State<EstadisticasFMAdminist
               ),
             ),
             Expanded(
-              child: Center(
-                child:  
-                  Text(
-                    '$importes', 
-                    style: TextStyle(fontFamily: 'illapaBold', fontSize: 15.0, color: Colors.white),
-                  ),
+              child: Text(
+                '$docFormat', 
+                style: TextStyle(fontFamily: 'illapaBold', fontSize: 15.0, color: Colors.white),
+                textAlign: TextAlign.right,
               ),
             ),
           ],

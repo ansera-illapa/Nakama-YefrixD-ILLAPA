@@ -23,6 +23,11 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 
+import 'package:location/location.dart';
+// import 'package:geolocator/geolocator.dart';
+
+// import 'package:location_permissions/location_permissions.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -53,6 +58,33 @@ class _GestionClienteAccionPageState extends State<GestionClienteAccionPage> {
   DateTime _dateProrroga;
   DateTime _dateAlerta;
   DateTime _horaAlerta;
+
+  // local()
+  // async{
+  //   Location location = new Location();
+
+  //   bool _serviceEnabled;
+  //   PermissionStatus _permissionGranted;
+  //   LocationData _locationData;
+
+  //   _serviceEnabled = await location.serviceEnabled();
+  //   if (!_serviceEnabled) {
+  //     _serviceEnabled = await location.requestService();
+  //     if (!_serviceEnabled) {
+  //       return;
+  //     }
+  //   }
+
+  //   _permissionGranted = await location.hasPermission();
+  //   if (_permissionGranted == PermissionStatus.DENIED) {
+  //     _permissionGranted = await location.requestPermission();
+  //     if (_permissionGranted != PermissionStatus.GRANTED) {
+  //       return;
+  //     }
+  //   }
+
+  //   _locationData = await location.getLocation();
+  // }
 
   var icon;
   @override
@@ -576,12 +608,13 @@ class _GestionClienteAccionPageState extends State<GestionClienteAccionPage> {
 
   _agregarAcccion() async{
 
-      
+      SharedPreferences prefs = await SharedPreferences.getInstance();
       final directory = await getApplicationDocumentsDirectory();
       final file = File('${directory.path}/api.txt');
       String apiToken = await file.readAsString();
       final url =
           "$urlGlobal/api/agregarAccion";
+      print(prefs.getString('idUsuarioPref'));
       print(url);
       print(widget.value);
       print(descripcionAccion);
@@ -619,6 +652,7 @@ class _GestionClienteAccionPageState extends State<GestionClienteAccionPage> {
                     "fechaProrroga": "$_dateProrroga",
                     "alerta": "$esAlerta",
                     "fechaAlerta": '${_dateAlerta.year}-${_dateAlerta.month.toString().padLeft(2, '0')}-${_dateAlerta.day.toString().padLeft(2, '0')} ${_horaAlerta.hour.toString().padLeft(2, '0')}:${_horaAlerta.minute.toString().padLeft(2, '0')}',
+                    "idUsuario" : prefs.getString('idUsuarioPref')
                     // "horaAlerta": '${_horaAlerta.hour.toString().padLeft(2, '0')}:${_horaAlerta.minute.toString().padLeft(2, '0')}',
 
                   });
@@ -668,8 +702,6 @@ class _GestionClienteAccionPageState extends State<GestionClienteAccionPage> {
                 )
               )
             );
-
-
   }          
 
   Future<bool> confirmacionAgregar(context) {

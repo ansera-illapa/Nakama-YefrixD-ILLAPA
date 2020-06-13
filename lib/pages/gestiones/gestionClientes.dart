@@ -374,13 +374,13 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
   bool _isLoading = false;
   int pagina = 1;
   
-  _getClientes() async {
+  _getClientes(String buscarNombreCliente, int numeroPagina ) async {
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/api.txt');
     String apiToken = await file.readAsString();
     // print(apiToken);
     final url =
-        "$urlGlobal/api/clientesTodos/${widget.value}?api_token="+apiToken+"&page="+"$pagina";
+        "$urlGlobal/api/clientesTodos/${widget.value}/$buscarNombreCliente?api_token="+apiToken+"&page="+"$numeroPagina";
     print(url);
 
     final response = await http.get(url);
@@ -389,7 +389,7 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
       final directory = await getApplicationDocumentsDirectory();
       final fileData = File('${directory.path}/pagGestGestionClientesData${widget.value}.json');
       await fileData.writeAsString("${response.body}");
-      _getVariables();
+      await _getVariables();
     }
   }
 
@@ -478,7 +478,12 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
               _isLoading = false;
              pagina = pagina+1; 
             });
-            _getClientes();
+            if(textoBusqueda == ''){
+              _getClientes(null, pagina);
+            }else{
+              _getClientes(textoBusqueda, pagina);
+            }
+
             print(pagina);
       }
     });
@@ -494,7 +499,7 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
 
     // TODO: implement initState
     super.initState();
-    _getClientes();
+    _getClientes(null, 1);
     _getVariables();
     _getSectores();
   }
@@ -516,9 +521,9 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
         final listClientes = map["result"];
         final load = map["load"];
         // print(socioSeleccionado['nombre']);
-        print(code);
+        print("CODIGO:"+"$code");
         setState(() {
-          _isLoading = load;
+          this._isLoading = load;
           this.nombreSocio = socioSeleccionado['personaNombre'];
           this.imagenSocio = socioSeleccionado['personaImagen'];
           this.numeroDocumentos = socioSeleccionado['numeroDocumentos'];
@@ -527,6 +532,14 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
           this.numeroDocumentosVencidos = socioVencido['numeroDocumentosVencidos'];
           this.sumaImportesDocumentosVencidos = socioVencido['sumaImportesDocumentosVencidos'];
           
+          if(code){
+            cantClientes = listClientes.length;
+            // VARIABLES GLOBALES PARA PINTAR DATOS
+            pagGestGestClientesDataGlobal[0]['${widget.value}'] = this.data;
+          }else{
+            print("no hay datos");
+          }
+
           if(data == null){
             this.data = listClientes;
           }else{
@@ -538,15 +551,12 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
             
           }
           
+          // print("--------------------------------");
+          // print(listClientes);
+          // print(listClientes.length);
 
-          this.codes = code;
-          if(codes){
-            cantClientes = this.data.length;
-            // VARIABLES GLOBALES PARA PINTAR DATOS
-            pagGestGestClientesDataGlobal[0]['${widget.value}'] = this.data;
-          }else{
-            print("no hay datos");
-          }
+          // this.codes = code;
+          
           
         });
 
@@ -653,6 +663,11 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
                         hintText: 'Buscar'
                       ),
                       onChanged: (text){
+                        if(text == ''){
+                          _getClientes(null, 1);
+                        }else{
+                          _getClientes(text, 1);
+                        }
                         
                         setState(() {
                             textoBusqueda = text;
@@ -680,7 +695,7 @@ class _GestionClientesPageState extends State<GestionClientesPage> {
                           children: <Widget>[
                             
                             if(cantSectoresSeleccionados == 0)
-                              for(var cont =0; cont < cantClientes; cont++ )
+                              for(int cont =0; cont < cantClientes; cont++ )
                                 if(data[cont]['personaNombre'].indexOf(textoBusqueda.toUpperCase()) != -1 || data[cont]['personaNombre'].indexOf(textoBusqueda.toLowerCase()) != -1)
                                   if(data[cont]['numeroDocumentosVencidos'] > 0)
                                     _buildListGestionEmpresas(data[cont]['personaImagen'], 

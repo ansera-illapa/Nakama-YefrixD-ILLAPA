@@ -207,7 +207,7 @@ Widget _buildListUsuarios(String imagen,
     final response = await http.get(url);
     if (response.statusCode == 200) {
         final directory = await getApplicationDocumentsDirectory();
-        final fileData = File('${directory.path}/usuarios/usuariosUsuarios${widget.value}.json');
+        final fileData = File('${directory.path}/usuarios-usuariosUsuarios${widget.value}.json');
         await fileData.writeAsString("${response.body}");
         _getVariables();
     }
@@ -264,7 +264,7 @@ Widget _buildListUsuarios(String imagen,
   _getVariables() async {
       
       final directory = await getApplicationDocumentsDirectory();
-      final fileData = File('${directory.path}/usuarios/usuariosUsuarios${widget.value}.json');
+      final fileData = File('${directory.path}/usuarios-usuariosUsuarios${widget.value}.json');
 
       // GET SOCIOS
       try{

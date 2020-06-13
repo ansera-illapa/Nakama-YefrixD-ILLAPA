@@ -129,7 +129,7 @@ Widget _buidEstListEmpresas( String titulo, int idSector){
     if (response.statusCode == 200) {
       
         final directory = await getApplicationDocumentsDirectory();
-        final fileData = File('${directory.path}/usuarios/usuarioSectores${widget.value}.json');
+        final fileData = File('${directory.path}/usuarios-usuarioSectores${widget.value}.json');
         await fileData.writeAsString("${response.body}");
         _getVariables();
 
@@ -171,7 +171,7 @@ Widget _buidEstListEmpresas( String titulo, int idSector){
   _getVariables() async {
       
       final directory = await getApplicationDocumentsDirectory();
-      final fileData = File('${directory.path}/usuarios/usuarioSectores${widget.value}.json');
+      final fileData = File('${directory.path}/usuarios-usuarioSectores${widget.value}.json');
 
       // GET SOCIOS
       try{

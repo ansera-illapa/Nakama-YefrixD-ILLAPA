@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:illapa/behaviors/hiddenScrollBehavior.dart';
 import 'package:illapa/extras/appTema.dart';
+import 'package:illapa/extras/globals/variablesSidebar.dart';
 import 'package:illapa/pages/gestiones/gestionClienteAccion.dart';
 import 'package:illapa/widgets.dart';
 
@@ -68,35 +69,10 @@ class _GfreeFiltroMayorPageState extends State<GfreeFiltroMayorPage> {
 
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final listDocumentos = map["result"];
-      final listPagos = map["pagos"];
-      final load = map["load"];
-      // print(clienteSeleccionado['nombre']);
-      print(code);
-
-      setState(() {
-        // _isLoading = load;
-        this.idCliente= widget.value;
-        print("idcliente: $idCliente");
-        
-        
-        if(tipoIdentificacion == 1){
-          tipoIden = "DNI";
-        }else{
-          tipoIden = "RUC";
-        }
-        if(code == true){
-          this.listDocumentos = listDocumentos;
-          cantDocumentos = this.listDocumentos.length;
-
-          this.listPagos = listPagos;
-          cantPagos = this.listPagos.length;
-        }
-        
-        
-      });
+        final directory = await getApplicationDocumentsDirectory();
+        final fileData = File('${directory.path}/pag-gestiones-gestionFree-gfreeFiltroMayor${widget.value}.json');
+        await fileData.writeAsString("${response.body}");
+        _getVariables();
     }
   }
     @override
@@ -118,27 +94,47 @@ class _GfreeFiltroMayorPageState extends State<GfreeFiltroMayorPage> {
   String imagenUsuario;
   String nombreUsuario;
   _getVariables() async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
       
-      setState(() {
-        nombreUsuario = prefs.getString('nombre');
-      }); 
-
-
       final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+      final fileData = File('${directory.path}/pag-gestiones-gestionFree-gfreeFiltroMayor${widget.value}.json');
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
+      // GET SOCIOS
+      try{
+        print(await fileData.readAsString());
+          final map = json.decode(await fileData.readAsString());
+          final code = map["code"];
+          final listDocumentos = map["result"];
+          final listPagos = map["pagos"];
+          final load = map["load"];
+          // print(clienteSeleccionado['nombre']);
+          print(code);
+
+          setState(() {
+            // _isLoading = load;
+            this.idCliente= widget.value;
+            print("idcliente: $idCliente");
+            
+            
+            if(tipoIdentificacion == 1){
+              tipoIden = "DNI";
+            }else{
+              tipoIden = "RUC";
+            }
+            if(code == true){
+              this.listDocumentos = listDocumentos;
+              cantDocumentos = this.listDocumentos.length;
+
+              this.listPagos = listPagos;
+              cantPagos = this.listPagos.length;
+            }
+            
+            
+          });
+      }catch(error){
+        print(error);
+      
+      }
+      
 
   }
 
@@ -190,7 +186,7 @@ class _GfreeFiltroMayorPageState extends State<GfreeFiltroMayorPage> {
                     leading: new CircleAvatar(
                       foregroundColor: Theme.of(context).primaryColor,
                       backgroundColor: Colors.grey,
-                      backgroundImage: new NetworkImage(imagenGestor),
+                      backgroundImage: new NetworkImage(imagenUsuarioGlobal),
                     ),
                     title: new Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

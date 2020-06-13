@@ -146,23 +146,11 @@ class _GestionSectorClientesPageState extends State<GestionSectorClientesPage> {
     print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final clientes = map["result"];
-      final load = map["load"];
-      // print(empresaSeleccionada['nombre']);
-      print(code);
-      setState(() {
-        _isLoading = load;
-        this.data = clientes;
-        this.codes = code;
-        if(codes){
-          cantClientes = this.data.length;
-        }else{
-          cantClientes = 0;
-        }
-        
-      });
+        final directory = await getApplicationDocumentsDirectory();
+        final fileData = File('${directory.path}/pag-gestione-gestionSectorista-gestionSectorClientes${widget.value}.json');
+        await fileData.writeAsString("${response.body}");
+        _getVariables();
+
     }
   }
 
@@ -207,27 +195,36 @@ class _GestionSectorClientesPageState extends State<GestionSectorClientesPage> {
   String nombreUsuario;
 
   _getVariables() async {
-      
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+        final directory = await getApplicationDocumentsDirectory();
+        final fileData = File('${directory.path}/pag-gestione-gestionSectorista-gestionSectorClientes${widget.value}.json');
+
+        // GET SOCIOS
+        try{
+          print(await fileData.readAsString());
+          final map = json.decode(await fileData.readAsString());
+          final code = map["code"];
+          final clientes = map["result"];
+          final load = map["load"];
+          // print(empresaSeleccionada['nombre']);
+          print(code);
+          setState(() {
+            _isLoading = load;
+            this.data = clientes;
+            this.codes = code;
+            if(codes){
+              cantClientes = this.data.length;
+            }else{
+              cantClientes = 0;
+            }
+            
+          });
+            
+        }catch(error){
+          print(error);
         
-        setState(() {
-          nombreUsuario = prefs.getString('nombre');
-        }); 
-
-      final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
-
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
+        }
+        
 
   }
 

@@ -74,23 +74,10 @@ class _GestionFMSecPageState extends State<GestionFMSecPage> {
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      final code = map["code"];
-      final listClientes = map["result"];
-      final load = map["load"];
-      // print(socioSeleccionado['nombre']);
-      print(code);
-      setState(() {
-        _isLoading = load;
-        this.data = listClientes;
-        this.codes = code;
-        if(codes){
-          cantClientes = this.data.length;
-        }else{
-          cantClientes = 0;
-        }
-        
-      });
+        final directory = await getApplicationDocumentsDirectory();
+        final fileData = File('${directory.path}/pag-gestiones-gestionSectorista-gestionFiltroMayor${widget.value}.json');
+        await fileData.writeAsString("${response.body}");
+        _getVariables();
     }
   }
   
@@ -125,26 +112,34 @@ class _GestionFMSecPageState extends State<GestionFMSecPage> {
   String nombreUsuario;
    _getVariables() async {
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      
-      setState(() {
-        nombreUsuario = prefs.getString('nombre');
-      });
-
       final directory = await getApplicationDocumentsDirectory();
-      final tipoUsuarioFile = File('${directory.path}/tipo.txt');
-      final idUsuarioFile = File('${directory.path}/id.txt');
-      final imagenUsuarioFile = File('${directory.path}/imagen.txt');
+      final fileData = File('${directory.path}/pag-gestiones-gestionSectorista-gestionFiltroMayor${widget.value}.json');
 
-      String tipoUsuarioInt = await tipoUsuarioFile.readAsString();                   
-      String idUsuarioInt = await idUsuarioFile.readAsString(); 
-      String imagenUsuarioString = await imagenUsuarioFile.readAsString(); 
-      tipoUsuario = int.parse(tipoUsuarioInt);
-      idUsuario = int.parse(idUsuarioInt);
-      imagenUsuario = imagenUsuarioString;
-      print("TIPOUSUARIO: $tipoUsuario");
-      print("IDUSUARIO: $idUsuario");
-      print("IMAGEN: $imagenUsuario");
+      try{
+        print(await fileData.readAsString());
+        final map = json.decode(await fileData.readAsString());
+        final code = map["code"];
+        final listClientes = map["result"];
+        final load = map["load"];
+        // print(socioSeleccionado['nombre']);
+        print(code);
+        setState(() {
+          _isLoading = load;
+          this.data = listClientes;
+          this.codes = code;
+          if(codes){
+            cantClientes = this.data.length;
+          }else{
+            cantClientes = 0;
+          }
+          
+        });
+          
+      }catch(error){
+        print(error);
+      
+      }
+     
 
   }
 
